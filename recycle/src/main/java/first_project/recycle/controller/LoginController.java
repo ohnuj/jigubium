@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 // final 필드(userService)를 초기화하는 생성자를 자동 생성하여 의존성 주입(DI)
 @RequiredArgsConstructor
-public class LoginContoller {
+public class LoginController {
 
     // 로그인 검증 비즈니스 로직을 처리하는 서비스 주입
     private final UserService userService;

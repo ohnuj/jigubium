@@ -18,7 +18,7 @@
     <!-- 로그인 검증용 회원 조회 (SELECT) -->
     <!-- resultType: 조회된 레코드를 매핑하여 반환할 자바 객체 타입 -->
     <!-- map-underscore-to-camel-case 설정 시 member_id -> memberId, created_at -> createdAt 자동 매핑 -->
-    <select id="findByEmailAndPassword" resultType="first_project.recycle.domain.User">
+    <select id="findByEmail" resultType="first_project.recycle.domain.User">
         SELECT member_id,
                name,
                email,
@@ -28,7 +28,6 @@
                created_at
         FROM member
         WHERE email = #{email}
-          AND password = #{password}
     </select>
 
     <!-- 이메일 중복 확인 (SELECT COUNT) -->
