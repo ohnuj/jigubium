@@ -14,4 +14,22 @@
         FROM reward
         ORDER BY required_point ASC
     </select>
+
+    <select id="findById" resultType="first_project.recycle.domain.Reward">
+        SELECT
+            reward_id AS rewardId,
+            reward_name AS rewardName,
+            required_point AS requiredPoint,
+            stock_quantity AS stockQuantity,
+            image_url AS imageUrl
+        FROM reward
+        WHERE reward_id=#{rewardId}
+    </select>
+
+    <update id="minusStock">
+        UPDATE reward
+        SET stock_quantity = stock_quantity - 1
+        WHERE reward_id = #{rewardId}
+          AND stock_quantity > 0
+    </update>
 </mapper>
