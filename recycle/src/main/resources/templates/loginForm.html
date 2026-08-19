@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!-- 타임리프(Thymeleaf) 네임스페이스 선언: th:* 문법 사용을 위해 선언 -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - 지구비우기</title>
+    <!-- static 폴더 기준 CSS 스타일시트 경로 매핑 (/static/css/test.css) -->
+    <link rel="stylesheet" th:href="@{/css/test.css}">
+</head>
+<body>
+<!-- 로그인 화면 중앙 정렬 및 전체 레이아웃을 감싸는 래퍼 -->
+<div class="auth-wrap">
+    <!-- 로그인 폼 카드 박스 -->
+    <div class="auth-card">
+        <h1 class="logo">지구비우기</h1>
+
+        <!-- 회원가입 성공 등 RedirectAttributes(FlashAttribute)나 Model로 전달된 메시지가 있을 때만 노출 -->
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
+        <!-- 로그인 실패 시 컨트롤러의 Model에 담긴 error 메시지가 있을 때만 노출 -->
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <!-- POST /login 요청 전송 -> LoginController의 @PostMapping("/login")으로 데이터 전달 -->
+        <form th:action="@{/login}" method="post">
+            <!-- 로그인 성공 후 원래 접근하려던 페이지로 이동시키기 위한 이전 URL 파라미터 (숨김 필드) -->
+            <input type="hidden" name="redirectURL" th:value="${redirectURL}">
+
+            <div>
+                <!-- 이메일 입력 -> 로그인 실패 시 사용자가 직전에 입력한 email 값을 유지(th:value)하여 다시 채움 -->
+                <input type="email" name="email" placeholder="이메일"
+                       th:value="${email}" required autofocus>
+            </div>
+            <div>
+                <!-- 비밀번호 입력 -> 보안을 위해 실패해도 이전 값 유지 없이 새로 입력받음 -->
+                <input type="password" name="password" placeholder="비밀번호" required>
+            </div>
+            <!-- 로그인 요청 제출 버튼 -->
+            <button type="submit" class="btn-primary">로그인</button>
+        </form>
+
+        <!-- 회원가입 페이지(/signup) 이동 링크 -->
+        <p class="auth-footer">
+            <a th:href="@{/signup}">회원가입</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>
