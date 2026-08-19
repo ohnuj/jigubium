@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Kakao 지도 시작하기</title>
+</head>
+<body>
+<div id="map" style="width:720px;height:640px;"></div>
+<!--카카오맵 api 인증키 넣기-->
+<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9c94fcf381441f9b0d24e070ea351ee2"></script>
+<script>
+<!--    카카오맵 표시할 html요소 가져오기-->
+    var container = document.getElementById('map');
+    // 지도 옵션
+    var options = {
+        // 지도 시작 중심 좌표(현재 광화문임)
+        center: new kakao.maps.LatLng(37.5728, 126.9769),
+        level: 3 // 지도 확대 레벨
+    };
+    // 카카오 지도 생성자 container와 options 사용하기
+    var map = new kakao.maps.Map(container, options);
+
+    const infowindow = new kakao.maps.InfoWindow({
+        zIndex: 1
+    });
+    let openedMarker = null;
+    // 의류수거함 데이터 불러오고 지도에 마커 생성
+    async function loadClothingBinMarkers() {
+
+        const response = await fetch("/api/clothing-bins");
+        //테스트용 정상이면 콘솔에 200 출력됨 오류나면 404, 500등
+        console.log("응답 상태:", response.status);
+
+        // json데이터를 javascript 객체로 변환
+        const locations = await response.json();
+        // 콘솔에 데이터 확인용 로그 띄우기
+        console.log("받은 데이터:", locations);
+        console.log("데이터 개수:", locations.length);
+
+        //의류수거함 데이터를 하나씩 반복
+        locations.forEach(location => {
+            //각 의류수거함 좌표 확인
+            console.log(
+                "좌표:",
+                location.latitude,
+                location.longitude
+            );
+
+            // 만일 위도 경도가 없는 데이터 있으면 무시하기
+            if (
+                location.latitude == null ||
+                location.longitude == null
+            ) {
+                return;
+            }
+
+            // 위도/경도를 카카오맵용 좌표 객체로 변환
+            const position = new kakao.maps.LatLng(
+                location.latitude, // 위도
+                location.longitude // 경도
+            );
+
+            // 마커 생성하기
+            const marker = new kakao.maps.Marker({
+                position: position
+            });
+
+            // 마커 지도에 표시
+            marker.setMap(map);
+
+            //마커 클릭 시 주소 정보 띄우기
+            kakao.maps.event.addListener(marker, 'click', function (){
+
+                //마커 다시 클릭시
+                if (openedMarker === marker){
+
+                    infowindow.close();
+                    openedMarker = null;
+
+                return;}
+
+
+                const content = `
+                    <div style="
+                        padding: 12px;
+                        width: 260px;
+                        max-width: 260px;
+                        line-height: 1.6;
+                        white-space: normal;
+                        word-break: break-all;
+                        overflow-wrap: break-word;
+                        box-sizing: border-box;
+                    ">
+<!-- 주소 길이가 어떻게 되든 박스 안으로 집어넣기-->
+                <strong>${location.locationName}</strong><br>
+                행정동: ${location.adminDong}<br>
+                도로명주소: ${location.roadAddress}<br>
+                지번주소: ${location.jibunAddress}
+            </div>
+        `;
+                infowindow.setContent(content);
+                infowindow.open(map, marker);
+
+                // 현재 열린 마커 기억
+                openedMarker = marker;
+            });
+
+        });
+
+
+    }
+
+    // 위 함수를 실행시킴
+    loadClothingBinMarkers();
+
+</script>
+</body>
+</html>
