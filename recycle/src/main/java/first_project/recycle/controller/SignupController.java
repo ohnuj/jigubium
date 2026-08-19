@@ -1,4 +1,4 @@
 package first_project.recycle.controller;
 
-public class SignupContoller {
+public class SignupController {
 }
