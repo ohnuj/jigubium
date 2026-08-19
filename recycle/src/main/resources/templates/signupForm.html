@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!-- 타임리프(Thymeleaf) 네임스페이스 선언: th:* 속성 사용을 위해 필요 -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - 지구비우기</title>
+    <!-- static 폴더 기준 CSS 경로 연결 (/static/css/test.css) -->
+    <link rel="stylesheet" th:href="@{/css/test.css}">
+</head>
+<body>
+<!-- 전체 화면 중앙 정렬 및 배경 레이아웃 감싸는 영역 -->
+<div class="auth-wrap">
+    <!-- 회원가입 폼 카드 컨테이너 -->
+    <div class="auth-card">
+        <h1 class="logo">지구비우기 회원가입</h1>
+
+        <!-- 컨트롤러에서 model.addAttribute("error", ...)로 넘겨준 에러가 있을 때만 렌더링 -->
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <!-- POST /signup 요청 전송 -> SignupController의 @PostMapping("/signup")으로 전달 -->
+        <form th:action="@{/signup}" method="post">
+            <!-- 사용자 이름 입력 -> User 객체의 name 필드에 매핑 -->
+            <div>
+                <input type="text" name="name" placeholder="이름" required autofocus>
+            </div>
+            <!-- 이메일 입력 -> User 객체의 email 필드에 매핑 (형식 검증 포함) -->
+            <div>
+                <input type="email" name="email" placeholder="이메일" required>
+            </div>
+            <!-- 비밀번호 입력 -> User 객체의 password 필드에 매핑 (마스킹 처리) -->
+            <div>
+                <input type="password" name="password" placeholder="비밀번호" required>
+            </div>
+            <!-- 닉네임 입력 -> User 객체의 nickname 필드에 매핑 -->
+            <div>
+                <input type="text" name="nickname" placeholder="닉네임" required>
+            </div>
+            <!-- 폼 제출 버튼 -> 클릭 시 입력 데이터 전송 -->
+            <button type="submit" class="btn-primary">가입하기</button>
+        </form>
+
+        <!-- 로그인 페이지(/login) 이동 링크 -->
+        <p class="auth-footer">
+            이미 계정이 있으신가요? <a th:href="@{/login}">로그인</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>
