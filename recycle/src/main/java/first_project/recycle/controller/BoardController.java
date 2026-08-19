@@ -43,7 +43,6 @@ public class SignupContoller {
             model.addAttribute("error", "이미 사용 중인 이메일입니다.");
             return "signupForm";
         }
-
         // 회원가입 성공 시 1회성 플래시 속성(FlashAttribute)으로 성공 메시지 전달 (URL에 노출 X)
         // PRG(Post-Redirect-Get) 패턴 적용: 새로고침 시 중복 가입 방지 및 로그인 페이지로 이동
         redirectAttributes.addFlashAttribute("message", "회원가입이 완료되었습니다. 로그인해 주세요.");
