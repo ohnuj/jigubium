@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>리워드 상점</title>
+</head>
+<body>
+<nav>
+    <div>
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/mypage}">마이페이지</a>
+        <a th:href="@{/logout}">로그아웃</a>
+    </div>
+</nav>
+<main>
+    <div>
+        <h1>리워드 상점</h1>
+        <div>
+            보유 에코포인트 :
+            <strong>
+                <span th:text="${currentPoint}">0</span>P
+            </strong>
+        </div>
+        <div>
+            <div th:each="reward : ${rewards}">
+
+                <img th:src="${reward.imageUrl}" width="300" th:alt="${reward.rewardName}">
+
+                <div th:text="${reward.rewardName}">
+                    상품명
+                </div>
+
+                <div>
+                    <span th:text="${reward.requiredPoint}">0</span>P
+                </div>
+
+                <div>
+                    남은 수량 :
+                    <span th:text="${reward.stockQuantity}">0</span>개
+                </div>
+                <!-- 리워드 교환 -->
+                <form th:action="@{/reward/exchange}" method="post">
+                    <input type="hidden"
+                           name="rewardId"
+                           th:value="${reward.rewardId}">
+
+                    <button type="submit"
+                            th:disabled="${reward.stockQuantity <= 0}"
+                            th:text="${reward.stockQuantity > 0 ? '교환하기' : '품절'}">
+                        교환하기
+                    </button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
