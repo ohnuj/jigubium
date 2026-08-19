@@ -60,7 +60,7 @@
         <if test="keyword != null and keyword != ''">
             AND (
                 b.title LIKE CONCAT('%', #{keyword}, '%')
-                OR b.content LIKE CONCAT('%', #{keyword}, '#')
+                OR b.content LIKE CONCAT('%', #{keyword}, '%')
             )
         </if>
         </where>
