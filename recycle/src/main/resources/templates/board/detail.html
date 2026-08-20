@@ -56,5 +56,15 @@
         )}">
           수정
   </a>
+
+<form th:action="@{/boards/{boardId}/delete(
+        boardId=${board.boardId}
+        )}"
+      method="post">
+
+    <button type="submit">
+      삭제
+    </button>
+</form>
 </body>
 </html>

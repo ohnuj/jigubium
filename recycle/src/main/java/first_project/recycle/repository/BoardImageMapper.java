@@ -13,4 +13,7 @@ public interface BoardImageMapper {
 
     // 상세 게시글 이미지 가져오기
     List<BoardImage> findByBoardId(Long boardId);
+
+    // 이미지 삭제
+    int deleteByBoardId(Long boardId);
 }

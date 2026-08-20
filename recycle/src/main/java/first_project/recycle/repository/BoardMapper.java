@@ -43,4 +43,10 @@ public interface BoardMapper {
             @Param("title") String title,
             @Param("content") String content
     );
+
+    // 게시글 삭제
+    int deleteBoard(
+            @Param("boardId") Long boardId,
+            @Param("memberId") Long memberId
+    );
 }
