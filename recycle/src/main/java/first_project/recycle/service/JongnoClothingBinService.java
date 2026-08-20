@@ -6,12 +6,14 @@ import first_project.recycle.domain.ecoLocation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import first_project.recycle.mapper.EcoLocationMapper;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Service
 public class JongnoClothingBinService {
+
 
     @Value("${public-data.service-key}")
     private  String serviceKey;
@@ -20,6 +22,14 @@ public class JongnoClothingBinService {
     private String apiUrl;
 
     private final RestClient restClient = RestClient.create();
+
+    // ecoLocation DB 저장용 Mapper
+    private final EcoLocationMapper ecoLocationMapper;
+
+    // Mapper 생성자 주입
+    public JongnoClothingBinService(EcoLocationMapper ecoLocationMapper) {
+        this.ecoLocationMapper = ecoLocationMapper;
+    }
 
     public List<ecoLocation> getClothingBins() {
         String url =
@@ -41,10 +51,24 @@ public class JongnoClothingBinService {
         if (response == null || response.getData() == null) {
             return List.of();
         }
-        return response.getData()
-                .stream()
+        List<ecoLocation> locations = response.getData().stream()
                 .map(this::convertToEcoLocation)
                 .toList();
+
+// DB에 한 건씩 저장(중복되지 않을 때만)
+        locations.forEach(location -> {
+
+            int count = ecoLocationMapper.countByRoadAddressAndLocationType(
+                            location.getRoadAddress(),
+                            location.getLocationType());
+
+            // 같은 주소가 없으면 저장
+            if (count == 0) {
+                ecoLocationMapper.insertEcoLocation(location);
+            }
+        });
+
+        return locations;
 
     }
     // api의 한글로 되어 있는 걸 도메인 속 변수들 속에 넣어줌

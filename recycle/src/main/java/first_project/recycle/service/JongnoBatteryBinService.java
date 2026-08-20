@@ -7,6 +7,7 @@ import first_project.recycle.domain.ecoLocationDTO.KakaoAddressResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import first_project.recycle.mapper.EcoLocationMapper;
 
 import java.math.BigDecimal;
 import java.util.List;
