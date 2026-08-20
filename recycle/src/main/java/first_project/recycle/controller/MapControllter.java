@@ -46,8 +46,7 @@ public class MapControllter {
     // 현재는 API 응답 DTO를 그대로 반환해서 테스트
     @GetMapping("/api/battery-bins")
     @ResponseBody
-    public JongnoBatteryBinResponse getBatteryBins() {
-
+    public List<ecoLocation> getBatteryBins() {
         return jongnoBatteryBinService.getBatteryBins();
     }
 
