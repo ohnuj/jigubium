@@ -13,7 +13,7 @@
 
     <!-- [일반 로그인] 이메일 일치 회원 조회 (비밀번호 검증 및 세션 정보/보유 포인트 확인용) -->
     <select id="findByEmail" resultType="first_project.recycle.domain.User">
-        SELECT member_id, password, nickname, role, point
+        SELECT member_id, password, nickname, role
         FROM member
         WHERE email = #{email}
     </select>
@@ -33,8 +33,8 @@
                provider,
                provider_id,
                name,
-               role,
-               point
+               role
+
         FROM member
         WHERE provider = #{provider}
           AND provider_id = #{providerId}

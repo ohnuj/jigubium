@@ -2,40 +2,47 @@ package first_project.recycle.service;
 
 import first_project.recycle.domain.Member;
 import first_project.recycle.domain.MemberInfo;
+import first_project.recycle.repository.EcoPointHistoryMapper;
 import first_project.recycle.repository.MypageMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
 public class MypageService {
-    private final MypageMapper mypageMapper; // 또는 MemberMapper
 
-    // 회원정보 조회
-    public Member getMemberInfo(String loginEmail){
-        return mypageMapper.findByEmail(loginEmail);
+    private final MypageMapper mypageMapper;
+
+    // 회원 정보 조회
+    public Member getMemberInfo(Long memberId) {
+        return mypageMapper.findById(memberId);
     }
 
-    public void updateMemberInfo(String loginEmail, MemberInfo memberinfo){
-        mypageMapper.updateMember(loginEmail,memberinfo);
+    // 회원 정보 수정
+    @Transactional
+    public void updateMemberInfo(Long memberId, MemberInfo memberinfo) {
+        mypageMapper.updateMember(memberId, memberinfo);
     }
-
-    // 비밀번호 검증
-    public boolean verifyPassword(String loginEmail, String password) {
-        Member member = mypageMapper.findByEmail(loginEmail);
-        if (member == null) {
+    // 비밀번호 확인 절차
+    public boolean verifyPassword(Long memberId, String password) {
+        Member member = mypageMapper.findById(memberId);
+        if (member == null || member.getPassword() == null) {
             return false;
         }
         return member.getPassword().equals(password);
     }
 
-    // 회원 삭제 (조회 후 삭제 또는 바로 삭제)
-    public boolean deleteMember(String email, String password) {
-        Member member = mypageMapper.findByEmail(email);
-        if (member == null || ! password.equals(member.getPassword())) {
+    // 회원 탈퇴
+    @Transactional
+    public boolean deleteMember(Long memberId, String password) {
+        Member member = mypageMapper.findById(memberId);
+        if (member == null || !password.equals(member.getPassword())) {
             return false;
         }
-        mypageMapper.deleteByEmail(email);
+        mypageMapper.deleteById(memberId);
         return true;
     }
+
 }
