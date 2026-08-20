@@ -17,4 +17,18 @@
             #{sortOrder}
            )
     </insert>
+
+    <!--상세 게시글 이미지 가져오기-->
+    <select id="findByBoardId"
+            resultType="first_project.recycle.domain.BoardImage">
+
+        SELECT
+            image_id,
+            board_id,
+            image_url,
+            sort_order
+        FROM board_image
+        WHERE board_id = #{boardId}
+        ORDER BY sort_order
+    </select>
 </mapper>

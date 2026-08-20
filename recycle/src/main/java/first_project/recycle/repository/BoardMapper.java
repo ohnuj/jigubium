@@ -2,6 +2,7 @@ package first_project.recycle.repository;
 
 import first_project.recycle.domain.Board;
 import first_project.recycle.domain.BoardType;
+import first_project.recycle.dto.BoardDetailResponse;
 import first_project.recycle.dto.BoardListResponse;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -30,4 +31,7 @@ public interface BoardMapper {
             @Param("size") int size
 
     );
+
+    // 상세 조회
+    BoardDetailResponse findById(Long boardId);
 }

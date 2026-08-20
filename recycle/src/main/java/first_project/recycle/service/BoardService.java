@@ -5,6 +5,7 @@ import first_project.recycle.domain.Board;
 import first_project.recycle.domain.BoardImage;
 import first_project.recycle.domain.BoardType;
 import first_project.recycle.domain.Paging;
+import first_project.recycle.dto.BoardDetailResponse;
 import first_project.recycle.dto.BoardListResponse;
 import first_project.recycle.dto.BoardPageResponse;
 import first_project.recycle.repository.BoardImageMapper;
@@ -92,6 +93,29 @@ public class BoardService {
         }
 
         return boardId;
+    }
+
+    /**
+     * 게시글 상세 조회
+     */
+    public BoardDetailResponse getBoard(Long boardId) {
+
+        // 게시글 조회
+        BoardDetailResponse board =
+                boardMapper.findById(boardId);
+
+        if (board == null) {
+            throw new IllegalArgumentException(
+                    "존재하지 않는 게시글입니다.");
+        }
+
+        // 게시글 이미지 조회
+        List<BoardImage> images =
+                boardImageMapper.findByBoardId(boardId);
+
+        board.setImages(images);
+
+        return board;
     }
 
 

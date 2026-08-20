@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 작성</title>
+</head>
+<body>
+
+<h2>게시글 작성</h2>
+
+<form th:action="@{/boards}"
+      method="post"
+      enctype="multipart/form-data">
+
+    <!-- 게시판 타입 -->
+    <div>
+        <label for="boardType">게시판 타입</label>
+
+        <select id="boardType"
+                name="boardType"
+                required>
+
+            <option value="">선택</option>
+
+            <option value="FREE">자유</option>
+            <option value="INFO">정보</option>
+            <option value="SUGGESTION">건의</option>
+        </select>
+    </div>
+
+    <!-- 제목 -->
+    <div>
+        <label for="title">제목</label>
+
+        <input type="text"
+                id="title"
+                name="title"
+                required>
+    </div>
+
+    <div>
+        <label for="content">내용</label>
+
+        <textarea id="content"
+                  name="content"
+                  rows="10"
+                  required></textarea>
+    </div>
+
+    <!--이미지-->
+    <div>
+        <label for="images">이미지</label>
+
+        <input type="file"
+                id="images"
+                name="images"
+                accept="image/*"
+                multiple>
+    </div>
+
+    <button type="submit">등록</button>
+
+    <a th:href="@{/boards}">
+        취소
+    </a>
+
+
+</form>
+</body>
+</html>
