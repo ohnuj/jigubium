@@ -8,6 +8,7 @@ import first_project.recycle.domain.Paging;
 import first_project.recycle.dto.BoardDetailResponse;
 import first_project.recycle.dto.BoardListResponse;
 import first_project.recycle.dto.BoardPageResponse;
+import first_project.recycle.dto.BoardUpdateRequest;
 import first_project.recycle.repository.BoardImageMapper;
 import first_project.recycle.repository.BoardMapper;
 import lombok.RequiredArgsConstructor;
@@ -117,6 +118,27 @@ public class BoardService {
 
         return board;
     }
+
+    /**
+     * 게시글 수정
+     * 작성자 본인인 경우에만 수정
+     */
+    public boolean updateBoard(
+            Long boardId,
+            Long memberId,
+            BoardUpdateRequest request) {
+
+        int result = boardMapper.updateBoard(
+                boardId,
+                memberId,
+                request.getBoardType(),
+                request.getTitle(),
+                request.getContent()
+        );
+
+        return  result > 0;
+    }
+
 
 
 

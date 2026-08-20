@@ -73,6 +73,7 @@
                 b.title,
                 m.nickname,
                 b.created_at
+                b.updated_at
 
             FROM board b
 
@@ -119,4 +120,18 @@
             ON b.member_id = m.member_id
         WHERE  b.board_id = #{boardId}
     </select>
+
+    <update id="updateBoard">
+
+        UPDATE board
+
+        SET
+            board_type = #{boardType},
+            title = #{title},
+            content = #{content},
+            updated_at = NOW()
+
+        WHERE board_id = #{boardId}
+            AND member_id = #{memberId}
+    </update>
 </mapper>

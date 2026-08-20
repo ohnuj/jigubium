@@ -2,7 +2,9 @@ package first_project.recycle.controller;
 
 
 import first_project.recycle.domain.BoardType;
+import first_project.recycle.dto.BoardDetailResponse;
 import first_project.recycle.dto.BoardPageResponse;
+import first_project.recycle.dto.BoardUpdateRequest;
 import first_project.recycle.service.BoardService;
 import first_project.recycle.domain.User;
 import first_project.recycle.service.UserService;
@@ -103,5 +105,50 @@ public class BoardController {
 
         return "board/detail";
     }
-    
+
+    /**
+     * 게시글 수정 페이지
+     */
+    @GetMapping("/{boardId}/edit")
+    public String editForm(
+            @PathVariable Long boardId,
+            Model model) {
+
+        BoardDetailResponse board =
+                boardService.getBoard(boardId);
+
+        model.addAttribute("board",board);
+        model.addAttribute("boardTypes", BoardType.values());
+
+        return "board/edit";
+    }
+
+    /**
+     * 게시글 수정
+     */
+    @PostMapping("/{boardId}/edit")
+    public String updateBoard(
+            @PathVariable Long boardId,
+            @ModelAttribute BoardUpdateRequest request) {
+
+        // 로그인 기능 연동 전 임시 회원 ID
+        Long memberId = 1L;
+
+        boolean updated =
+                boardService.updateBoard(
+                        boardId,
+                        memberId,
+                        request
+                );
+
+        if (!updated) {
+            throw new IllegalArgumentException(
+                    "게시글을 수정할 권한이 없습니다."
+            );
+        }
+
+        return "redirect:/boards/" + boardId;
+    }
+
+
 }

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 수정</title>
+</head>
+
+<body>
+
+<h2>게시글 수정</h2>
+
+<form th:action="@{/boards/{boardId}/edit(boardId=${board.boardId})}"
+      method="post">
+
+    <!-- 게시판 타입 -->
+    <div>
+        <label for="boardType">게시판 타입</label>
+
+        <select id="boardType"
+                name="boardType"
+                required>
+
+            <option value="FREE"
+                    th:selected="${board.boardType.name() == 'FREE'}">
+                자유
+            </option>
+
+            <option value="INFO"
+                    th:selected="${board.boardType.name() == 'INFO'}">
+                정보
+            </option>
+
+            <option value="SUGGESTION"
+                    th:selected="${board.boardType.name() == 'SUGGESTION'}">
+                건의
+            </option>
+
+
+        </select>
+    </div>
+
+    <!-- 제목 -->
+    <div>
+        <label for="title">제목</label>
+
+        <input type="text"
+                id="title"
+                name="title"
+                th:value="${board.title}"
+                required>
+    </div>
+
+    <!--내용-->
+    <div>
+        <label for="content">내용</label>
+
+        <textarea id="content"
+                  name="content"
+                  rows="10"
+                  required
+                  th:text="${board.content}">
+
+        </textarea>
+    </div>
+
+    <button type="submit">
+        수정
+    </button>
+
+    <a th:href="@{/boards/{boardId}(boardId=${board.boardId})}">
+        취소
+    </a>
+</form>
+
+</body>
+</html>

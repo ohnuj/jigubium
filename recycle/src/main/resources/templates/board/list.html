@@ -83,8 +83,14 @@
             닉네임
         </td>
 
-        <td th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}">
-            작성일
+        <td>
+            <span th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}">
+                작성일
+            </span>
+
+            <span th:if="${board.modified}">
+                (수정됨)
+            </span>
         </td>
     </tr>
 
