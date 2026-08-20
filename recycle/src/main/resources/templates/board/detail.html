@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 상세</title>
+</head>
+<body>
+
+<h2>게시글 상세</h2>
+
+<div>
+  <p>
+    타입:
+    <span th:text="${board.boardType}"></span>
+  </p>
+
+  <p>
+    제목:
+    <span th:text="${board.title}"></span>
+  </p>
+
+  <p>
+    작성자:
+    <span th:text="${board.nickname}"></span>
+  </p>
+
+  <p>
+    작성일:
+    <span th:text="${#temporals.format(
+            board.createdAt,
+            'yyyy-MM-dd HH:mm')}">
+    </span>
+  </p>
+</div>
+
+<hr>
+
+<div>
+  <p th:text="${board.content}"></p>
+</div>
+
+<!--첨부 이미지-->
+<div th:if="${board.images != null}">
+
+  <div th:each="image : ${board.images}">
+      <img th:src="${image.imageUrl}"
+        alt="게시글 이미지">
+  </div>
+
+</div>
+
+<hr>
+
+<a th:href="@{/boards/{boardId}/edit(
+        boardId=${board.boardId}
+        )}">
+          수정
+  </a>
+</body>
+</html>

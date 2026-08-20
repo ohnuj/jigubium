@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>커뮤니티</title>
+</head>
+<body>
+
+<h2>커뮤니티</h2>
+
+<!-- 검색 및 타입 선택-->
+<form th:action="@{/boards}" method="get">
+
+    <!-- 게시판 타입 -->
+    <select name="boardType">
+        <option value=""
+                th:selected="${boardType == null}">
+            전체
+        </option>
+
+        <option value="FREE"
+                th:selected="${boardType != null and boardType.name() == 'FREE'}">
+            자유
+        </option>
+
+        <option value="INFO"
+                th:selected="${boardType != null and boardType.name() == 'INFO'}">
+            정보
+        </option>
+
+        <option value="SUGGESTION"
+                th:selected="${boardType != null and boardType.name() == 'SUGGESTION'}">
+            건의
+        </option>
+    </select>
+
+    <!-- 검색어 -->
+    <input type="text"
+            name="keyword"
+            th:value="${keyword}"
+            placeholder="검색어를 입력하세요">
+
+    <button type="submit">검색</button>
+
+</form>
+
+<br>
+
+<!-- 게시글 목록 -->
+<table>
+
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>타입</th>
+        <th>제목</th>
+        <th>닉네임</th>
+        <th>작성일</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    <!-- 게시글 목록 출력 -->
+    <tr th:each="board : ${boards}">
+
+        <td th:text="${board.boardId}">
+            1
+        </td>
+
+        <td th:text="${board.boardType}">
+            FREE
+        </td>
+
+        <td>
+            <a th:href="@{/boards/{boardID}(boardId=${board.boardId})}"
+               th:text="${board.title}">
+                게시글 제목
+            </a>
+        </td>
+
+        <td th:text="${board.nickname}">
+            닉네임
+        </td>
+
+        <td th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}">
+            작성일
+        </td>
+    </tr>
+
+    <!-- 게시글이 없는 경우-->
+    <tr th:if="${#lists.isEmpty(boards)}">
+        <td colspan="5">
+            게시글이 없습니다.
+        </td>
+    </tr>
+
+    </tbody>
+
+
+</table>
+
+<!-- 페이징 -->
+<div th:if="${paging.totalPages > 0}">
+
+    <!-- 이전 -->
+    <a th:if="${paging.page > 1}"
+       th:href="@{/bords(
+            page=${paging.page - 1},
+            keyword=${keyword},
+            boardType=${boardType}
+            )}">
+        이전
+    </a>
+
+    <!-- 페이지 번호 -->
+    <span th:each="pageNum : ${#numbers.sequence(1, paging.totalPages)}">
+
+        <a th:if="${pageNum != paging.page}"
+           th:href="@{/boards(
+                page=${pageNum},
+                keyword=${keyword},
+                boardType=${boardType}
+                )}"
+                th:text="${pageNum}">
+        </a>
+
+        <strong th:if="${pageNum == paging.page}"
+                th:text="${pageNum}">
+        </strong>
+
+    </span>
+
+    <!-- 다음 -->
+    <a th:if="${paging.page < paging.totalPages}"
+       th:href="@{/boards(
+            page=${paging.page + 1},
+            keyword=${keyword},
+            boardType=${boardType}
+            )}">
+            다음
+    </a>
+</div>
+
+
+<!-- 게시글 작성 -->
+<a th:href="@{/boards/write}">
+    <button type="button">글작성</button>
+</a>
+
+</body>
+</html>
