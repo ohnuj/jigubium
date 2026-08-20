@@ -14,6 +14,4 @@ public class ecoLocation {
     private String jibunAddress; // 지번
     private BigDecimal latitude;  // 위도
     private BigDecimal longitude;  // 경도
-
-
 }

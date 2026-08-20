@@ -4,12 +4,40 @@
     <meta charset="utf-8"/>
     <title>Kakao 지도 시작하기</title>
 </head>
+
+<!--전체 흐름
+
+공공데이터
+↓
+Spring Service
+↓
+ecoLocation
+↓
+Controller
+↓
+JSON
+↓
+JavaScript fetch
+↓
+마커 생성
+↓
+종류별 배열 저장
+↓
+버튼 클릭
+↓
+선택한 마커만 지도에 표시
+-->
 <body>
+<div>
+    <button id="clothingBinButton">의류수거함</button>
+    <button id="batteryBinButton">폐건전지·폐형광등 수거함</button>
+</div>
 <div id="map" style="width:720px;height:640px;"></div>
 <!--카카오맵 api 인증키 넣기-->
 <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9c94fcf381441f9b0d24e070ea351ee2"></script>
+<!--1.카카오맵 기본 설정-->
 <script>
-<!--    카카오맵 표시할 html요소 가져오기-->
+<!--    카카오맵_표시할_html요소_가져오기-->
     var container = document.getElementById('map');
     // 지도 옵션
     var options = {
@@ -19,17 +47,29 @@
     };
     // 카카오 지도 생성자 container와 options 사용하기
     var map = new kakao.maps.Map(container, options);
-
+    // 2. 마커 공통 설정
+    // 마커 정보 보여주는 정보창
     const infowindow = new kakao.maps.InfoWindow({
         zIndex: 1
     });
     let openedMarker = null;
-    // 의류수거함 데이터 불러오고 지도에 마커 생성
-    async function loadClothingBinMarkers() {
+    // 의류수거함 마커들 저장할 배열
+    let clothingBinMarkers = [];
 
+    // 폐건전지 수거함 마커 저장할 배열
+    let batteryBinMarkers = [];
+
+    // 3. 의류수거함 데이터 불러오고 지도에 마커 생성
+    async function loadClothingBinMarkers() {
+    try{
         const response = await fetch("/api/clothing-bins");
-        //테스트용 정상이면 콘솔에 200 출력됨 오류나면 404, 500등
-        console.log("응답 상태:", response.status);
+        //정상 작동안되면 error 전달하기
+        if(!response.ok) {
+        throw new Error(
+            "의류수거함 API 호출 실패: " + response.status
+        );
+        }
+
 
         // json데이터를 javascript 객체로 변환
         const locations = await response.json();
@@ -39,12 +79,7 @@
 
         //의류수거함 데이터를 하나씩 반복
         locations.forEach(location => {
-            //각 의류수거함 좌표 확인
-            console.log(
-                "좌표:",
-                location.latitude,
-                location.longitude
-            );
+
 
             // 만일 위도 경도가 없는 데이터 있으면 무시하기
             if (
@@ -65,8 +100,8 @@
                 position: position
             });
 
-            // 마커 지도에 표시
-            marker.setMap(map);
+            // 마커를 배열에 저장
+            clothingBinMarkers.push(marker);
 
             //마커 클릭 시 주소 정보 띄우기
             kakao.maps.event.addListener(marker, 'click', function (){
@@ -79,7 +114,7 @@
 
                 return;}
 
-
+                // 수거함 장소 정보
                 const content = `
                     <div style="
                         padding: 12px;
@@ -98,6 +133,7 @@
                 지번주소: ${location.jibunAddress}
             </div>
         `;
+                // 정보창에 내용 설정 후 표시하기
                 infowindow.setContent(content);
                 infowindow.open(map, marker);
 
@@ -108,10 +144,155 @@
         });
 
 
+    }catch (error) {
+    //에러 전달받을 시 다음을 페이지에 띄움
+    console.error(
+        "의류수거함 데이터를 불러오지 못했습니다.",
+        error
+    );
     }
+}
 
-    // 위 함수를 실행시킴
+    //4. 폐건전지 데이터 불러오기
+async function loadBatteryBinMarkers() {
+    try{
+    // 폐건전지 수거함용 노란색 마커 이미지
+    const batteryMarkerImage = new kakao.maps.MarkerImage(
+        "/images/battery-marker.png",
+        new kakao.maps.Size(35, 40)
+    );
+    const response = await fetch("/api/battery-bins");
+
+    //정상 작동 아니면 에러 전달하기
+        if(!response.ok) {
+        throw new Error(
+            "폐건전지·폐형광등 API 호출 실패: " + response.status
+        );
+        }
+
+    // 테스트용 응답 상태 확인
+    console.log("폐건전지 응답 상태:", response.status);
+
+    // JSON 데이터를 javascript 객체로 변환
+    const locations = await response.json();
+
+    // 데이터 확인용 로그
+    console.log("폐건전지 데이터:", locations);
+    console.log("폐건전지 데이터 개수:", locations.length);
+
+    // 폐건전지 수거함 데이터를 하나씩 반복
+    locations.forEach(location => {
+
+        // 위도/경도 없는 데이터는 무시
+        if (
+            location.latitude == null ||
+            location.longitude == null
+        ) {
+            return;
+        }
+
+        // 위도/경도를 카카오맵 좌표 객체로 변환
+        const position = new kakao.maps.LatLng(
+            location.latitude,
+            location.longitude
+        );
+
+        // 마커 생성
+        const marker = new kakao.maps.Marker({
+            position: position,
+            image: batteryMarkerImage
+        });
+
+        // 폐건전지 마커 배열에 저장
+        batteryBinMarkers.push(marker);
+
+        // 마커 클릭 시 위치 정보 표시
+        kakao.maps.event.addListener(marker, 'click', function () {
+
+            // 같은 마커 다시 클릭하면 인포윈도우 닫기
+            if (openedMarker === marker) {
+
+                infowindow.close();
+                openedMarker = null;
+
+                return;
+            }
+
+            const content = `
+                <div style="
+                    padding: 12px;
+                    width: 260px;
+                    max-width: 260px;
+                    line-height: 1.6;
+                    white-space: normal;
+                    word-break: break-all;
+                    overflow-wrap: break-word;
+                    box-sizing: border-box;
+                ">
+                    <strong>${location.locationName}</strong><br>
+                    행정동: ${location.adminDong}<br>
+                    도로명주소: ${location.roadAddress}<br>
+                    지번주소: ${location.jibunAddress}
+                </div>
+            `;
+
+            infowindow.setContent(content);
+            infowindow.open(map, marker);
+
+            // 현재 열린 마커 기억
+            openedMarker = marker;
+        });
+    });
+}catch (error){
+    console.error(
+        "폐건전지·폐형광등 데이터를 불러오지 못했습니다.",
+        error
+    );
+    }
+}
+// 5. 초기에 마커 숨기기
+function hideAllMarkers() {
+        //의류수거함 마커 숨기기
+    clothingBinMarkers.forEach(marker => {
+        marker.setMap(null);
+    });
+
+    // 폐건전지 마커 숨기기
+    batteryBinMarkers.forEach(marker => {
+        marker.setMap(null);
+    });
+
+    // 열려있는 정보창도 닫기
+    infowindow.close();
+    openMarker = null;
+}
+//6. 의류수거함 마커만 지도 표시
+function showClothingBinMarkers() {
+        // 기존에 표시된 다른 마커 전부 숨기기
+    hideAllMarkers();
+    //의류수거함 마커는 지도에 띄우기
+    clothingBinMarkers.forEach(marker => {
+        marker.setMap(map);
+    });
+}document
+    .getElementById("clothingBinButton")
+    .addEventListener("click", showClothingBinMarkers);
+
+//7.폐건전지, 폐형광등 수거함 마커만 지도에 표시하기
+function  showBatteryBinMarkers(){
+    // 기존에 표시된 다른 마커 전부 숨기기
+    hideAllMarkers();
+    //폐건전지마커만 지도에 띄우기
+    batteryBinMarkers.forEach(marker =>{
+        marker.setMap(map);
+    });
+}document
+    .getElementById("batteryBinButton")
+    .addEventListener("click", showBatteryBinMarkers);
+
+    // 8. 페이지 시작 시 위 함수들을 실행시킴
     loadClothingBinMarkers();
+    loadBatteryBinMarkers();
 
 </script>
 </body>

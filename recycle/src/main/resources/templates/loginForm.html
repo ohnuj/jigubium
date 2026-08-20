@@ -39,11 +39,21 @@
             <button type="submit" class="btn-primary">로그인</button>
         </form>
 
+        <!-- 카카오 소셜 로그인 연동 링크 버튼 (/oauth/kakao 호출) -->
+        <div>
+            <a th:href="@{/oauth/kakao}" class="btn-kakao">카카오로 로그인</a>
+        </div>
+
+
         <!-- 회원가입 페이지(/signup) 이동 링크 -->
         <p class="auth-footer">
             <a th:href="@{/signup}">회원가입</a>
         </p>
     </div>
 </div>
+<!-- 회원가입 완료 알림창 팝업 스크립트 -->
+<script th:if="${message}">
+    alert('[[${message}]]');
+</script>
 </body>
 </html>
