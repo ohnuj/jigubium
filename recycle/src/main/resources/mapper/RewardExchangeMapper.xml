@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="first_project.recycle.repository.RewardExchangeMapper">
+
+    <insert id="insertExchange"
+            parameterType="first_project.recycle.domain.RewardExchange"
+            useGeneratedKeys="true"
+            keyProperty="exchangeId">
+        INSERT INTO reward_exchange (member_id,reward_id,point_used)
+        VALUES (#{memberId},#{rewardId},#{pointUsed})
+    </insert>
+
+    <select id="findByMemberId" resultType="first_project.recycle.domain.RewardExchange">
+        SELECT
+            re.exchange_id AS exchangeId,
+            re.member_id AS memberId,
+            re.reward_id AS rewardId,
+            re.point_used AS pointUsed,
+            re.exchanged_at AS exchangedAt,
+            r.reward_name AS rewardName,
+            r.image_url AS imageUrl
+        FROM reward_exchange re
+        JOIN reward r ON re.reward_id = r.reward_id
+        WHERE re.member_id = #{memberId}
+        ORDER BY required_point ASC
+    </select>
+</mapper>
