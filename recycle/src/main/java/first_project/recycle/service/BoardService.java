@@ -5,10 +5,7 @@ import first_project.recycle.domain.Board;
 import first_project.recycle.domain.BoardImage;
 import first_project.recycle.domain.BoardType;
 import first_project.recycle.domain.Paging;
-import first_project.recycle.dto.BoardDetailResponse;
-import first_project.recycle.dto.BoardListResponse;
-import first_project.recycle.dto.BoardPageResponse;
-import first_project.recycle.dto.BoardUpdateRequest;
+import first_project.recycle.dto.*;
 import first_project.recycle.repository.BoardImageMapper;
 import first_project.recycle.repository.BoardMapper;
 import lombok.RequiredArgsConstructor;
@@ -58,22 +55,23 @@ public class BoardService {
       */
 
     @Transactional
-    public Long write(Long memberId,
-                      BoardType boardType,
-                      String title,
-                      String content,
+    public Long write(
+                      Long memberId,
+                      BoardCreateRequest request,
                       List<MultipartFile> images){
 
         //게시글 정보 생성
         Board board = new Board();
+
         board.setMemberId(memberId);
-        board.setBoardType(boardType);
-        board.setTitle(title);
-        board.setContent(content);
+        board.setBoardType(request.getBoardType());
+        board.setTitle(request.getTitle());
+        board.setContent(request.getContent());
 
         // 게시글 저장 자동 생성 boarID 가져오기
         // useGeneratedkeys로 생성된 boardId
         boardMapper.insertBoard(board);
+
         Long boardId = board.getBoardId();
 
         // 2. 첨부 이미지가 있으면 순서대로 저장

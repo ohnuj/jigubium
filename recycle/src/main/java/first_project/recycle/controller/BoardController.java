@@ -3,6 +3,7 @@ package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
 import first_project.recycle.domain.BoardType;
+import first_project.recycle.dto.BoardCreateRequest;
 import first_project.recycle.dto.BoardDetailResponse;
 import first_project.recycle.dto.BoardPageResponse;
 import first_project.recycle.dto.BoardUpdateRequest;
@@ -80,9 +81,7 @@ public class BoardController {
      */
     @PostMapping
     public String write(
-            @RequestParam BoardType boardType,
-            @RequestParam String title,
-            @RequestParam String content,
+            @ModelAttribute BoardCreateRequest request,
             @RequestParam(required = false) List<MultipartFile> images,
             HttpSession session) {
 
@@ -94,13 +93,10 @@ public class BoardController {
             return "redirect:/login";
         }
 
-        Long memberId = loginUser.getMemberId();
 
         Long boardId = boardService.write(
-                memberId,
-                boardType,
-                title,
-                content,
+                loginUser.getMemberId(),
+                request,
                 images
         );
 
