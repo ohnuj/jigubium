@@ -17,14 +17,14 @@ public class BoardListResponse {
     private String title;           // 게시글 제목
     private String nickname;        // 작성자 닉네임
     private LocalDateTime createdAt;    // 작성일
-    private LocalDateTime updateAt; // 수정일
+    private LocalDateTime updatedAt; // 수정일
 
     /**
      * 게시글 수정 여부 확인
      */
     public boolean isModified() {
-        return updateAt != null
+        return updatedAt != null
                 && createdAt != null
-                && !updateAt.equals(createdAt);
+                && !updatedAt.equals(createdAt);
     }
 }

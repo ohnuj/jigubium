@@ -1,13 +1,14 @@
 package first_project.recycle.controller;
 
 
+import first_project.recycle.config.SessionConst;
 import first_project.recycle.domain.BoardType;
 import first_project.recycle.dto.BoardDetailResponse;
 import first_project.recycle.dto.BoardPageResponse;
 import first_project.recycle.dto.BoardUpdateRequest;
 import first_project.recycle.service.BoardService;
 import first_project.recycle.domain.User;
-import first_project.recycle.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -57,8 +59,16 @@ public class BoardController {
      * 게시글 작성 페이지
      */
     @GetMapping("/write")
-    public String writeForm(Model model){
+    public String writeForm(Model model,
+                            HttpSession session){
 
+        User loginUser =
+                (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        // 로그인하지 않은 사용자는 로그인 페이지로 이동
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
         // 작성 페이지에서 게시판 타입 선택에 사용
         model.addAttribute("boardTypes", BoardType.values());
 
@@ -73,10 +83,18 @@ public class BoardController {
             @RequestParam BoardType boardType,
             @RequestParam String title,
             @RequestParam String content,
-            @RequestParam(required = false) List<MultipartFile> images) {
+            @RequestParam(required = false) List<MultipartFile> images,
+            HttpSession session) {
 
         // 로그인 기능 연동 전 임시 회원 ID
-        Long memberId = 1L;
+        User loginUser =
+                (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+
+        Long memberId = loginUser.getMemberId();
 
         Long boardId = boardService.write(
                 memberId,
@@ -112,10 +130,27 @@ public class BoardController {
     @GetMapping("/{boardId}/edit")
     public String editForm(
             @PathVariable Long boardId,
-            Model model) {
+            Model model,
+            HttpSession session) {
+
+        User loginUser =
+                (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
 
         BoardDetailResponse board =
                 boardService.getBoard(boardId);
+
+        // 작성자 본인만 수정 페이지 접근 가능
+        if (!Objects.equals(
+                board.getMemberId(),
+                loginUser.getMemberId())) {
+            throw new IllegalArgumentException(
+                    "게시글을 수정할 권한이 없습니다."
+            );
+        }
 
         model.addAttribute("board",board);
         model.addAttribute("boardTypes", BoardType.values());
@@ -129,10 +164,18 @@ public class BoardController {
     @PostMapping("/{boardId}/edit")
     public String updateBoard(
             @PathVariable Long boardId,
-            @ModelAttribute BoardUpdateRequest request) {
+            @ModelAttribute BoardUpdateRequest request,
+            HttpSession session) {
 
         // 로그인 기능 연동 전 임시 회원 ID
-        Long memberId = 1L;
+        User loginUser =
+                (User)  session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+
+        Long memberId = loginUser.getMemberId();
 
         boolean updated =
                 boardService.updateBoard(
@@ -155,10 +198,18 @@ public class BoardController {
      */
     @PostMapping("/{boardId}/delete")
     public String deleteBoard(
-            @PathVariable Long boardId) {
+            @PathVariable Long boardId,
+            HttpSession session) {
 
         // 로그인 연동 전 임시 회원 ID
-        Long memberId = 1L;
+        User loginUser =
+                (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+
+        Long memberId = loginUser.getMemberId();
 
         boolean deleted =
                 boardService.deleteBoard(boardId, memberId);
@@ -171,7 +222,7 @@ public class BoardController {
 
         return "redirect:/boards";
     }
-    
+
 
 
 }
