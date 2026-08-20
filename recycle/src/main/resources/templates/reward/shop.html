@@ -29,6 +29,13 @@
                 <span th:text="${currentPoint}">0</span>P
             </strong>
         </div>
+        <div th:if="${message}">
+            <p th:text="${message}"></p>
+        </div>
+
+        <div th:if="${eMessage}">
+            <p th:text="${eMessage}"></p>
+        </div>
         <div>
             <div th:each="reward : ${rewards}">
 

@@ -27,6 +27,8 @@ public class BoardController {
 
 
 
+
+
     /**
      * 게시글 목록 조회
      * 검색, 타입 분류, 페이징을 함께 처리

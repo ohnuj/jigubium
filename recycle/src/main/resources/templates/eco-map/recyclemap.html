@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>우리동네 재활용 지도</title>
+</head>
+
+<!--전체 흐름
+
+공공데이터
+↓
+Spring Service
+↓
+ecoLocation
+↓
+Controller
+↓
+JSON
+↓
+JavaScript fetch
+↓
+마커 생성
+↓
+종류별 배열 저장
+↓
+버튼 클릭
+↓
+선택한 마커만 지도에 표시
+-->
+<body>
+<div>
+    <button id="allMarkersButton">전체보기</button>
+    <button id="clothingBinButton">의류수거함</button>
+    <button id="batteryBinButton">폐건전지·폐형광등 수거함</button>
+    <button id="medicineBinButton">폐의약품 수거함</button>
+    <button id="wasteElectronicsButton">폐가전/폐휴대폰 수거장소</button>
+</div>
+<div id="map" style="width:720px;height:640px;"></div>
+<!--카카오맵 api 인증키 넣기-->
+<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9c94fcf381441f9b0d24e070ea351ee2&libraries=clusterer"></script>
+<!--1.카카오맵 기본 설정-->
+<script>
+<!--    카카오맵_표시할_html요소_가져오기-->
+    var container = document.getElementById('map');
+    // 지도 옵션
+    var options = {
+        // 지도 시작 중심 좌표(현재 광화문임)
+        center: new kakao.maps.LatLng(37.5728, 126.9769),
+        level: 3 // 지도 확대 레벨
+    };
+    // 카카오 지도 생성자 container와 options 사용하기
+    var map = new kakao.maps.Map(container, options);
+
+    // 1-1 마커 클러스터 생성
+const clusterer = new kakao.maps.MarkerClusterer({
+    map: map,
+    averageCenter: true,
+    minLevel: 5
+});
+
+// 1-2 사용자 현재 위치 가져오기
+if (navigator.geolocation) {
+
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            const userPosition = new kakao.maps.LatLng(
+                latitude,
+                longitude
+            );
+
+            // 지도 중심을 사용자 위치로 이동
+            map.setCenter(userPosition);
+
+            // 사용자 현재 위치용 마커 이미지
+            const userMarkerImage = new kakao.maps.MarkerImage(
+                "/images/user-marker.png",
+                new kakao.maps.Size(35, 40)
+            );
+
+            const userMarker = new kakao.maps.Marker({
+                position: userPosition,
+                map: map,
+                image: userMarkerImage
+            });
+        },
+
+        function(error) {
+            console.log(
+                "사용자 위치를 가져오지 못했습니다.",
+                error
+            );
+        }
+    );
+
+} else {
+
+    console.log(
+        "이 브라우저에서는 위치 정보를 지원하지 않습니다."
+    );
+}
+
+    // 2. 마커 공통 설정
+    // 마커 정보 보여주는 정보창
+    const infowindow = new kakao.maps.InfoWindow({
+        zIndex: 1
+    });
+    let openedMarker = null;
+    // 의류수거함 마커들 저장할 배열
+    let clothingBinMarkers = [];
+
+    // 폐건전지 수거함 마커 저장할 배열
+    let batteryBinMarkers = [];
+
+    // 폐의약품 수거함 마커들을 저장할 배열
+    let medicineBinMarkers = [];
+    // 폐가전 수거장소 마커들 저장할 배열
+    let wasteElectronicsMarkers = [];
+
+    // 3. 의류수거함 데이터 불러오고 지도에 마커 생성
+    async function loadClothingBinMarkers() {
+    try{
+        const response = await fetch("/api/clothing-bins");
+        //정상 작동안되면 error 전달하기
+        if(!response.ok) {
+        throw new Error(
+            "의류수거함 API 호출 실패: " + response.status
+        );
+        }
+
+
+        // json데이터를 javascript 객체로 변환
+        const locations = await response.json();
+        // 콘솔에 데이터 확인용 로그 띄우기
+        console.log("받은 데이터:", locations);
+        console.log("데이터 개수:", locations.length);
+
+        //의류수거함 데이터를 하나씩 반복
+        locations.forEach(location => {
+
+
+            // 만일 위도 경도가 없는 데이터 있으면 무시하기
+            if (
+                location.latitude == null ||
+                location.longitude == null
+            ) {
+                return;
+            }
+
+            // 위도/경도를 카카오맵용 좌표 객체로 변환
+            const position = new kakao.maps.LatLng(
+                location.latitude, // 위도
+                location.longitude // 경도
+            );
+
+            // 마커 생성하기
+            const marker = new kakao.maps.Marker({
+                position: position
+            });
+
+            // 마커를 배열에 저장
+            clothingBinMarkers.push(marker);
+
+            //마커 클릭 시 주소 정보 띄우기
+            kakao.maps.event.addListener(marker, 'click', function (){
+
+                //마커 다시 클릭시
+                if (openedMarker === marker){
+
+                    infowindow.close();
+                    openedMarker = null;
+
+                return;}
+
+                // 수거함 장소 정보
+                const content = `
+                    <div style="
+                        padding: 12px;
+                        width: 260px;
+                        max-width: 260px;
+                        line-height: 1.6;
+                        white-space: normal;
+                        word-break: break-all;
+                        overflow-wrap: break-word;
+                        box-sizing: border-box;
+                    ">
+<!-- 주소 길이가 어떻게 되든 박스 안으로 집어넣기-->
+                <strong>${location.locationName}</strong><br>
+                행정동: ${location.adminDong}<br>
+                도로명주소: ${location.roadAddress}<br>
+                지번주소: ${location.jibunAddress}
+            </div>
+        `;
+                // 정보창에 내용 설정 후 표시하기
+                infowindow.setContent(content);
+                infowindow.open(map, marker);
+
+                // 현재 열린 마커 기억
+                openedMarker = marker;
+            });
+
+        });
+
+
+    }catch (error) {
+    //에러 전달받을 시 다음을 페이지에 띄움
+    console.error(
+        "의류수거함 데이터를 불러오지 못했습니다.",
+        error
+    );
+    }
+}
+
+    //4. 폐건전지 데이터 불러오기
+async function loadBatteryBinMarkers() {
+    try{
+    // 폐건전지 수거함용 노란색 마커 이미지
+    const batteryMarkerImage = new kakao.maps.MarkerImage(
+        "/images/battery-marker.png",
+        new kakao.maps.Size(35, 40)
+    );
+    const response = await fetch("/api/battery-bins");
+
+    //정상 작동 아니면 에러 전달하기
+        if(!response.ok) {
+        throw new Error(
+            "폐건전지·폐형광등 API 호출 실패: " + response.status
+        );
+        }
+
+    // 테스트용 응답 상태 확인
+    console.log("폐건전지 응답 상태:", response.status);
+
+    // JSON 데이터를 javascript 객체로 변환
+    const locations = await response.json();
+
+    // 데이터 확인용 로그
+    console.log("폐건전지 데이터:", locations);
+    console.log("폐건전지 데이터 개수:", locations.length);
+
+    // 폐건전지 수거함 데이터를 하나씩 반복
+    locations.forEach(location => {
+
+        // 위도/경도 없는 데이터는 무시
+        if (
+            location.latitude == null ||
+            location.longitude == null
+        ) {
+            return;
+        }
+
+        // 위도/경도를 카카오맵 좌표 객체로 변환
+        const position = new kakao.maps.LatLng(
+            location.latitude,
+            location.longitude
+        );
+
+        // 마커 생성
+        const marker = new kakao.maps.Marker({
+            position: position,
+            image: batteryMarkerImage
+        });
+
+        // 폐건전지 마커 배열에 저장
+        batteryBinMarkers.push(marker);
+
+        // 마커 클릭 시 위치 정보 표시
+        kakao.maps.event.addListener(marker, 'click', function () {
+
+            // 같은 마커 다시 클릭하면 인포윈도우 닫기
+            if (openedMarker === marker) {
+
+                infowindow.close();
+                openedMarker = null;
+
+                return;
+            }
+
+            const content = `
+                <div style="
+                    padding: 12px;
+                    width: 260px;
+                    max-width: 260px;
+                    line-height: 1.6;
+                    white-space: normal;
+                    word-break: break-all;
+                    overflow-wrap: break-word;
+                    box-sizing: border-box;
+                ">
+                    <strong>${location.locationName}</strong><br>
+                    행정동: ${location.adminDong}<br>
+                    도로명주소: ${location.roadAddress}<br>
+                    지번주소: ${location.jibunAddress}
+                </div>
+            `;
+
+            infowindow.setContent(content);
+            infowindow.open(map, marker);
+
+            // 현재 열린 마커 기억
+            openedMarker = marker;
+        });
+    });
+}catch (error){
+    console.error(
+        "폐건전지·폐형광등 데이터를 불러오지 못했습니다.",
+        error
+    );
+    }
+}
+//5. 폐의약품 마커
+async function loadMedicineBinMarkers(){
+        try{
+            // 폐의약품 전용 마커 이미지
+            const medicineMarkerImage = new kakao.maps.MarkerImage(
+                "/images/medicine-marker.png",
+                new kakao.maps.Size(35, 40)
+            );
+            //DB조회 api 호출
+            const response = await fetch("/api/medicine-bins");
+
+            // 오류 발생시 에러 전달
+            if (!response.ok) {
+                throw new Error(
+                    "폐의약품 수거함 API 호출 실패: " + response.status
+                );
+            }
+            //json 데이터를 자바 객체로 변환
+            const locations = await response.json();
+
+            console.log("폐의약품 데이터: ", locations);
+            console.log("페의약품 데이터 개수", locations.length);
+
+            //폐의약품 데이터 하나씩 반복
+            locations.forEach(location => {
+                //위도 경도 없으면 무시
+                if(
+                    location.latitude == null ||
+                    location.longitude == null
+                ){
+                    return;
+                }
+                //위도 경도 있으면 카카오맵 좌표 객체로 변환
+                const position = new kakao.maps.LatLng(
+                    location.latitude,
+                    location.longitude
+                );
+
+                //폐의약품 마커 생성
+                const marker = new kakao.maps.Marker({
+                    position: position,
+                    image: medicineMarkerImage
+                });
+                //마커들 배열에 저장
+                medicineBinMarkers.push(marker);
+                console.log(
+                    "폐의약품 마커 저장됨:",
+                    medicineBinMarkers.length
+                );
+
+                //마커 클릭 시 위치 정보 표시
+                kakao.maps.event.addListener(marker, 'click', function(){
+                    //마커 다시 클릭시 닫기
+                    if(openedMarker === marker) {
+                        infowindow.close();
+                        openedMarker = null;
+                        return;
+                    }
+
+                    const content = `
+                    <div style="
+                        padding: 12px;
+                        width: 260px;
+                        max-width: 260px;
+                        line-height: 1.6;
+                        white-space: normal;
+                        word-break: break-all;
+                        overflow-wrap: break-word;
+                        box-sizing: border-box;
+                    ">
+                        <strong>${location.locationName}</strong><br>
+                        도로명주소: ${location.roadAddress}<br>
+                        지번주소: ${location.jibunAddress}
+                    </div>
+                `;
+                    infowindow.setContent(content);
+                    infowindow.open(map, marker);
+                    openedMarker = marker;
+                });
+            });
+
+        }catch (error){
+            console.error(
+                "폐의약품 수거함 데이터를 불러오지 못했습니다.",
+                error
+            );
+        }
+}
+// 6. 폐가전 수거함 마커
+async function loadWasteElectronicsMarkers() {
+    try {
+        // 폐가전 수거함용 마커 이미지
+        const wasteElectronicsMarkerImage =
+            new kakao.maps.MarkerImage(
+                "/images/waste-electronics-marker.png",
+                new kakao.maps.Size(35, 40)
+            );
+
+        // 폐가전 수거함 DB 조회 API 호출
+        const response = await fetch("/api/waste-electronics");
+
+        if (!response.ok) {
+            throw new Error(
+                "폐가전 수거함 API 호출 실패: " + response.status
+            );
+        }
+        const locations = await response.json();
+
+        console.log("폐가전 데이터:", locations);
+        console.log("폐가전 데이터 개수:", locations.length);
+
+        locations.forEach(location => {
+
+            // 좌표 없으면 무시
+            if (
+                location.latitude == null ||
+                location.longitude == null
+            ) {
+                return;
+            }
+            const position = new kakao.maps.LatLng(
+                location.latitude,
+                location.longitude
+            );
+            // 일단 기본 카카오 마커 사용
+            const marker = new kakao.maps.Marker({
+                position: position,
+                image: wasteElectronicsMarkerImage
+            });
+            // 폐가전 마커 배열에 저장
+            wasteElectronicsMarkers.push(marker);
+            // 마커 클릭 시 위치 정보 표시
+            kakao.maps.event.addListener(
+                marker,
+                'click',
+                function () {
+                    // 같은 마커 다시 클릭하면 닫기
+                    if (openedMarker === marker) {
+                        infowindow.close();
+                        openedMarker = null;
+                        return;
+                    }
+                    const content = `
+                        <div style="
+                            padding: 12px;
+                            width: 260px;
+                            max-width: 260px;
+                            line-height: 1.6;
+                            white-space: normal;
+                            word-break: break-all;
+                            overflow-wrap: break-word;
+                            box-sizing: border-box;
+                        ">
+                            <strong>${location.locationName}</strong><br>
+                            도로명주소: ${location.roadAddress}<br>
+                            지번주소: ${location.jibunAddress ?? "-"}
+                        </div>
+                    `;
+                    infowindow.setContent(content);
+                    infowindow.open(map, marker);
+
+                    openedMarker = marker;
+                }
+            );
+        });
+    } catch (error) {
+        console.error(
+            "폐가전 수거함 데이터를 불러오지 못했습니다.",
+            error
+        );
+    }
+}
+
+// 7. 초기에 마커 숨기기
+function hideAllMarkers() {
+
+    // 클러스터에 들어간 마커 전부 제거
+    clusterer.clear();
+
+        //의류수거함 마커 숨기기
+    clothingBinMarkers.forEach(marker => {
+        marker.setMap(null);
+    });
+
+    // 폐건전지 마커 숨기기
+    batteryBinMarkers.forEach(marker => {
+        marker.setMap(null);
+    });
+    // 폐의약품 수거함 마커 숨기기
+    medicineBinMarkers.forEach(marker => {
+        marker.setMap(null);
+    });
+    // 폐가전 수거함 마커 숨기기
+    wasteElectronicsMarkers.forEach(marker => {
+        marker.setMap(null);
+    });
+
+    // 열려있는 정보창도 닫기
+    infowindow.close();
+    openMarker = null;
+}
+//8. 의류수거함 마커만 지도 표시
+function showClothingBinMarkers() {
+    hideAllMarkers();
+
+    clusterer.addMarkers(clothingBinMarkers);
+
+}document // 버튼 클릭시 해당 마커만 표시
+    .getElementById("clothingBinButton")
+    .addEventListener("click", showClothingBinMarkers);
+
+//9.폐건전지, 폐형광등 수거함 마커만 지도에 표시하기
+function  showBatteryBinMarkers(){
+    // 기존에 표시된 다른 마커 전부 숨기기
+    hideAllMarkers();
+    //폐건전지마커만 지도에 띄우기
+    clusterer.addMarkers(batteryBinMarkers);
+}document // 버튼 클릭시 해당 마커만 표시
+    .getElementById("batteryBinButton")
+    .addEventListener("click", showBatteryBinMarkers);
+
+//10. 폐의약품 마커만 지도에 표시하기
+function showMedicineBinMarkers() {
+
+    console.log(
+        "폐의약품 버튼 클릭, 마커 개수:",
+        medicineBinMarkers.length
+    );
+
+    // 기존에 표시된 모든 마커 숨기기
+    hideAllMarkers();
+
+    // 폐의약품 수거함 마커만 표시
+    clusterer.addMarkers(medicineBinMarkers);
+}document // 버튼 클릭시 해당 마커만 표시
+    .getElementById("medicineBinButton")
+    .addEventListener("click", showMedicineBinMarkers);
+
+// 11.폐가전 수거함 마커만 표시
+function showWasteElectronicsMarkers() {
+
+    hideAllMarkers();
+
+    clusterer.addMarkers(
+        wasteElectronicsMarkers
+    );
+}document
+    .getElementById("wasteElectronicsButton")
+    .addEventListener(
+        "click",
+        showWasteElectronicsMarkers
+    );
+
+//12. 모든 마커 띄우기
+// 모든 종류의 마커를 지도에 표시
+function showAllMarkers() {
+
+    // 일단 기존 마커 전부 숨기기
+    hideAllMarkers();
+
+    clusterer.addMarkers(clothingBinMarkers);
+    clusterer.addMarkers(batteryBinMarkers);
+    clusterer.addMarkers(medicineBinMarkers);
+    clusterer.addMarkers(wasteElectronicsMarkers);
+}// 전체보기 버튼 클릭 시 모든 마커 표시
+document
+    .getElementById("allMarkersButton")
+    .addEventListener("click", showAllMarkers);
+
+    // 13. 페이지 시작 시 위 함수들을 실행시킴
+    loadClothingBinMarkers();
+    loadBatteryBinMarkers();
+    loadMedicineBinMarkers();
+    loadWasteElectronicsMarkers();
+
+</script>
+</body>
+</html>
