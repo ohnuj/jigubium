@@ -11,6 +11,7 @@ public class EcoPointHistory {
     private Integer pointAmount;
     private Integer balanceAfter;
     private String pointType;
+    private String referenceType;
     private Long referenceId;
     private LocalDateTime createdAt;
 }
