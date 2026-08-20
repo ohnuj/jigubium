@@ -10,17 +10,19 @@
 <nav>
     <div>
         <a th:href="@{/}">Home</a>
-            <th:block th:unless="${session.checkLogin}">
+
+        <div>
+            <th:block>
                 <a th:href="@{/login}">로그인</a>
                 <a th:href="@{/signup}">회원가입</a>
             </th:block>
 
-            <th:block th:if="${session.checkLogin}">
+            <th:block>
                 <a th:href="@{/mypage}">마이페이지</a>
                 <a th:href="@{/logout}">로그아웃</a>
-                <a th:href="@{/reward}">리워드 상점</a>
             </th:block>
         </div>
+    </div>
 </nav>
 
 <main>
@@ -78,7 +80,7 @@
             <tr>
                 <td colspan="3">
                     <h3>
-                        <a th:href="@{/boards}">
+                        <a th:href="@{/list}">
                             커뮤니티
                         </a>
                     </h3>
@@ -107,7 +109,7 @@
                 </td>
                 <!-- 제목 -->
                 <td>
-                    <a th:href="@{/boards/{id}(id=${board.boardId})}"
+                    <a th:href="@{/board/{id}(id=${board.boardId})}"
                        th:text="${board.title}">
                         게시글 제목
                     </a>
@@ -125,8 +127,15 @@
         </table>
     </div>
 </main>
-<script th:if="${message}">
-    alert('[[${message}]]');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('updated') === 'true') {
+        alert('회원정보가 성공적으로 수정되었습니다.');
+        // 주소창에서 ?updated=true 파라미터 깔끔하게 제거
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    });
 </script>
 </body>
 </html>
