@@ -21,11 +21,12 @@
     </div>
 </nav>
 <div style="display: flex; gap: 40px;">
-    <!-- 좌측 3가지 탭 메뉴 (1번 탭 강조) -->
-    <aside>
-        <ul>
+    <!-- 좌측 4가지 탭 메뉴 (2번 탭 강조) -->
+    <aside style="width: 180px;">
+        <ul style="list-style: none; padding: 0; line-height: 2.2;">
+            <li><a th:href="@{/mypage/myinfo}">내 정보</a></li>
             <li style="font-weight: bold;"><a th:href="@{/mypage/memberinfoconfirm}">회원정보 수정</a></li>
-            <li><a th:href="@{/mypage/memberactivity}">회원활동 조회</a></li>
+            <li><a th:href="@{/mypage/memberactivity}">나의 활동</a></li>
             <li><a th:href="@{/mypage/memberdelete}">회원 탈퇴</a></li>
         </ul>
     </aside>
@@ -35,25 +36,25 @@
         <h2>회원정보 수정</h2>
 
         <form th:action="@{/mypage/updatememberinfo}" method="post" id="updateForm">
-            <!-- 이메일 (수정 불가) -->
+            <!-- 이메일 (조회 전용, 수정 불가) -->
             <div style="margin-bottom: 10px;">
                 <label for="email">이메일</label><br>
-                <input type="text" id="email" th:value="${member.email}" readonly style="background-color: #e9ecef;">
+                <input type="text" id="email" th:value="${member != null ? member.email : ''}" readonly style="background-color: #e9ecef;">
             </div>
 
             <!-- 닉네임 -->
             <div style="margin-bottom: 10px;">
                 <label for="nickname">닉네임</label><br>
-                <input type="text" id="nickname" name="nickname" th:value="${member.nickname}" required>
+                <input type="text" id="nickname" name="nickname" th:value="${member != null ? member.nickname : ''}" required>
             </div>
 
-            <!-- 새 비밀번호 (MemberInfo 필드명: newpassword) -->
+            <!-- 새 비밀번호 -->
             <div style="margin-bottom: 10px;">
                 <label for="newpassword">새 비밀번호</label><br>
                 <input type="password" id="newpassword" name="newpassword" placeholder="변경할 비밀번호 (미변경 시 공란)">
             </div>
 
-            <!-- 새 비밀번호 확인 (MemberInfo 필드명: newpasswordconfirm) -->
+            <!-- 새 비밀번호 확인 -->
             <div style="margin-bottom: 10px;">
                 <label for="newpasswordconfirm">새 비밀번호 확인</label><br>
                 <input type="password" id="newpasswordconfirm" name="newpasswordconfirm" placeholder="새 비밀번호 재입력">
@@ -69,6 +70,7 @@
         </form>
     </main>
 </div>
+<<<<<<<< HEAD:recycle/src/main/resources/templates/mypage/MemberInfoConfirm.html
 
 
 <script>
@@ -93,5 +95,7 @@
         }
     });
 </script>
+========
+>>>>>>>> origin/main:recycle/src/main/resources/templates/mypage/updateMemberInfo.html
 </body>
 </html>

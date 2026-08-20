@@ -16,9 +16,6 @@
     <div class="auth-card">
         <h1 class="logo">지구비우기</h1>
 
-        <!-- 회원가입 성공 등 RedirectAttributes(FlashAttribute)나 Model로 전달된 메시지가 있을 때만 노출 -->
-        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
-
         <!-- 로그인 실패 시 컨트롤러의 Model에 담긴 error 메시지가 있을 때만 노출 -->
         <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
 
@@ -42,7 +39,7 @@
 
         <!-- 카카오 소셜 로그인 연동 링크 버튼 (/oauth/kakao 호출) -->
         <div>
-            <a th:href="@{/oauth/kakao}" class="btn-kakao">카카오로 로그인</a>
+            <a th:href="@{/oauth/kakao}" class="btn-kakao">카카오계정으로 로그인</a>
         </div>
 
 

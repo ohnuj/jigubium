@@ -35,11 +35,23 @@
             </div>
             <!-- 비밀번호 입력 -> User 객체의 password 필드에 매핑 (마스킹 처리) -->
             <div>
-                <input type="password" name="password" placeholder="비밀번호" required>
+                <input type="password" name="password" id="password" placeholder="비밀번호" required>
             </div>
+            <div>
+                <input type="password" id="passwordConfirm"
+                       placeholder="비밀번호 확인" required>
+                <!-- 실시간 일치 여부 안내 텍스트 -->
+                <div id="pwCheckMsg" class="pw-msg"></div>
+            </div>
+
             <!-- 폼 제출 버튼 -> 클릭 시 입력 데이터 전송 -->
             <button type="submit" class="btn-primary">가입하기</button>
         </form>
+
+        <!-- 카카오 소셜 로그인 연동 링크 버튼 (/oauth/kakao 호출) -->
+        <div>
+            <a th:href="@{/oauth/kakao}" class="btn-kakao">카카오계정으로 가입하기</a>
+        </div>
 
         <!-- 로그인 페이지(/login) 이동 링크 -->
         <p class="auth-footer">
@@ -47,5 +59,43 @@
         </p>
     </div>
 </div>
+<script>
+    const signupForm = document.querySelector('form');
+    const pwInput = document.getElementById('password');
+    const pwConfirmInput = document.getElementById('passwordConfirm');
+    const pwCheckMsg = document.getElementById('pwCheckMsg');
+
+    // 1. 입력 시 실시간 검사 문구 노출
+    function validatePasswordMatch() {
+        const pw = pwInput.value;
+        const pwConfirm = pwConfirmInput.value;
+
+        if (!pwConfirm) {
+            pwCheckMsg.style.display = 'none';
+            return;
+        }
+
+        pwCheckMsg.style.display = 'block';
+        if (pw === pwConfirm) {
+            pwCheckMsg.textContent = '비밀번호가 일치합니다.';
+            pwCheckMsg.style.color = '#2b8a3e'; // 초록색
+        } else {
+            pwCheckMsg.textContent = '비밀번호가 일치하지 않습니다.';
+            pwCheckMsg.style.color = '#e03131'; // 빨간색
+        }
+    }
+
+    pwInput.addEventListener('input', validatePasswordMatch);
+    pwConfirmInput.addEventListener('input', validatePasswordMatch);
+
+    // 2. 가입하기 버튼 클릭(제출) 시 불일치하면 전송 차단
+    signupForm.addEventListener('submit', function (e) {
+        if (pwInput.value !== pwConfirmInput.value) {
+            e.preventDefault(); // 전송 즉시 차단
+            alert('비밀번호가 일치하지 않습니다. 다시 확인해주세요.');
+            pwConfirmInput.focus();
+        }
+    });
+</script>
 </body>
 </html>
