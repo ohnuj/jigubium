@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class BoardService {
     private final BoardMapper boardMapper;
     private final BoardImageMapper boardImageMapper;
     private final FileStorageService fileStorageService;
+    private final CommentService commentService;
 
     // 메인페이지 최신 게시글 조회
     public List<BoardListResponse> getRecentBoards() {
@@ -151,13 +153,18 @@ public class BoardService {
                 boardMapper.findById(boardId);
 
         if (board == null
-                || !board.getMemberId().equals(memberId)) {
+                || !Objects.equals(
+                        board.getMemberId(),
+                        memberId)) {
             return false;
         }
 
         // 실제 파일 삭제를 위해 이미지 목록을 먼저 조회
         List<BoardImage> images =
                 boardImageMapper.findByBoardId(boardId);
+
+        // 댓글 삭제
+        commentService.deleteByBoardId(boardId);
 
         // 이미지 DB 데이터 먼저 삭제
         boardImageMapper.deleteByBoardId(boardId);

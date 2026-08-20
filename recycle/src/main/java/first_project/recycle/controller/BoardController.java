@@ -9,6 +9,7 @@ import first_project.recycle.dto.BoardPageResponse;
 import first_project.recycle.dto.BoardUpdateRequest;
 import first_project.recycle.service.BoardService;
 import first_project.recycle.domain.User;
+import first_project.recycle.service.CommentService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,7 @@ import java.util.Objects;
 public class BoardController {
 
     private final BoardService boardService;
+    private final CommentService commentService;
 
 
 
@@ -110,12 +112,25 @@ public class BoardController {
     @GetMapping("/{boardId}")
     public String boardDetail(
             @PathVariable Long boardId,
-            Model model) {
+            Model model,
+            HttpSession session) {
 
+        // 게시글 상세 정보
         model.addAttribute(
                 "board",
                 boardService.getBoard(boardId)
         );
+
+        // 해당 게시글의 댓글 목록
+        model.addAttribute(
+                "comments",
+                commentService.getComments(boardId)
+        );
+
+        User loginUser =
+                (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        model.addAttribute("loginUser", loginUser);
 
         return "board/detail";
     }
