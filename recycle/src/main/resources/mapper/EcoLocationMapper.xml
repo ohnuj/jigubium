@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="first_project.recycle.mapper.EcoLocationMapper">
+
+    <insert id="insertEcoLocation"
+            parameterType="first_project.recycle.domain.ecoLocation">
+
+        INSERT INTO eco_location (
+        location_name,
+        location_type,
+        admin_dong,
+        road_address,
+        jibun_address,
+        latitude,
+        longitude
+        )
+        VALUES (
+        #{locationName},
+        #{locationType},
+        #{adminDong},
+        #{roadAddress},
+        #{jibunAddress},
+        #{latitude},
+        #{longitude}
+        )
+
+    </insert>
+    <select id="countByRoadAddressAndLocationType"
+            resultType="int">
+
+        SELECT COUNT(*)
+        FROM eco_location
+        WHERE road_address = #{roadAddress}
+        AND location_type = #{locationType}
+
+    </select>
+
+</mapper>

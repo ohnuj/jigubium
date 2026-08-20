@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class RewardExchange {
-    private Long exchangerId;
+    private Long exchangeId;
     private Long memberId;
     private Long rewardId;
     private Integer pointUsed;
