@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="first_project.recycle.repository.MypageMapper">
+
+    <!-- 1. MypageMapper.findByEmail(email)과 매핑 -->
+    <select id="findByEmail" resultType="first_project.recycle.domain.Member">
+        SELECT *
+        FROM member
+        WHERE email = #{email}
+    </select>
+
+    <!--회원 정보(닉네임, 비밀번호) 수정 쿼리 -->
+    <!-- MypageMapper 인터페이스의 updateMember(@Param("email") String email, @Param("info") MemberInfo info)와 매핑 -->
+    <update id="updateMember">
+        UPDATE member
+        <set>
+            <!-- 닉네임 변경 -->
+            nickname = #{info.nickname},
+            <!--
+            동적 SQL (<if>):
+            새비밀번호 입력 안하면 비번은 변경 안하는걸로 간주-->
+            <if test="info.newpassword != null and info.newpassword != ''">
+                password = #{info.newpassword},
+            </if>
+        </set>
+        WHERE email = #{email}
+    </update>
+
+    <!-- 수정 대상 지정: @Param("email")로 전달된 현재 로그인 사용자의 이메일 조건 -->
+    <delete id="deleteByEmail">
+        DELETE FROM member WHERE email = #{email}
+    </delete>
+
+</mapper>
