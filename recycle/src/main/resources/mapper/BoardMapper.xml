@@ -134,4 +134,11 @@
         WHERE board_id = #{boardId}
             AND member_id = #{memberId}
     </update>
+
+    <delete id="deleteBoard">
+
+        DELETE FROM board
+        WHERE board_id = #{boardId}
+            AND member_id = #{memberId}
+    </delete>
 </mapper>

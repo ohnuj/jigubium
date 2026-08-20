@@ -150,5 +150,28 @@ public class BoardController {
         return "redirect:/boards/" + boardId;
     }
 
+    /**
+     * 게시글 삭제
+     */
+    @PostMapping("/{boardId}/delete")
+    public String deleteBoard(
+            @PathVariable Long boardId) {
+
+        // 로그인 연동 전 임시 회원 ID
+        Long memberId = 1L;
+
+        boolean deleted =
+                boardService.deleteBoard(boardId, memberId);
+
+        if (!deleted) {
+            throw new IllegalArgumentException(
+                    "게시글을 삭제할 권한이 없습니다."
+            );
+        }
+
+        return "redirect:/boards";
+    }
+    
+
 
 }

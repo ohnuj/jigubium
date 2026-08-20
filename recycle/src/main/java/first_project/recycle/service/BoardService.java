@@ -139,6 +139,47 @@ public class BoardService {
         return  result > 0;
     }
 
+    /**
+     * 게시글 삭제
+     * 작성자 본인의 글만 삭제하며 이미지 파일도 함께 정리한다
+     */
+    @Transactional
+    public boolean deleteBoard(
+            Long boardId,
+            Long memberId) {
+
+        // 게시글 및 작성자 확인
+        BoardDetailResponse board =
+                boardMapper.findById(boardId);
+
+        if (board == null
+                || !board.getMemberId().equals(memberId)) {
+            return false;
+        }
+
+        // 실제 파일 삭제를 위해 이미지 목록을 먼저 조회
+        List<BoardImage> images =
+                boardImageMapper.findByBoardId(boardId);
+
+        // 이미지 DB 데이터 먼저 삭제
+        boardImageMapper.deleteByBoardId(boardId);
+
+        // 게시글 삭제
+        int result =
+                boardMapper.deleteBoard(boardId, memberId);
+
+        if (result == 0) {
+            return false;
+        }
+
+        // 서버에 저장된 실제 이미지 파일 삭제
+        for (BoardImage image : images) {
+            fileStorageService.delete(image.getImageUrl());
+        }
+
+        return true;
+    }
+
 
 
 

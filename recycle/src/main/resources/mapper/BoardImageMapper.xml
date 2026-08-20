@@ -31,4 +31,10 @@
         WHERE board_id = #{boardId}
         ORDER BY sort_order
     </select>
+
+    <delete id="deleteByBoardId">
+
+        DELETE FROM board_image
+        WHERE board_id = #{boardId}
+    </delete>
 </mapper>
