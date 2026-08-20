@@ -72,7 +72,7 @@
                 b.board_type,
                 b.title,
                 m.nickname,
-                b.created_at
+                b.created_at,
                 b.updated_at
 
             FROM board b

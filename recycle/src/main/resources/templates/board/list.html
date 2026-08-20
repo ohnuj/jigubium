@@ -111,7 +111,7 @@
 
     <!-- 이전 -->
     <a th:if="${paging.page > 1}"
-       th:href="@{/bords(
+       th:href="@{/boards(
             page=${paging.page - 1},
             keyword=${keyword},
             boardType=${boardType}
