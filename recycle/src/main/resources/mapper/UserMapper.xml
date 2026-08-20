@@ -1,41 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- MyBatis 매퍼 XML 문서 형식 정의(DTD) -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- 연결할 Java 매퍼 인터페이스의 풀 패키지 경로 지정 -->
+<!-- UserMapper 인터페이스와 매핑 -->
 <mapper namespace="first_project.recycle.mapper.UserMapper">
 
-    <!-- 회원 등록 (INSERT) -->
-    <!-- parameterType: 파라미터로 넘겨받을 domain 클래스 지정 -->
-    <!-- useGeneratedKeys="true": DB의 Auto Increment로 생성된 PK 값을 가져오도록 설정 -->
-    <!-- keyProperty="memberId": 생성된 PK 값을 User 객체의 memberId 필드에 자동으로 주입 -->
+    <!-- [일반 회원가입] provider='LOCAL', role='USER', point=100은 DB 기본값으로 자동 저장 -->
     <insert id="insert" parameterType="first_project.recycle.domain.User" useGeneratedKeys="true" keyProperty="memberId">
         INSERT INTO member (email, password, name, nickname)
         VALUES (#{email}, #{password}, #{name}, #{nickname})
     </insert>
 
-    <!-- 로그인 검증용 회원 조회 (SELECT) -->
-    <!-- resultType: 조회된 레코드를 매핑하여 반환할 자바 객체 타입 -->
-    <!-- map-underscore-to-camel-case 설정 시 member_id -> memberId, created_at -> createdAt 자동 매핑 -->
+    <!-- [일반 로그인] 이메일 일치 회원 조회 (비밀번호 검증 및 세션 정보/보유 포인트 확인용) -->
     <select id="findByEmail" resultType="first_project.recycle.domain.User">
-        SELECT member_id,
-               name,
-               email,
-               password,
-               nickname,
-               role,
-               created_at
+        SELECT member_id, password, nickname, role, point
         FROM member
         WHERE email = #{email}
     </select>
 
-    <!-- 이메일 중복 확인 (SELECT COUNT) -->
-    <!-- resultType="int": 조회된 개수(COUNT)를 정수형으로 반환 -->
+    <!-- [이메일 중복 체크] 가입 시 동일한 이메일 존재 여부 확인 (0: 사용 가능, 1 이상: 중복) -->
     <select id="countByEmail" resultType="int">
         SELECT COUNT(*)
         FROM member
         WHERE email = #{email}
     </select>
+
+    <!-- [소셜 로그인] 소셜 식별값(provider, providerId)으로 기존 가입 여부 및 회원 전체 정보 조회 -->
+    <select id="findByProviderAndProviderId" resultType="first_project.recycle.domain.User">
+        SELECT member_id,
+               nickname,
+               email,
+               provider,
+               provider_id,
+               name,
+               role,
+               point
+        FROM member
+        WHERE provider = #{provider}
+          AND provider_id = #{providerId}
+    </select>
+
+    <!-- [소셜 신규 가입] 비밀번호 없이 소셜 연동 정보 저장 (role='USER', point=100은 DB 기본값 자동 적용) -->
+    <insert id="insertOAuthUser" parameterType="first_project.recycle.domain.User" useGeneratedKeys="true" keyProperty="memberId">
+        INSERT INTO member (email, name, nickname, provider, provider_id)
+        VALUES (#{email}, #{name}, #{nickname}, #{provider}, #{providerId})
+    </insert>
 
 </mapper>
