@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="first_project.recycle.repository.EcoPointHistoryMapper">
+
+    <insert id="insertPointHistory"
+            parameterType="first_project.recycle.domain.EcoPointHistory">
+        INSERT INTO eco_point_history
+            (member_id,
+             point_amount,
+             balance_after,
+             point_type,
+             reference_type,
+             reference_id)
+        VALUES
+            (#{memberId},
+             #{pointAmount},
+             #{balanceAfter},
+             #{pointType},
+             #{referenceType},
+             #{referenceId})
+    </insert>
+
+    <select id="findCurrentBalance" resultType="int">
+        SELECT
+            COALESCE(
+                (SELECT balance_after FROM eco_point_history
+                                      WHERE member_id = #{memberId}
+                                      ORDER BY eco_point_history_id DESC
+                                      LIMIT 1
+            ),0)
+    </select>
+
+    <select id="findTotalPoint" resultType="int">
+        SELECT
+            COALESCE(SUM(point_amount),0)
+                FROM eco_point_history
+                WHERE member_id = #{memberId}
+                AND reference_type = 'EARN'
+    </select>
+
+    <select id="findByMemberId"
+            resultType="first_project.recycle.domain.EcoPointHistory">
+        SELECT
+            eco_point_history_id AS ecoPointHistoryId,
+            member_id AS memberId,
+            point_amount AS pointAmount,
+            balance_after AS balanceAfter,
+            point_type AS pointType,
+            reference_type AS referenceType,
+            reference_id AS referenceId,
+            created_at AS createdAt
+
+            FROM eco_point_history
+            WHERE member_id=#{memberId}
+            ORDER BY created_at desc
+    </select>
+</mapper>
