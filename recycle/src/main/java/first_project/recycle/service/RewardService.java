@@ -3,7 +3,7 @@ package first_project.recycle.service;
 import first_project.recycle.domain.EcoPointHistory;
 import first_project.recycle.domain.Reward;
 import first_project.recycle.domain.RewardExchange;
-import first_project.recycle.repository.EcoPointHistoryMapper;
+import first_project.recycle.service.EcoPointHistoryService;
 import first_project.recycle.repository.RewardExchangeMapper;
 import first_project.recycle.repository.RewardMapper;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.List;
 public class RewardService {
     private final RewardMapper rewardMapper;
     private final RewardExchangeMapper rewardExchangeMapper;
-    private final EcoPointHistoryMapper ecoPointHistoryMapper;
+    private final EcoPointHistoryService ecoPointHistoryService;
 
     //상점에 리워드 목록 띄우기
     public List<Reward> findAll(){
@@ -36,7 +36,7 @@ public class RewardService {
             throw new IllegalStateException("재고가 없습니다");
         }
         //3. 현재 에코포인트 조회
-        int currentPoint = ecoPointHistoryMapper.findCurrentBalance(memberId);
+        int currentPoint = ecoPointHistoryService.findCurrentBalance(memberId);
 
         int requiredPoint = reward.getRequiredPoint();
         //4. 포인트 충분?
@@ -68,7 +68,7 @@ public class RewardService {
         ecoPointHistory.setReferenceId(rewardExchange.getExchangeId());
 
         //9. 에코포인트 내역 저장
-        ecoPointHistoryMapper.insertPointHistory(ecoPointHistory);
+        ecoPointHistoryService.insertPointHistory(ecoPointHistory);
 
 
     }

@@ -5,6 +5,21 @@
     <title>게시글 상세</title>
 </head>
 <body>
+<nav>
+    <div>
+        <a th:href="@{/}">Home</a>
+        <th:block th:unless="${session.checkLogin}">
+            <a th:href="@{/login}">로그인</a>
+            <a th:href="@{/signup}">회원가입</a>
+        </th:block>
+
+        <th:block th:if="${session.checkLogin}">
+            <a th:href="@{/mypage}">마이페이지</a>
+            <a th:href="@{/logout}">로그아웃</a>
+            <a th:href="@{/reward}">리워드 상점</a>
+        </th:block>
+    </div>
+</nav>
 
 <h2>게시글 상세</h2>
 

@@ -27,6 +27,7 @@ public class BoardService {
     private final BoardMapper boardMapper;
     private final BoardImageMapper boardImageMapper;
     private final FileStorageService fileStorageService;
+    private final EcoPointHistoryService ecoPointHistoryService;
 
     // 메인페이지 최신 게시글 조회
     public List<BoardListResponse> getRecentBoards() {
@@ -92,7 +93,8 @@ public class BoardService {
             }
 
         }
-
+        //게시글 작성시 100p 지급
+        ecoPointHistoryService.earnPoint(memberId,100,"BOARD",boardId);
         return boardId;
     }
 

@@ -5,7 +5,21 @@
     <title>커뮤니티</title>
 </head>
 <body>
+<nav>
+    <div>
+        <a th:href="@{/}">Home</a>
+        <th:block th:unless="${session.checkLogin}">
+            <a th:href="@{/login}">로그인</a>
+            <a th:href="@{/signup}">회원가입</a>
+        </th:block>
 
+        <th:block th:if="${session.checkLogin}">
+            <a th:href="@{/mypage}">마이페이지</a>
+            <a th:href="@{/logout}">로그아웃</a>
+            <a th:href="@{/reward}">리워드 상점</a>
+        </th:block>
+    </div>
+</nav>
 <h2>커뮤니티</h2>
 
 <!-- 검색 및 타입 선택-->
@@ -73,7 +87,7 @@
         </td>
 
         <td>
-            <a th:href="@{/boards/{boardID}(boardId=${board.boardId})}"
+            <a th:href="@{/boards/{boardId}(boardId=${board.boardId})}"
                th:text="${board.title}">
                 게시글 제목
             </a>

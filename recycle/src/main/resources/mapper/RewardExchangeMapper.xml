@@ -24,6 +24,6 @@
         FROM reward_exchange re
         JOIN reward r ON re.reward_id = r.reward_id
         WHERE re.member_id = #{memberId}
-        ORDER BY required_point ASC
+        ORDER BY re.exchange_id desc
     </select>
 </mapper>
