@@ -1,11 +1,18 @@
 package first_project.recycle.controller;
 
+import first_project.recycle.config.SessionConst;
 import first_project.recycle.domain.Reward;
+import first_project.recycle.domain.User;
+import first_project.recycle.service.EcoPointHistoryService;
 import first_project.recycle.service.RewardService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -13,11 +20,37 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RewardController {
     private final RewardService rewardService;
+    private final EcoPointHistoryService ecoPointHistoryService;
 
     @GetMapping("/reward")
-    public String reward(Model model){
+    public String rewardShop(HttpSession session,Model model){
+        //로그인 회원
+        User loginUSer = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        Long memberId = loginUSer.getMemberId();
+
+        //리워드 목록
         List<Reward> rewards = rewardService.findAll();
+        //현재 에코포인트
+        int currentPoint = ecoPointHistoryService.findCurrentBalance(memberId);
         model.addAttribute("rewards",rewards);
+        model.addAttribute("currentPoint",currentPoint);
         return "reward/shop";
+    }
+
+    @PostMapping("/reward/exchange")
+    public String exchange(@RequestParam("rewardId") Long rewardID,
+                           HttpSession session, RedirectAttributes redirectAttributes){
+        User loginUSer = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        Long memberId = loginUSer.getMemberId();
+        try {
+                rewardService.exchangeReward(memberId,rewardID);
+                redirectAttributes.addFlashAttribute(
+                        "message","리워드 교환이 완료되었습니다");
+
+        }catch (IllegalStateException e){
+            redirectAttributes.addFlashAttribute("eMessage",e.getMessage());
+        }
+        return "redirect:/reward";
+
     }
 }
