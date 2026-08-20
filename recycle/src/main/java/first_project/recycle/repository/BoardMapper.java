@@ -34,4 +34,13 @@ public interface BoardMapper {
 
     // 상세 조회
     BoardDetailResponse findById(Long boardId);
+
+    // 게시글 수정
+    int updateBoard(
+            @Param("boardId") Long boardId,
+            @Param("memberId") Long memberId,
+            @Param("boardType") BoardType boardType,
+            @Param("title") String title,
+            @Param("content") String content
+    );
 }
