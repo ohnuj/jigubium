@@ -227,7 +227,7 @@ public class WasteElectronicsService {
                          * 전체 CSV 처리가 중단되지 않도록 함
                          */
                         System.out.println(
-                                "폐가전 주소 변환 중 오류: "
+                                "폐가전 주소 변환 중  오류: "
                                         + roadAddress
                         );
 
