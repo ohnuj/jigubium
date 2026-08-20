@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class GradeService {
 
-    public Grade memberGrade(Grade currentGrade, int ecoPoint){
-
-    }
+//    public Grade memberGrade(Grade currentGrade, int ecoPoint){
+//
+//    }
 }
