@@ -5,7 +5,10 @@ import first_project.recycle.domain.Board;
 import first_project.recycle.domain.BoardImage;
 import first_project.recycle.domain.BoardType;
 import first_project.recycle.domain.Paging;
-import first_project.recycle.dto.*;
+import first_project.recycle.dto.BoardDetailResponse;
+import first_project.recycle.dto.BoardListResponse;
+import first_project.recycle.dto.BoardPageResponse;
+import first_project.recycle.dto.BoardUpdateRequest;
 import first_project.recycle.repository.BoardImageMapper;
 import first_project.recycle.repository.BoardMapper;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ public class BoardService {
     private final BoardImageMapper boardImageMapper;
     private final FileStorageService fileStorageService;
     private final CommentService commentService;
+    private final EcoPointHistoryService ecoPointHistoryService;
 
     // 메인페이지 최신 게시글 조회
     public List<BoardListResponse> getRecentBoards() {
@@ -99,7 +103,8 @@ public class BoardService {
             }
 
         }
-
+        //게시글 작성시 100p 지급
+        ecoPointHistoryService.earnPoint(memberId,100,"BOARD",boardId);
         return boardId;
     }
 

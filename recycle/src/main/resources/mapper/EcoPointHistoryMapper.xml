@@ -37,7 +37,7 @@
             COALESCE(SUM(point_amount),0)
                 FROM eco_point_history
                 WHERE member_id = #{memberId}
-                AND reference_type = 'EARN'
+                AND point_type = 'EARN'
     </select>
 
     <select id="findByMemberId"
@@ -54,6 +54,17 @@
 
             FROM eco_point_history
             WHERE member_id=#{memberId}
-            ORDER BY created_at desc
+            ORDER BY eco_point_history_id desc
+    </select>
+    <select id="existEarnPoint" resultType="int">
+        SELECT COUNT(*)
+        FROM eco_point_history
+        WHERE member_id = #{memberId}
+          AND point_type = 'EARN'
+          AND reference_type = #{referenceType}
+          AND (
+            reference_id = #{referenceId}
+                OR (reference_id IS NULL AND #{referenceId} IS NULL)
+            )
     </select>
 </mapper>

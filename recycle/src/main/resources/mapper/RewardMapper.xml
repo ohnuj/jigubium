@@ -32,4 +32,13 @@
         WHERE reward_id = #{rewardId}
           AND stock_quantity > 0
     </update>
+
+    <select id="existsEarnPoint" resultType="int">
+        SELECT COUNT(*)
+        FROM eco_point_history
+        WHERE member_id = #{memberId}
+          AND point_type = 'EARN'
+          AND reference_type = #{referenceType}
+          AND reference_id = #{referenceId}
+    </select>
 </mapper>

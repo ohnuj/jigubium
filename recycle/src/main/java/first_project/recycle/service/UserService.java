@@ -17,6 +17,8 @@ public class UserService {
     // DB 접근을 위한 매퍼 인터페이스 주입
     private final UserMapper userMapper;
 
+    private final EcoPointHistoryService ecoPointHistoryService;
+
     // 회원가입 처리 (DB 쓰기 작업이므로 readOnly=false인 일반 트랜잭션 적용)
     @Transactional
     public boolean signup(User user) {
@@ -26,6 +28,8 @@ public class UserService {
         }
         // 2. 중복이 없으면 DB에 회원 정보 저장 (PK 자동 생성 및 user 객체에 세팅)
         userMapper.insert(user);
+        // 회원가입시 에코포인트 100p 제공
+        ecoPointHistoryService.earnPoint(user.getMemberId(),100,"SIGNUP",user.getMemberId());
         return true; // 가입 성공 반환
     }
 

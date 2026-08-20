@@ -127,15 +127,6 @@
         </table>
     </div>
 </main>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('updated') === 'true') {
-        alert('회원정보가 성공적으로 수정되었습니다.');
-        // 주소창에서 ?updated=true 파라미터 깔끔하게 제거
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
-    });
-</script>
+
 </body>
 </html>

@@ -5,6 +5,21 @@
     <title>마이페이지 - 회원정보 수정</title>
 </head>
 <body>
+<nav>
+    <div>
+        <a th:href="@{/}">Home</a>
+        <th:block th:unless="${session.checkLogin}">
+            <a th:href="@{/login}">로그인</a>
+            <a th:href="@{/signup}">회원가입</a>
+        </th:block>
+
+        <th:block th:if="${session.checkLogin}">
+            <a th:href="@{/mypage}">마이페이지</a>
+            <a th:href="@{/logout}">로그아웃</a>
+            <a th:href="@{/reward}">리워드 상점</a>
+        </th:block>
+    </div>
+</nav>
 <div style="display: flex; gap: 40px;">
     <!-- 좌측 4가지 탭 메뉴 (2번 탭 강조) -->
     <aside style="width: 180px;">
@@ -55,5 +70,32 @@
         </form>
     </main>
 </div>
+<<<<<<<< HEAD:recycle/src/main/resources/templates/mypage/MemberInfoConfirm.html
+
+
+<script>
+    <!-- 프론트엔드 비밀번호 일치 검증 스크립트 -->
+    document.getElementById('updateForm').addEventListener('submit', function(e) {
+        const pwd = document.getElementById('newpassword').value;
+        const confirmPwd = document.getElementById('newpasswordconfirm').value;
+
+        if (pwd !== "" && pwd !== confirmPwd) {
+            e.preventDefault();
+            alert("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            document.getElementById('newpasswordconfirm').focus();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('updated') === 'true') {
+            alert('회원정보가 성공적으로 수정되었습니다.');
+            // 주소창에서 ?updated=true 파라미터 깔끔하게 제거
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    });
+</script>
+========
+>>>>>>>> origin/main:recycle/src/main/resources/templates/mypage/updateMemberInfo.html
 </body>
 </html>
