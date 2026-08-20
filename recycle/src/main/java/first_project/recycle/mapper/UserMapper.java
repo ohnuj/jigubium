@@ -18,4 +18,10 @@ public interface UserMapper {
     // 동일한 이메일을 가진 회원 수 카운트 (UserMapper.xml의 id="countByEmail"과 매핑)
     // @Param: XML 매퍼 쿼리 내 #{email} 파라미터와 매핑
     int countByEmail(@Param("email") String email);
+
+    // provider(소셜 제공자)와 providerId(소셜 고유 ID)로 기존 연동 회원 조회
+    User findByProviderAndProviderId(@Param("provider") String provider, @Param("providerId") String providerId);
+
+    // 소셜 로그인 전용 회원 정보 등록 (비밀번호 제외)
+    void insertOAuthUser(User user);
 }

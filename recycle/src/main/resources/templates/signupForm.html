@@ -24,6 +24,10 @@
             <div>
                 <input type="text" name="name" placeholder="이름" required autofocus>
             </div>
+            <!-- 닉네임 입력 -> User 객체의 nickname 필드에 매핑 -->
+            <div>
+                <input type="text" name="nickname" placeholder="닉네임" required>
+            </div>
             <!-- 이메일 입력 -> User 객체의 email 필드에 매핑 (형식 검증 포함) -->
             <div>
                 <input type="email" name="email" placeholder="이메일" required>
@@ -31,10 +35,6 @@
             <!-- 비밀번호 입력 -> User 객체의 password 필드에 매핑 (마스킹 처리) -->
             <div>
                 <input type="password" name="password" placeholder="비밀번호" required>
-            </div>
-            <!-- 닉네임 입력 -> User 객체의 nickname 필드에 매핑 -->
-            <div>
-                <input type="text" name="nickname" placeholder="닉네임" required>
             </div>
             <!-- 폼 제출 버튼 -> 클릭 시 입력 데이터 전송 -->
             <button type="submit" class="btn-primary">가입하기</button>
