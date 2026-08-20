@@ -3,10 +3,8 @@ package first_project.recycle.service;
 import first_project.recycle.domain.Member;
 import first_project.recycle.domain.MemberInfo;
 import first_project.recycle.repository.MypageMapper;
-import first_project.recycle.repository.MypageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
