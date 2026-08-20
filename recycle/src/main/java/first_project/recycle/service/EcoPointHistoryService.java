@@ -18,6 +18,12 @@ public class EcoPointHistoryService {
     }
 
     public void earnPoint(Long memberId,int point, String referenceType, Long referenceId){
+
+        int exists = ecoPointHistoryMapper.existEarnPoint(memberId,referenceType,referenceId);
+        if(exists>0){
+            return;
+        }
+
         int currentPoint = findCurrentBalance(memberId);
 
         EcoPointHistory history = new EcoPointHistory();

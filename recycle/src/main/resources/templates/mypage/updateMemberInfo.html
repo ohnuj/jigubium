@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지 - 회원정보 수정</title>
+</head>
+<body>
+<nav>
+    <div>
+        <a th:href="@{/}">Home</a>
+        <th:block th:unless="${session.checkLogin}">
+            <a th:href="@{/login}">로그인</a>
+            <a th:href="@{/signup}">회원가입</a>
+        </th:block>
+
+        <th:block th:if="${session.checkLogin}">
+            <a th:href="@{/mypage}">마이페이지</a>
+            <a th:href="@{/logout}">로그아웃</a>
+            <a th:href="@{/reward}">리워드 상점</a>
+        </th:block>
+    </div>
+</nav>
+<div style="display: flex; gap: 40px;">
+    <!-- 좌측 4가지 탭 메뉴 (2번 탭 강조) -->
+    <aside style="width: 180px;">
+        <ul style="list-style: none; padding: 0; line-height: 2.2;">
+            <li><a th:href="@{/mypage/myinfo}">내 정보</a></li>
+            <li style="font-weight: bold;"><a th:href="@{/mypage/memberinfoconfirm}">회원정보 수정</a></li>
+            <li><a th:href="@{/mypage/memberactivity}">나의 활동</a></li>
+            <li><a th:href="@{/mypage/memberdelete}">회원 탈퇴</a></li>
+        </ul>
+    </aside>
+
+    <!-- 회원정보 수정 본문 -->
+    <main>
+        <h2>회원정보 수정</h2>
+
+        <form th:action="@{/mypage/updatememberinfo}" method="post" id="updateForm">
+            <!-- 이메일 (조회 전용, 수정 불가) -->
+            <div style="margin-bottom: 10px;">
+                <label for="email">이메일</label><br>
+                <input type="text" id="email" th:value="${member != null ? member.email : ''}" readonly style="background-color: #e9ecef;">
+            </div>
+
+            <!-- 닉네임 -->
+            <div style="margin-bottom: 10px;">
+                <label for="nickname">닉네임</label><br>
+                <input type="text" id="nickname" name="nickname" th:value="${member != null ? member.nickname : ''}" required>
+            </div>
+
+            <!-- 새 비밀번호 -->
+            <div style="margin-bottom: 10px;">
+                <label for="newpassword">새 비밀번호</label><br>
+                <input type="password" id="newpassword" name="newpassword" placeholder="변경할 비밀번호 (미변경 시 공란)">
+            </div>
+
+            <!-- 새 비밀번호 확인 -->
+            <div style="margin-bottom: 10px;">
+                <label for="newpasswordconfirm">새 비밀번호 확인</label><br>
+                <input type="password" id="newpasswordconfirm" name="newpasswordconfirm" placeholder="새 비밀번호 재입력">
+            </div>
+
+            <!-- 에러 및 성공 메시지 -->
+            <p th:if="${errorMsg}" style="color: red;" th:text="${errorMsg}"></p>
+            <p th:if="${successMsg}" style="color: blue;" th:text="${successMsg}"></p>
+
+            <button type="submit" style="margin-top: 10px; padding: 6px 12px; cursor: pointer;">
+                수정 완료
+            </button>
+        </form>
+    </main>
+</div>
+<<<<<<<< HEAD:recycle/src/main/resources/templates/mypage/MemberInfoConfirm.html
+
+
+<script>
+    <!-- 프론트엔드 비밀번호 일치 검증 스크립트 -->
+    document.getElementById('updateForm').addEventListener('submit', function(e) {
+        const pwd = document.getElementById('newpassword').value;
+        const confirmPwd = document.getElementById('newpasswordconfirm').value;
+
+        if (pwd !== "" && pwd !== confirmPwd) {
+            e.preventDefault();
+            alert("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            document.getElementById('newpasswordconfirm').focus();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('updated') === 'true') {
+            alert('회원정보가 성공적으로 수정되었습니다.');
+            // 주소창에서 ?updated=true 파라미터 깔끔하게 제거
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    });
+</script>
+========
+>>>>>>>> origin/main:recycle/src/main/resources/templates/mypage/updateMemberInfo.html
+</body>
+</html>

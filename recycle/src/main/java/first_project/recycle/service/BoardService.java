@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,8 @@ public class BoardService {
     private final BoardMapper boardMapper;
     private final BoardImageMapper boardImageMapper;
     private final FileStorageService fileStorageService;
+    private final CommentService commentService;
+    private final EcoPointHistoryService ecoPointHistoryService;
 
     // 메인페이지 최신 게시글 조회
     public List<BoardListResponse> getRecentBoards() {
@@ -37,14 +40,21 @@ public class BoardService {
     public BoardPageResponse getBoards(
             int page,
             String keyword,
+            String searchType,
             BoardType boardType) {
 
-        int totalCount = boardMapper.countBoards(keyword, boardType);
+        int totalCount =
+                boardMapper.countBoards(
+                        keyword,
+                        searchType,
+                        boardType
+                );
 
         Paging paging = new Paging(page, PAGE_SIZE, totalCount);
 
         List<BoardListResponse> boards = boardMapper.findBoards(
                 keyword,
+                searchType,
                 boardType,
                 paging.getOffset(),
                 paging.getSize()
@@ -58,22 +68,23 @@ public class BoardService {
       */
 
     @Transactional
-    public Long write(Long memberId,
-                      BoardType boardType,
-                      String title,
-                      String content,
+    public Long write(
+                      Long memberId,
+                      BoardCreateRequest request,
                       List<MultipartFile> images){
 
         //게시글 정보 생성
         Board board = new Board();
+
         board.setMemberId(memberId);
-        board.setBoardType(boardType);
-        board.setTitle(title);
-        board.setContent(content);
+        board.setBoardType(request.getBoardType());
+        board.setTitle(request.getTitle());
+        board.setContent(request.getContent());
 
         // 게시글 저장 자동 생성 boarID 가져오기
         // useGeneratedkeys로 생성된 boardId
         boardMapper.insertBoard(board);
+
         Long boardId = board.getBoardId();
 
         // 2. 첨부 이미지가 있으면 순서대로 저장
@@ -92,7 +103,8 @@ public class BoardService {
             }
 
         }
-
+        //게시글 작성시 100p 지급
+        ecoPointHistoryService.earnPoint(memberId,100,"BOARD",boardId);
         return boardId;
     }
 
@@ -153,13 +165,18 @@ public class BoardService {
                 boardMapper.findById(boardId);
 
         if (board == null
-                || !board.getMemberId().equals(memberId)) {
+                || !Objects.equals(
+                        board.getMemberId(),
+                        memberId)) {
             return false;
         }
 
         // 실제 파일 삭제를 위해 이미지 목록을 먼저 조회
         List<BoardImage> images =
                 boardImageMapper.findByBoardId(boardId);
+
+        // 댓글 삭제
+        commentService.deleteByBoardId(boardId);
 
         // 이미지 DB 데이터 먼저 삭제
         boardImageMapper.deleteByBoardId(boardId);

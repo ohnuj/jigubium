@@ -5,7 +5,21 @@
     <title>커뮤니티</title>
 </head>
 <body>
+<nav>
+    <div>
+        <a th:href="@{/}">Home</a>
+        <th:block th:unless="${session.checkLogin}">
+            <a th:href="@{/login}">로그인</a>
+            <a th:href="@{/signup}">회원가입</a>
+        </th:block>
 
+        <th:block th:if="${session.checkLogin}">
+            <a th:href="@{/mypage}">마이페이지</a>
+            <a th:href="@{/logout}">로그아웃</a>
+            <a th:href="@{/reward}">리워드 상점</a>
+        </th:block>
+    </div>
+</nav>
 <h2>커뮤니티</h2>
 
 <!-- 검색 및 타입 선택-->
@@ -31,6 +45,25 @@
         <option value="SUGGESTION"
                 th:selected="${boardType != null and boardType.name() == 'SUGGESTION'}">
             건의
+        </option>
+    </select>
+
+    <!-- 검색 기준 -->
+    <select name="searchType">
+
+        <option value="TITLE"
+                th:selected="${searchType == 'TITLE'}">
+            제목
+        </option>
+
+        <option value="CONTENT"
+                th:selected="${searchType == 'CONTENT'}">
+            내용
+        </option>
+
+        <option value="WRITER"
+                th:selected="${searchType == 'WRITER'}">
+            작성자
         </option>
     </select>
 
@@ -73,7 +106,7 @@
         </td>
 
         <td>
-            <a th:href="@{/boards/{boardID}(boardId=${board.boardId})}"
+            <a th:href="@{/boards/{boardId}(boardId=${board.boardId})}"
                th:text="${board.title}">
                 게시글 제목
             </a>
@@ -114,6 +147,7 @@
        th:href="@{/boards(
             page=${paging.page - 1},
             keyword=${keyword},
+            searchType=${searchType},
             boardType=${boardType}
             )}">
         이전
@@ -126,6 +160,7 @@
            th:href="@{/boards(
                 page=${pageNum},
                 keyword=${keyword},
+                searchType=${searchType},
                 boardType=${boardType}
                 )}"
                 th:text="${pageNum}">
@@ -142,6 +177,7 @@
        th:href="@{/boards(
             page=${paging.page + 1},
             keyword=${keyword},
+            searchType=${searchType},
             boardType=${boardType}
             )}">
             다음
