@@ -34,7 +34,6 @@
                provider_id,
                name,
                role
-
         FROM member
         WHERE provider = #{provider}
           AND provider_id = #{providerId}

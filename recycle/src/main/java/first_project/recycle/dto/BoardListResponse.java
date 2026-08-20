@@ -5,6 +5,10 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+
+/**
+ * 게시글 목록 조회용
+ */
 @Data
 public class BoardListResponse {
 
@@ -13,4 +17,14 @@ public class BoardListResponse {
     private String title;           // 게시글 제목
     private String nickname;        // 작성자 닉네임
     private LocalDateTime createdAt;    // 작성일
+    private LocalDateTime updatedAt; // 수정일
+
+    /**
+     * 게시글 수정 여부 확인
+     */
+    public boolean isModified() {
+        return updatedAt != null
+                && createdAt != null
+                && !updatedAt.equals(createdAt);
+    }
 }
