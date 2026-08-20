@@ -125,6 +125,8 @@
         </table>
     </div>
 </main>
-
+<script th:if="${message}">
+    alert('[[${message}]]');
+</script>
 </body>
 </html>
