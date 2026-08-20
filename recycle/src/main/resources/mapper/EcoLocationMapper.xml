@@ -37,5 +37,18 @@
         AND location_type = #{locationType}
 
     </select>
+    <select id="findByLocationType" resultType="first_project.recycle.domain.ecoLocation">
+        SELECT
+            location_id AS locationId,
+            location_name AS locationName,
+            location_type AS locationType,
+            admin_dong AS adminDong,
+            road_address AS roadAddress,
+            jibun_address AS jibunAddress,
+            latitude,
+            longitude
+        FROM eco_location
+        WHERE location_type = #{locationType}
+    </select>
 
 </mapper>

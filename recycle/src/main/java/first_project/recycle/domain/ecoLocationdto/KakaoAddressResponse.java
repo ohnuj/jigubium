@@ -1,4 +1,4 @@
-package first_project.recycle.domain.ecoLocationDTO;
+package first_project.recycle.domain.ecoLocationdto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

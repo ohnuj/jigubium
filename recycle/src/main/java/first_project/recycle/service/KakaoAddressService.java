@@ -1,6 +1,6 @@
 package first_project.recycle.service;
 
-import first_project.recycle.domain.ecoLocationDTO.KakaoAddressResponse;
+import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
