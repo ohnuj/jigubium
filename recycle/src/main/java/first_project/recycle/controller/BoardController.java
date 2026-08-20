@@ -3,10 +3,7 @@ package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
 import first_project.recycle.domain.BoardType;
-import first_project.recycle.dto.BoardCreateRequest;
-import first_project.recycle.dto.BoardDetailResponse;
-import first_project.recycle.dto.BoardPageResponse;
-import first_project.recycle.dto.BoardUpdateRequest;
+import first_project.recycle.dto.*;
 import first_project.recycle.service.BoardService;
 import first_project.recycle.domain.User;
 import first_project.recycle.service.CommentService;
@@ -38,10 +35,17 @@ public class BoardController {
     public String boardList(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String searchType,
             @RequestParam(required = false)BoardType boardType,
             Model model) {
 
-        BoardPageResponse result = boardService.getBoards(page,keyword,boardType);
+        BoardPageResponse result =
+                boardService.getBoards(
+                        page,
+                        keyword,
+                        searchType,
+                        boardType
+                );
 
         // 게시글 목록
         model.addAttribute("boards", result.getBoards());
@@ -51,6 +55,8 @@ public class BoardController {
 
         // 검색 후 검색어 유지
         model.addAttribute("keyword", keyword);
+
+        model.addAttribute("searchType", searchType);
 
         // 검색 후 선택한 게시판 타입 유지
         model.addAttribute("boardType", boardType);
@@ -112,6 +118,7 @@ public class BoardController {
     @GetMapping("/{boardId}")
     public String boardDetail(
             @PathVariable Long boardId,
+            @RequestParam(defaultValue = "1") int commentPage,
             Model model,
             HttpSession session) {
 
@@ -121,12 +128,18 @@ public class BoardController {
                 boardService.getBoard(boardId)
         );
 
+        // 댓글 페이징 조회
+        CommentPageResponse commentResult = commentService.getCommentPage(boardId, commentPage);
+
         // 해당 게시글의 댓글 목록
         model.addAttribute(
                 "comments",
-                commentService.getComments(boardId)
+                commentResult.getComments()
         );
+        model.addAttribute("commentPaging",
+                            commentResult.getPaging());
 
+        // 로그인 사용자
         User loginUser =
                 (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
 

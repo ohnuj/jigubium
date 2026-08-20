@@ -65,4 +65,32 @@
         DELETE FROM comment
         WHERE board_id = #{boardId}
     </delete>
+
+    <select id="countByBoardId" resultType="int">
+        SELECT COUNT(*)
+        FROM comment
+        WHERE board_id = #{boardId}
+    </select>
+
+    <select id="findPageByBoardId"
+            resultType="first_project.recycle.dto.CommentResponse">
+
+            SELECT
+                c.comment_id,
+                c.board_id,
+                c.member_id,
+                m.nickname,
+                c.content,
+                c.created_at,
+                c.updated_at
+            FROM comment c
+            JOIN member m
+                ON c.member_id = m.member_id
+            WHERE c.board_id = #{boardId}
+
+            ORDER BY c.created_at
+
+            LIMIT #{size}
+            OFFSET #{offset}
+    </select>
 </mapper>

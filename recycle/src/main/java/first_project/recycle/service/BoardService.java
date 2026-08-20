@@ -36,14 +36,21 @@ public class BoardService {
     public BoardPageResponse getBoards(
             int page,
             String keyword,
+            String searchType,
             BoardType boardType) {
 
-        int totalCount = boardMapper.countBoards(keyword, boardType);
+        int totalCount =
+                boardMapper.countBoards(
+                        keyword,
+                        searchType,
+                        boardType
+                );
 
         Paging paging = new Paging(page, PAGE_SIZE, totalCount);
 
         List<BoardListResponse> boards = boardMapper.findBoards(
                 keyword,
+                searchType,
                 boardType,
                 paging.getOffset(),
                 paging.getSize()

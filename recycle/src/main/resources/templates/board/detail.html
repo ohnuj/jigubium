@@ -125,10 +125,51 @@
 
 </div>
 
+<div th:if="${commentPaging.totalPages > 0}">
+
+    <a th:if="${commentPaging.page > 1}"
+       th:href="@{/boards/{boardId}(
+            boardId=${board.boardId},
+            commentPage=${commentPaging.page - 1}
+       )}">
+        이전
+    </a>
+
+    <span th:each="pageNum :
+            ${#numbers.sequence(1, commentPaging.totalPages)}">
+
+        <a th:if="${pageNum != commentPaging.page}"
+           th:href="@{/boards/{boardId}(
+                boardId=${board.boardId},
+                commentPage=${pageNum}
+           )}"
+           th:text="${pageNum}">
+        </a>
+
+        <strong th:if="${pageNum == commentPaging.page}"
+                th:text="${pageNum}">
+        </strong>
+    </span>
+
+    <a th:if="${commentPaging.page < commentPaging.totalPages}"
+       th:href="@{/boards/{boardId}(
+            boardId=${board.boardId},
+            commentPage=${commentPaging.page + 1}
+       )}">
+        다음
+    </a>
+</div>
+
+
 <!-- 게시글 버튼 -->
-<a th:href="@{boards}">
+<a th:href="@{/boards}">
     목록
 </a>
+
+<!-- 게시글 작성자만 수정/삭제 표시 -->
+
+<div th:if="${loginUser != null
+        and loginUser.memberId == board.memberId}">
 
 <a th:href="@{/boards/{boardId}/edit(
         boardId=${board.boardId}
@@ -145,5 +186,6 @@
       삭제
     </button>
 </form>
+</div>
 </body>
 </html>

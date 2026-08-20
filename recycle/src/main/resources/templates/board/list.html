@@ -34,6 +34,25 @@
         </option>
     </select>
 
+    <!-- 검색 기준 -->
+    <select name="searchType">
+
+        <option value="TITLE"
+                th:selected="${searchType == 'TITLE'}">
+            제목
+        </option>
+
+        <option value="CONTENT"
+                th:selected="${searchType == 'CONTENT'}">
+            내용
+        </option>
+
+        <option value="WRITER"
+                th:selected="${searchType == 'WRITER'}">
+            작성자
+        </option>
+    </select>
+
     <!-- 검색어 -->
     <input type="text"
             name="keyword"
@@ -114,6 +133,7 @@
        th:href="@{/boards(
             page=${paging.page - 1},
             keyword=${keyword},
+            searchType=${searchType},
             boardType=${boardType}
             )}">
         이전
@@ -126,6 +146,7 @@
            th:href="@{/boards(
                 page=${pageNum},
                 keyword=${keyword},
+                searchType=${searchType},
                 boardType=${boardType}
                 )}"
                 th:text="${pageNum}">
@@ -142,6 +163,7 @@
        th:href="@{/boards(
             page=${paging.page + 1},
             keyword=${keyword},
+            searchType=${searchType},
             boardType=${boardType}
             )}">
             다음

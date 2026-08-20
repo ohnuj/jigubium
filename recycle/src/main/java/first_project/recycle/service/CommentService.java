@@ -2,7 +2,9 @@ package first_project.recycle.service;
 
 
 import first_project.recycle.domain.Comment;
+import first_project.recycle.domain.Paging;
 import first_project.recycle.dto.CommentCreateRequest;
+import first_project.recycle.dto.CommentPageResponse;
 import first_project.recycle.dto.CommentResponse;
 import first_project.recycle.dto.CommentUpdateRequest;
 import first_project.recycle.repository.CommentMapper;
@@ -18,6 +20,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
+
+    private static final int COMMENT_PAGE_SIZE = 5;
 
     private final CommentMapper commentMapper;
 
@@ -89,5 +93,35 @@ public class CommentService {
     public void deleteByBoardId(Long boardId) {
         commentMapper.deleteByBoardId(boardId);
     }
+
+    /**
+     * 특정 게시글의 댓글 페이징 조회
+     */
+    public CommentPageResponse getCommentPage(
+            Long boardId,
+            int page) {
+        int totalCount =
+                commentMapper.countByBoardId(boardId);
+
+        Paging paging =
+                new Paging(
+                        page,
+                        COMMENT_PAGE_SIZE,
+                        totalCount
+                );
+
+        List<CommentResponse> comments =
+                commentMapper.findPageByBoardId(
+                        boardId,
+                        paging.getOffset(),
+                        paging.getSize()
+                );
+
+        return new CommentPageResponse(
+                comments,
+                paging
+        );
+    }
+
 
 }

@@ -35,4 +35,12 @@ public interface CommentMapper {
 
     // 게시글 삭제 시 해당 게시글의 댓글 전체 삭제
     int deleteByBoardId(Long boardId);
+
+    int countByBoardId(Long boardId);
+
+    List<CommentResponse> findPageByBoardId(
+            @Param("boardId") Long boardId,
+            @Param("offset") int offset,
+            @Param("size") int size
+    );
 }
