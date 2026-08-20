@@ -51,6 +51,126 @@
 
 <hr>
 
+<h3>댓글</h3>
+
+<!-- 댓글 작성 -->
+<form th:action="@{/boards/{boardId}/comments(boardId=${board.boardId})}"
+      method="post">
+
+    <textarea name="content"
+              placeholder="댓글을 입력하세요"
+              required></textarea>
+
+    <button type="submit">댓글 작성</button>
+</form>
+
+<!-- 댓글 목록 -->
+<div th:each="comment : ${comments}">
+
+    <!-- 작성자 -->
+    <span th:text="${comment.nickname}">
+        닉네임
+    </span>
+
+    <!-- 작성일 -->
+    <span th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">
+        작성일
+    </span>
+
+    <!-- 수정 여부 -->
+    <span th:if="${comment.modified}">
+        (수정됨)
+    </span>
+
+    <!-- 댓글 내용 -->
+    <p th:text="${comment.content}">
+        댓글 내용
+    </p>
+
+    <!-- 본인 댓글일 때만 수정/삭제 표시 -->
+    <div th:if="${loginUser != null
+            and loginUser.memberId == comment.memberId}">
+
+        <!-- 댓글 수정 -->
+        <form th:action="@{/boards/{boardId}/comments/{commentId}/edit(
+                boardId=${board.boardId},
+                commentId=${comment.commentId}
+                )}"
+              method="post">
+
+            <textarea name="content"
+                      th:text="${comment.content}"
+                      required></textarea>
+
+            <button type="submit">
+                수정
+            </button>
+        </form>
+
+        <!-- 댓글 삭제 -->
+        <form th:action="@{/boards/{boardId}/comments/{commentId}/delete(
+                boardId=${board.boardId},
+                commentId=${comment.commentId}
+              )}"
+              method="post">
+
+            <button type="submit">
+                삭제
+            </button>
+        </form>
+    </div>
+
+    <hr>
+
+
+</div>
+
+<div th:if="${commentPaging.totalPages > 0}">
+
+    <a th:if="${commentPaging.page > 1}"
+       th:href="@{/boards/{boardId}(
+            boardId=${board.boardId},
+            commentPage=${commentPaging.page - 1}
+       )}">
+        이전
+    </a>
+
+    <span th:each="pageNum :
+            ${#numbers.sequence(1, commentPaging.totalPages)}">
+
+        <a th:if="${pageNum != commentPaging.page}"
+           th:href="@{/boards/{boardId}(
+                boardId=${board.boardId},
+                commentPage=${pageNum}
+           )}"
+           th:text="${pageNum}">
+        </a>
+
+        <strong th:if="${pageNum == commentPaging.page}"
+                th:text="${pageNum}">
+        </strong>
+    </span>
+
+    <a th:if="${commentPaging.page < commentPaging.totalPages}"
+       th:href="@{/boards/{boardId}(
+            boardId=${board.boardId},
+            commentPage=${commentPaging.page + 1}
+       )}">
+        다음
+    </a>
+</div>
+
+
+<!-- 게시글 버튼 -->
+<a th:href="@{/boards}">
+    목록
+</a>
+
+<!-- 게시글 작성자만 수정/삭제 표시 -->
+
+<div th:if="${loginUser != null
+        and loginUser.memberId == board.memberId}">
+
 <a th:href="@{/boards/{boardId}/edit(
         boardId=${board.boardId}
         )}">
@@ -66,5 +186,6 @@
       삭제
     </button>
 </form>
+</div>
 </body>
 </html>

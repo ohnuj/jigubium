@@ -48,6 +48,8 @@
     <select id="countBoards" resultType="int">
         SELECT COUNT(*)
         FROM board b
+        JOIN member m
+            ON b.member_id = m.member_id
 
         <where>
 
@@ -58,10 +60,29 @@
 
 
         <if test="keyword != null and keyword != ''">
-            AND (
-                b.title LIKE CONCAT('%', #{keyword}, '%')
-                OR b.content LIKE CONCAT('%', #{keyword}, '%')
-            )
+
+            <choose>
+
+                <when test="searchType == 'WRITER'">
+                    AND m.nickname LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+
+                <when test="searchType == 'TITLE'">
+                    AND b.title LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+
+                <when test="searchType == 'CONTENT'">
+                    AND b.content LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+
+                <!-- 검색 타입이 없으면 제목 + 내용 -->
+                <otherwise>
+                    AND (
+                        b.title LIKE CONCAT('%', #{keyword}, '%')
+                        OR b.content LIKE CONCAT('%', #{keyword}, '%')
+                    )
+                </otherwise>
+            </choose>
         </if>
         </where>
     </select>
@@ -89,11 +110,27 @@
 
 
             <if test="keyword != null and keyword != ''">
-                AND (
-                    b.title LIKE CONCAT('%', #{keyword}, '%')
-                    OR b.content LIKE CONCAT('%', #{keyword}, '%')
+               <choose>
 
-                )
+                <when test="searchType == 'WRITER'">
+                    AND m.nickname LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+
+                <when test="searchType == 'TITLE'">
+                    AND b.title LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+
+                <when test="searchType == 'CONTENT'">
+                    AND b.content LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+
+                <otherwise>
+                    AND (
+                        b.title LIKE CONCAT('%', #{keyword}, '%')
+                        OR b.content LIKE CONCAT('%', #{keyword}, '%')
+                    )
+                </otherwise>
+               </choose>
             </if>
             </where>
 
