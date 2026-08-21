@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/firstproject.iml" filepath="$PROJECT_DIR$/.idea/firstproject.iml" />
-      <module fileurl="file://$PROJECT_DIR$/recycle/recycle.iml" filepath="$PROJECT_DIR$/recycle/recycle.iml" />
     </modules>
   </component>
 </project>
