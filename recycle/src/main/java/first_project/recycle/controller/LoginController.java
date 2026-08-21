@@ -66,7 +66,7 @@ public class LoginController {
         return "redirect:" + redirectURL;
     }
 
-    // Get /logout 요청 처리: 세션 무효화 및 로그아웃
+    // POST /logout 요청 처리: 세션 무효화 및 로그아웃
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
         // 세션이 존재하면 가져오고 없으면 새로 만들지 않음 (false 옵션)

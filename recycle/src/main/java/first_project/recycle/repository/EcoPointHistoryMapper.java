@@ -10,9 +10,12 @@ import java.util.List;
 public interface EcoPointHistoryMapper {
     int insertPointHistory(EcoPointHistory ecoPointHistory);
     //리워드 구매 전, 마이페이지
-    int findCurrentBalance(@Param("memberId") Long memberId);
+    Integer findCurrentBalance(@Param("memberId") Long memberId);
     //뱃지
     int findTotalPoint(@Param("memberId") Long memberId);
     //마이페이지 포인트 내역
     List<EcoPointHistory> findByMemberId(@Param("memberId") Long memberId);
+    int existEarnPoint(@Param("memberId") Long memberId,
+                       @Param("referenceType") String referenceType,
+                       @Param("referenceId") Long referenceId);
 }

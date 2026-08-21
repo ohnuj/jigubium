@@ -14,6 +14,7 @@ public class User {
     private String provider;
     private String providerId;
     private String role;
+    private Integer point;
     private LocalDateTime createdAt;
     private boolean isNewUser;
 }

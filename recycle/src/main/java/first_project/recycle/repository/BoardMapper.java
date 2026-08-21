@@ -20,12 +20,14 @@ public interface BoardMapper {
     // 검색 조건에 맞는 게시글 개수
     int countBoards(
             @Param("keyword") String keyword,
+            @Param("searchType") String searchType,
             @Param("boardType")BoardType boardType
             );
 
     // 검색 + 타입 + 페이징 게시글 조회
     List<BoardListResponse> findBoards(
             @Param("keyword") String keyword,
+            @Param("searchType") String searchType,
             @Param("boardType") BoardType boardType,
             @Param("offset") int offset,
             @Param("size") int size
