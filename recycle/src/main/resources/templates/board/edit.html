@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>게시글 수정</title>
 </head>
 
 <body>
+
 <nav>
     <div>
         <a th:href="@{/}">Home</a>
@@ -23,14 +25,52 @@
         </div>
     </div>
 </nav>
+
+
 <h2>게시글 수정</h2>
 
+
+<!-- 기존 이미지 -->
+<div th:if="${board.images != null and !#lists.isEmpty(board.images)}">
+
+    <h3>현재 이미지</h3>
+
+    <div th:each="image : ${board.images}">
+
+        <img th:src="${image.imageUrl}"
+             alt="게시글 이미지"
+             width="100">
+
+        <!-- 기존 이미지 삭제 -->
+        <form th:action="@{/boards/{boardId}/images/{imageId}/delete(
+                boardId=${board.boardId},
+                imageId=${image.imageId}
+              )}"
+              method="post"
+              onsubmit="return confirm('이 이미지를 삭제하시겠습니까?');">
+
+            <button type="submit">
+                삭제
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- 게시글 수정 Form -->
 <form th:action="@{/boards/{boardId}/edit(boardId=${board.boardId})}"
-      method="post">
+      method="post"
+      enctype="multipart/form-data">
 
     <!-- 게시판 타입 -->
     <div>
-        <label for="boardType">게시판 타입</label>
+
+        <label for="boardType">
+            게시판 타입
+        </label>
 
         <select id="boardType"
                 name="boardType"
@@ -51,33 +91,66 @@
                 건의
             </option>
 
-
         </select>
+
     </div>
+
 
     <!-- 제목 -->
     <div>
-        <label for="title">제목</label>
+
+        <label for="title">
+            제목
+        </label>
 
         <input type="text"
-                id="title"
-                name="title"
-                th:value="${board.title}"
-                required>
+               id="title"
+               name="title"
+               th:value="${board.title}"
+               required>
+
     </div>
 
-    <!--내용-->
+
+    <!-- 내용 -->
     <div>
-        <label for="content">내용</label>
+
+        <label for="content">
+            내용
+        </label>
 
         <textarea id="content"
                   name="content"
                   rows="10"
                   required
                   th:text="${board.content}">
-
         </textarea>
+
     </div>
+
+
+    <!-- 새 이미지 추가 -->
+    <div>
+
+        <h3>새 이미지 추가</h3>
+
+        <!-- 한 장씩 선택 -->
+        <input type="file"
+               id="imageInput"
+               accept="image/*">
+
+        <!-- 실제 서버 전송용 -->
+        <input type="file"
+               id="images"
+               name="images"
+               multiple
+               hidden>
+
+        <!-- 선택한 새 이미지 미리보기 -->
+        <div id="imageList"></div>
+
+    </div>
+
 
     <button type="submit">
         수정
@@ -86,7 +159,95 @@
     <a th:href="@{/boards/{boardId}(boardId=${board.boardId})}">
         취소
     </a>
+
 </form>
+
+
+<script>
+
+    const imageInput =
+        document.getElementById("imageInput");
+
+    const images =
+        document.getElementById("images");
+
+    const imageList =
+        document.getElementById("imageList");
+
+    // 선택한 새 이미지들을 저장
+    let selectedFiles = [];
+
+
+    imageInput.addEventListener("change", function () {
+
+        if (this.files.length === 0) {
+            return;
+        }
+
+        // 한 장씩 누적
+        selectedFiles.push(this.files[0]);
+
+        updateFiles();
+
+        // 같은 파일을 다시 선택할 수 있도록 초기화
+        this.value = "";
+    });
+
+
+    function updateFiles() {
+
+        const dataTransfer =
+            new DataTransfer();
+
+        // 서버로 전송할 이미지 목록 생성
+        selectedFiles.forEach(file => {
+            dataTransfer.items.add(file);
+        });
+
+        images.files =
+            dataTransfer.files;
+
+
+        // 기존 미리보기 초기화
+        imageList.innerHTML = "";
+
+
+        // 새 이미지 미리보기 출력
+        selectedFiles.forEach((file, index) => {
+
+            const div =
+                document.createElement("div");
+
+            const previewUrl =
+                URL.createObjectURL(file);
+
+            div.innerHTML = `
+                <img src="${previewUrl}"
+                     alt="새 이미지 미리보기"
+                     width="100">
+
+                <span>${file.name}</span>
+
+                <button type="button"
+                        onclick="removeImage(${index})">
+                    취소
+                </button>
+            `;
+
+            imageList.appendChild(div);
+        });
+    }
+
+
+    // 새로 선택한 이미지 취소
+    function removeImage(index) {
+
+        selectedFiles.splice(index, 1);
+
+        updateFiles();
+    }
+
+</script>
 
 </body>
 </html>

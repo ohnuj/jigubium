@@ -3,6 +3,7 @@ package first_project.recycle.repository;
 
 import first_project.recycle.domain.BoardImage;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,4 +17,13 @@ public interface BoardImageMapper {
 
     // 이미지 삭제
     int deleteByBoardId(Long boardId);
+
+    int deleteImage(
+            @Param("imageId") Long imageId,
+            @Param("boardId") Long boardId
+    );
+
+    BoardImage findById(Long imageId);
+
+    Integer findMaxSortOrder(Long boardId);
 }

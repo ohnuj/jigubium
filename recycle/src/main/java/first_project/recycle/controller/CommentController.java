@@ -5,6 +5,7 @@ import first_project.recycle.config.SessionConst;
 import first_project.recycle.domain.User;
 import first_project.recycle.dto.CommentCreateRequest;
 import first_project.recycle.dto.CommentUpdateRequest;
+import first_project.recycle.exception.ForbiddenException;
 import first_project.recycle.service.CommentService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -65,13 +66,14 @@ public class CommentController {
         }
 
         boolean updated = commentService.updateComment(
+                boardId,
                 commentId,
                 loginUser.getMemberId(),
                 request
         );
 
         if (!updated) {
-            throw new IllegalArgumentException(
+            throw new ForbiddenException(
                     "댓글을 수정할 권한이 없습니다."
             );
         }
@@ -96,12 +98,13 @@ public class CommentController {
         }
 
         boolean deleted = commentService.deleteComment(
+                boardId,
                 commentId,
                 loginUser.getMemberId()
         );
 
         if (!deleted) {
-            throw new IllegalArgumentException(
+            throw new ForbiddenException(
                     "댓글을 삭제할 권한이 없습니다."
             );
         }

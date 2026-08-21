@@ -3,7 +3,10 @@ package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
 import first_project.recycle.domain.BoardType;
+import first_project.recycle.domain.Paging;
 import first_project.recycle.dto.*;
+import first_project.recycle.exception.ForbiddenException;
+import first_project.recycle.service.BoardLikeService;
 import first_project.recycle.service.BoardService;
 import first_project.recycle.domain.User;
 import first_project.recycle.service.CommentService;
@@ -24,6 +27,7 @@ public class BoardController {
 
     private final BoardService boardService;
     private final CommentService commentService;
+    private final BoardLikeService boardLikeService;
 
 
 
@@ -39,6 +43,7 @@ public class BoardController {
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String searchType,
             @RequestParam(required = false)BoardType boardType,
+            @RequestParam(required = false) String sort,
             Model model) {
 
         BoardPageResponse result =
@@ -46,14 +51,32 @@ public class BoardController {
                         page,
                         keyword,
                         searchType,
-                        boardType
+                        boardType,
+                        sort
                 );
 
         // 게시글 목록
         model.addAttribute("boards", result.getBoards());
 
+        Paging paging = result.getPaging();
+
+
         // 페이징 정보
-        model.addAttribute("paging", result.getPaging());
+        model.addAttribute("paging", paging);
+
+        int blockSize = 5;
+
+        int startPage =
+                ((paging.getPage() - 1) / blockSize) * blockSize + 1;
+
+        int endPage =
+                Math.min(
+                        startPage + blockSize - 1,
+                        paging.getTotalPages()
+                );
+
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
 
         // 검색 후 검색어 유지
         model.addAttribute("keyword", keyword);
@@ -62,6 +85,8 @@ public class BoardController {
 
         // 검색 후 선택한 게시판 타입 유지
         model.addAttribute("boardType", boardType);
+
+        model.addAttribute("sort", sort);
 
         return "board/list";
     }
@@ -124,14 +149,21 @@ public class BoardController {
             Model model,
             HttpSession session) {
 
+        BoardDetailResponse board =
+                boardService.getBoardDetail(boardId);
+
         // 게시글 상세 정보
         model.addAttribute(
                 "board",
-                boardService.getBoard(boardId)
+                board
         );
 
         // 댓글 페이징 조회
-        CommentPageResponse commentResult = commentService.getCommentPage(boardId, commentPage);
+        CommentPageResponse commentResult =
+                commentService.getCommentPage(
+                        boardId,
+                        commentPage
+                );
 
         // 해당 게시글의 댓글 목록
         model.addAttribute(
@@ -146,6 +178,31 @@ public class BoardController {
                 (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         model.addAttribute("loginUser", loginUser);
+
+        model.addAttribute(
+                "previousBoard",
+                boardService.getPreviousBoard(boardId)
+        );
+
+        model.addAttribute(
+                "nextBoard",
+                boardService.getNextBoard(boardId)
+        );
+
+        // 좋아요 수
+        board.setLikeCount(
+                boardLikeService.getLikeCount(boardId)
+        );
+
+        // 로그인한 사용자의 좋아요 여부
+        if (loginUser != null) {
+            board.setLiked(
+                    boardLikeService.isLiked(
+                            boardId,
+                            loginUser.getMemberId()
+                    )
+            );
+        }
 
         return "board/detail";
     }
@@ -173,7 +230,7 @@ public class BoardController {
         if (!Objects.equals(
                 board.getMemberId(),
                 loginUser.getMemberId())) {
-            throw new IllegalArgumentException(
+            throw new ForbiddenException(
                     "게시글을 수정할 권한이 없습니다."
             );
         }
@@ -191,9 +248,11 @@ public class BoardController {
     public String updateBoard(
             @PathVariable Long boardId,
             @ModelAttribute BoardUpdateRequest request,
-            HttpSession session) {
+            @RequestParam(required = false)
+            List<MultipartFile> images,
+            HttpSession session, Model model) {
 
-        // 로그인 기능 연동 전 임시 회원 ID
+
         User loginUser =
                 (User)  session.getAttribute(SessionConst.LOGIN_MEMBER);
 
@@ -201,22 +260,26 @@ public class BoardController {
             return "redirect:/login";
         }
 
-        Long memberId = loginUser.getMemberId();
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
 
         boolean updated =
                 boardService.updateBoard(
                         boardId,
-                        memberId,
-                        request
+                        loginUser.getMemberId(),
+                        request,
+                        images
                 );
 
         if (!updated) {
-            throw new IllegalArgumentException(
+            throw new ForbiddenException(
                     "게시글을 수정할 권한이 없습니다."
             );
         }
 
         return "redirect:/boards/" + boardId;
+
     }
 
     /**
@@ -241,13 +304,46 @@ public class BoardController {
                 boardService.deleteBoard(boardId, memberId);
 
         if (!deleted) {
-            throw new IllegalArgumentException(
+            throw new ForbiddenException(
                     "게시글을 삭제할 권한이 없습니다."
             );
         }
 
         return "redirect:/boards";
     }
+
+    /**
+     * 게시글 기존 이미지 개별 삭제
+     */
+    @PostMapping("/{boardId}/images/{imageId}/delete")
+    public String deleteImage(
+            @PathVariable Long boardId,
+            @PathVariable Long imageId,
+            HttpSession session) {
+
+        User loginUser =
+                (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+
+        boolean deleted =
+                boardService.deleteBoardImage(
+                        boardId,
+                        imageId,
+                        loginUser.getMemberId()
+                );
+
+        if (!deleted) {
+            throw new ForbiddenException(
+                    "이미지를 삭제할 권한이 없습니다."
+            );
+        }
+
+        return "redirect:/boards/" + boardId + "/edit";
+    }
+
 
 
 

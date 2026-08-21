@@ -60,11 +60,13 @@ public class CommentService {
      */
     @Transactional
     public boolean updateComment(
+            Long boardId,
             Long commentId,
             Long memberId,
             CommentUpdateRequest request) {
 
         int result = commentMapper.updateComment(
+                boardId,
                 commentId,
                 memberId,
                 request.getContent()
@@ -80,11 +82,15 @@ public class CommentService {
      */
     @Transactional
     public boolean deleteComment(
+            Long boardId,
             Long commentId,
             Long memberId) {
 
         int result =
-                commentMapper.deleteComment(commentId, memberId);
+                commentMapper.deleteComment(
+                        boardId,
+                        commentId,
+                        memberId);
 
         return result > 0;
     }
