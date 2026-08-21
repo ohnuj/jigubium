@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="recycleDB@10.5.3.2" uuid="47a20d6c-05e8-489b-9492-1028f78ac4cf">
+    <data-source source="LOCAL" name="recycleDB@10.5.3.2" uuid="c3a054a7-8f26-44d6-8e12-003cccfb8575">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>

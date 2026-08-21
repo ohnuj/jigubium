@@ -9,6 +9,7 @@ import first_project.recycle.dto.BoardDetailResponse;
 import first_project.recycle.dto.BoardListResponse;
 import first_project.recycle.dto.BoardPageResponse;
 import first_project.recycle.dto.BoardUpdateRequest;
+import first_project.recycle.dto.BoardCreateRequest;
 import first_project.recycle.repository.BoardImageMapper;
 import first_project.recycle.repository.BoardMapper;
 import lombok.RequiredArgsConstructor;
