@@ -30,7 +30,7 @@ public class MypageController {
         if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
             return "redirect:/login";
         }
-        return "redirect:/mypage/myinfo";
+        return "mypage/myinfo";
     }
     @GetMapping("/myinfo")
     public String myInfo(HttpServletRequest request, Model model){
