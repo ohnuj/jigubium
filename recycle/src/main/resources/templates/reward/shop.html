@@ -8,8 +8,16 @@
 <nav>
     <div>
         <a th:href="@{/}">Home</a>
-        <a th:href="@{/mypage}">마이페이지</a>
-        <a th:href="@{/logout}">로그아웃</a>
+        <th:block th:unless="${session.checkLogin}">
+            <a th:href="@{/login}">로그인</a>
+            <a th:href="@{/signup}">회원가입</a>
+        </th:block>
+
+        <th:block th:if="${session.checkLogin}">
+            <a th:href="@{/mypage}">마이페이지</a>
+            <a th:href="@{/logout}">로그아웃</a>
+            <a th:href="@{/reward}">리워드 상점</a>
+        </th:block>
     </div>
 </nav>
 <main>
@@ -20,6 +28,13 @@
             <strong>
                 <span th:text="${currentPoint}">0</span>P
             </strong>
+        </div>
+        <div th:if="${message}">
+            <p th:text="${message}"></p>
+        </div>
+
+        <div th:if="${eMessage}">
+            <p th:text="${eMessage}"></p>
         </div>
         <div>
             <div th:each="reward : ${rewards}">

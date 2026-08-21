@@ -108,7 +108,6 @@ public class KakaoService {
                 user.setProvider("KAKAO");
                 user.setProviderId(providerId);
                 user.setRole("USER");
-                user.setPoint(100);
                 user.setNewUser(true);
 
                 userMapper.insertOAuthUser(user);

@@ -1,9 +1,10 @@
-package first_project.recycle.service;
+package first_project.recycle.service.mapservice.jongnoservice;
 
 import first_project.recycle.domain.ecoLocation;
-import first_project.recycle.domain.ecoLocationDTO.JongnoBatteryBinDTO;
-import first_project.recycle.domain.ecoLocationDTO.JongnoBatteryBinResponse;
-import first_project.recycle.domain.ecoLocationDTO.KakaoAddressResponse;
+import first_project.recycle.domain.ecoLocationdto.jongno.JongnoBatteryBinDTO;
+import first_project.recycle.domain.ecoLocationdto.jongno.JongnoBatteryBinResponse;
+import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
+import first_project.recycle.service.KakaoAddressService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -15,6 +16,8 @@ import java.util.List;
 @Service
 public class JongnoBatteryBinService {
 
+
+
     // 프로퍼티에 있는 공공데이터 api 인증키 가져오기
     @Value("${public-data.service-key}")
     private String serviceKey;
@@ -25,12 +28,19 @@ public class JongnoBatteryBinService {
     //restclient 객체 생성(외부 api 요청 보내는 용)
     private final RestClient restClient = RestClient.create();
 
+    // ecoLocation DB 저장용 Mapper
+    private final EcoLocationMapper ecoLocationMapper;
+
     //카카오맵 연동 주소 검색 서비스(위도/경도 찾아오기)
     private final KakaoAddressService kakaoAddressService;
 
     // 생성자 주입
-    public JongnoBatteryBinService(KakaoAddressService kakaoAddressService) {
+    public JongnoBatteryBinService(
+            KakaoAddressService kakaoAddressService,
+            EcoLocationMapper ecoLocationMapper
+    ) {
         this.kakaoAddressService = kakaoAddressService;
+        this.ecoLocationMapper = ecoLocationMapper;
     }
 
     // 폐건전지 수거함 데이터 가져와서 리스트에 담기
@@ -53,10 +63,46 @@ public class JongnoBatteryBinService {
                 .body(JongnoBatteryBinResponse.class);
 
         // 수거함 정보를 객체변환 뒤 list로 반환
-        return response.getData().stream()
+        List<ecoLocation> locations = response.getData().stream()
                 .map(this::convertToEcoLocation)
                 .toList();
-    }
+
+        // DB에 같은 도로명주소 + 장소타입이 없을 때만 저장
+        locations.forEach(location -> {
+
+            if (location.getLatitude() == null || location.getLongitude() == null){
+                return;
+            }
+
+
+
+            int count =
+                    ecoLocationMapper.countByRoadAddressAndLocationType(
+                            location.getRoadAddress(),
+                            location.getLocationType()
+                    );
+
+            if (count == 0) {
+                ecoLocationMapper.insertEcoLocation(location);
+            }
+        });
+
+        return locations;
+        }
+
+//        API 데이터
+//↓
+//카카오 주소검색
+//↓
+//좌표 있음 → DB 저장 가능
+//좌표 없음 → DB 저장 건너뜀
+//↓
+//전체 locations는 그대로 Controller에 반환
+//↓
+//프론트에서도 좌표 없는 데이터는 이미 무시
+//↓
+//나머지 마커는 정상 표시
+
     //ecoLocation 객체로 변환
     private ecoLocation convertToEcoLocation(JongnoBatteryBinDTO dto) {
         // 변환 결과 저장할 객체
