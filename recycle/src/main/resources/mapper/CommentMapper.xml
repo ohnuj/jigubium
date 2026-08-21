@@ -53,7 +53,10 @@
         SET
             content = #{content},
             updated_at = NOW()
-        WHERE comment_id = #{commentId}
+        WHERE
+            board_id = #{boardId}
+            AND
+            comment_id = #{commentId}
             AND member_id = #{memberId}
     </update>
 
@@ -61,7 +64,10 @@
     <delete id="deleteComment">
 
         DELETE FROM comment
-        WHERE comment_id = #{commentId}
+        WHERE
+            board_id = #{boardId}
+            AND
+            comment_id = #{commentId}
             AND member_id = #{memberId}
     </delete>
 
