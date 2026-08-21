@@ -2,17 +2,35 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>재활용 검색</title>
+
+    <link rel="stylesheet" th:href="@{/css/search.css}">
 </head>
+
 <body>
+
+<!-- =========================
+     상단 네비게이션
+========================= -->
 <nav>
     <div>
-        <a th:href="@{/}">Home</a>
+        <a th:href="@{/}">♻️ 지구비우기</a>
+
+        <div class="nav-center">
+            <a th:href="@{/eco-map}">에코맵</a>
+            <a th:href="@{/game}">재활용게임</a>
+            <a th:href="@{/boards}">커뮤니티</a>
+        </div>
+
+        <!-- 로그인 전 -->
         <th:block th:unless="${session.checkLogin}">
             <a th:href="@{/login}">로그인</a>
             <a th:href="@{/signup}">회원가입</a>
         </th:block>
 
+        <!-- 로그인 후 -->
         <th:block th:if="${session.checkLogin}">
             <a th:href="@{/mypage}">마이페이지</a>
             <a th:href="@{/logout}">로그아웃</a>
@@ -20,91 +38,501 @@
         </th:block>
     </div>
 </nav>
+
+
 <main>
-    <!-- 검색 -->
-    <div>
-        <form action="/recycle/search" method="get">
-            <input
-                    type="text"
-                    name="keyword"
-                    placeholder="재활용품을 입력하세요"
-                    autocomplete="off">
-            <button type="submit">검색</button>
-        </form>
-    </div>
-    <br><br>
-    <p>
-        검색어 :
-        <strong th:text="${keyword}"></strong>
-    </p>
-    <hr>
-    <!-- 검색 결과가 있을 때 -->
-    <div th:if="${!#lists.isEmpty(recycleItems)}">
-        <div th:each="item : ${recycleItems}">
-            <h3 th:text="${item.itemName}">품목명</h3>
-            <div>
-                <strong>분류</strong>
-                <ul>
-                    <li th:text="${item.categoryName}"></li>
-                </ul>
+
+    <!-- =========================
+         검색 Hero
+    ========================= -->
+    <div class="search-hero">
+
+        <div class="search-hero-inner">
+
+            <div class="hero-badge">
+                ● 올바른 분리배출을 위한 첫 걸음
+            </div>
+
+            <h1 class="hero-title">
+                이거 어떻게 버리지?<br>
+                <strong>검색하면 바로 알려드려요</strong>
+            </h1>
+
+            <p class="hero-description">
+                재활용품의 분류부터 배출방법, 상세설명과 주의사항까지<br>
+                쉽고 빠르게 확인해보세요.
+            </p>
+
+
+            <!-- 검색창 -->
+            <form class="search-form"
+                  th:action="@{/recycle/search}"
+                  method="get">
+
+                <div class="search-input-area">
+                    <span class="search-icon">🔍</span>
+
+                    <input
+                            type="text"
+                            name="keyword"
+                            th:value="${keyword}"
+                            placeholder="재활용품을 입력하세요"
+                            autocomplete="off">
+                </div>
+
+                <button type="submit">
+                    검색
+                </button>
+
+            </form>
+
+
+            <!-- 자주 찾는 품목 -->
+            <div class="quick-search">
+
+                <span>자주 찾는 품목</span>
+
+                <a th:href="@{/recycle/search(keyword='페트병')}">
+                    페트병
+                </a>
+
+                <a th:href="@{/recycle/search(keyword='스티로폼')}">
+                    스티로폼
+                </a>
+
+                <a th:href="@{/recycle/search(keyword='건전지')}">
+                    건전지
+                </a>
+
+                <a th:href="@{/recycle/search(keyword='계란 껍데기')}">
+                    계란 껍데기
+                </a>
+
+                <a th:href="@{/recycle/search(keyword='유리병')}">
+                    유리병
+                </a>
 
             </div>
-            <div th:if="${item.dischargeMethod != null}">
-                <strong>배출방법</strong>
-                <ul>
-            <li th:text="${item.dischargeMethod}"></li>
-                 </ul>
 
-            </div>
-            <div>
-                <strong>배출 상세설명</strong>
-
-                <ul>
-                    <li th:each="text : ${#strings.arraySplit(item.disposalMethod, '·')}"
-                        th:if="${!#strings.isEmpty(#strings.trim(text))}"
-                        th:text="${#strings.trim(text)}">
-                    </li>
-                </ul>
-            </div>
-            <div>
-                <strong>부가설명</strong>
-
-                <ul>
-                    <li th:each="text : ${#strings.arraySplit(item.feature, '·')}"
-                        th:if="${!#strings.isEmpty(#strings.trim(text))}"
-                        th:text="${#strings.trim(text)}">
-                    </li>
-                </ul>
-            </div>
-            <div th:if="${item.caution != null and !#strings.isEmpty(item.caution)}">
-                <strong>주의사항</strong>
-
-                <ul>
-                    <li th:each="text : ${#strings.arraySplit(item.caution, '·')}"
-                        th:if="${!#strings.isEmpty(#strings.trim(text))}"
-                        th:text="${#strings.trim(text)}">
-                    </li>
-                </ul>
-            </div>
-            <div>
-                <strong>관련품목</strong>
-
-                <ul>
-                    <li th:each="relatedItem : ${item.relatedItems}">
-                        <a th:href="@{/recycle/search(keyword=${relatedItem})}"
-                           th:text="${relatedItem}">
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <hr>
         </div>
+
     </div>
 
-    <!-- 검색 결과가 없을 때 -->
-    <div th:if="${#lists.isEmpty(recycleItems)}">
-        <p>검색 결과가 없습니다.</p>
+
+    <!-- =========================
+         검색 결과
+    ========================= -->
+    <div class="search-content">
+
+
+        <!-- 검색 결과 헤더 -->
+        <div class="search-result-header">
+
+            <div class="result-title-area">
+
+                <span class="result-label">
+                    검색 결과
+                </span>
+
+                <h2>
+                    '<strong th:text="${keyword}">검색어</strong>'
+                    검색 결과
+                </h2>
+
+            </div>
+
+
+            <div class="result-count"
+                 th:if="${recycleItems != null}">
+
+                총
+                <strong th:text="${#lists.size(recycleItems)}">
+                    0
+                </strong>
+                건
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             검색 결과 있음
+        ========================= -->
+        <div class="result-list"
+             th:if="${!#lists.isEmpty(recycleItems)}">
+
+
+            <!-- 결과 카드 -->
+            <div class="recycle-card"
+                 th:each="item : ${recycleItems}">
+
+
+                <!-- 카드 상단 -->
+                <div class="card-header">
+
+                    <div class="card-title">
+
+                        <span class="recycle-label">
+                            RECYCLING GUIDE
+                        </span>
+
+                        <h3 th:text="${item.itemName}">
+                            품목명
+                        </h3>
+
+                    </div>
+
+
+                    <div class="category-badge"
+                         th:text="${item.categoryName}">
+                        분류
+                    </div>
+
+                </div>
+
+
+
+                <!-- 카드 본문 -->
+                <div class="card-body">
+
+
+                    <!-- =========================
+                         핵심 정보
+                         분류 / 배출방법
+                    ========================= -->
+                    <div class="primary-info-grid">
+
+
+                        <!-- 분류 -->
+                        <div class="primary-info-box">
+
+                            <div class="primary-info-title">
+
+                                <span class="primary-icon">
+                                    ♻
+                                </span>
+
+                                <div>
+                                    <span class="primary-label">
+                                        분류
+                                    </span>
+
+                                    <strong>
+                                        어떤 종류인가요?
+                                    </strong>
+                                </div>
+
+                            </div>
+
+
+                            <div class="primary-info-value"
+                                 th:text="${item.categoryName}">
+                                재활용품
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- 배출방법 -->
+                        <div class="primary-info-box discharge-box"
+                             th:if="${item.dischargeMethod != null
+                             and !#strings.isEmpty(item.dischargeMethod)}">
+
+                            <div class="primary-info-title">
+
+                                <span class="primary-icon">
+                                    🗑️
+                                </span>
+
+                                <div>
+                                    <span class="primary-label">
+                                        배출방법
+                                    </span>
+
+                                    <strong>
+                                        어디에 버리나요?
+                                    </strong>
+                                </div>
+
+                            </div>
+
+
+                            <div class="primary-info-value"
+                                 th:text="${item.dischargeMethod}">
+                                종량제봉투
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =========================
+                         배출 상세설명
+                    ========================= -->
+                    <div class="info-section"
+                         th:if="${item.disposalMethod != null
+                         and !#strings.isEmpty(item.disposalMethod)}">
+
+                        <div class="info-title">
+
+                            <span class="info-icon">
+                                📋
+                            </span>
+
+                            <div>
+                                <strong>배출 상세설명</strong>
+                                <span>이렇게 배출해주세요.</span>
+                            </div>
+
+                        </div>
+
+
+                        <ul>
+
+                            <li th:each="text :
+                                ${#strings.arraySplit(item.disposalMethod, '·')}"
+                                th:if="${!#strings.isEmpty(#strings.trim(text))}"
+                                th:text="${#strings.trim(text)}">
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+
+
+                    <!-- =========================
+                         부가설명
+                    ========================= -->
+                    <div class="info-section"
+                         th:if="${item.feature != null
+                         and !#strings.isEmpty(item.feature)}">
+
+                        <div class="info-title">
+
+                            <span class="info-icon">
+                                💡
+                            </span>
+
+                            <div>
+                                <strong>부가설명</strong>
+                                <span>알아두면 좋은 정보예요.</span>
+                            </div>
+
+                        </div>
+
+
+                        <ul>
+
+                            <li th:each="text :
+                                ${#strings.arraySplit(item.feature, '·')}"
+                                th:if="${!#strings.isEmpty(#strings.trim(text))}"
+                                th:text="${#strings.trim(text)}">
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+
+
+                    <!-- =========================
+                         주의사항
+                    ========================= -->
+                    <div class="caution-section"
+                         th:if="${item.caution != null
+                         and !#strings.isEmpty(item.caution)}">
+
+                        <div class="caution-title">
+
+                            <span class="caution-icon">
+                                ⚠️
+                            </span>
+
+                            <div>
+                                <strong>주의사항</strong>
+                                <span>배출 전에 꼭 확인해주세요.</span>
+                            </div>
+
+                        </div>
+
+
+                        <ul>
+
+                            <li th:each="text :
+                                ${#strings.arraySplit(item.caution, '·')}"
+                                th:if="${!#strings.isEmpty(#strings.trim(text))}"
+                                th:text="${#strings.trim(text)}">
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+
+
+                    <!-- =========================
+                         관련 품목
+                    ========================= -->
+                    <div class="related-section"
+                         th:if="${item.relatedItems != null
+                         and !#lists.isEmpty(item.relatedItems)}">
+
+                        <div class="related-title">
+                            관련 품목
+                        </div>
+
+
+                        <div class="related-items">
+
+                            <a th:each="relatedItem : ${item.relatedItems}"
+                               th:href="@{/recycle/search(keyword=${relatedItem})}"
+                               th:text="${relatedItem}">
+                                관련품목
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             검색 결과 없음
+        ========================= -->
+        <div class="empty-result"
+             th:if="${#lists.isEmpty(recycleItems)}">
+
+            <div class="empty-icon">
+                🔍
+            </div>
+
+            <h3>
+                검색 결과가 없습니다.
+            </h3>
+
+            <p>
+                검색어를 다시 확인하거나 다른 재활용품을 검색해보세요.
+            </p>
+
+        </div>
+
     </div>
+
 </main>
+
+
+<!-- =========================
+     Footer
+========================= -->
+<footer th:fragment="footer" class="footer">
+
+    <div class="footer-container">
+
+
+        <!-- 왼쪽: 서비스 소개 -->
+        <div class="footer-brand">
+
+            <h3>♻️ 지구비우기</h3>
+
+            <p>
+                올바른 분리배출부터 주변 수거시설 확인까지,<br>
+                일상 속 친환경 실천을 돕는 서비스입니다.
+            </p>
+
+        </div>
+
+
+
+        <!-- 가운데: 주요 서비스 -->
+        <div class="footer-menu">
+
+            <h4>서비스</h4>
+
+            <ul>
+
+                <li>
+                    <a th:href="@{/}">
+                        홈
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/boards}">
+                        커뮤니티
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/reward}">
+                        리워드 상점
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/mypage}">
+                        마이페이지
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+
+
+        <!-- 오른쪽: 프로젝트 정보 -->
+        <div class="footer-info">
+
+            <h4>Project</h4>
+
+            <p>
+                생활형 친환경 실천 플랫폼
+            </p>
+
+            <p>
+                Spring Boot · MyBatis · Thymeleaf · MySQL
+            </p>
+
+            <p>
+                공공데이터 기반 재활용 정보 서비스
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 딱갈라. 지구비우기.All rights reserved.
+        </p>
+
+        <p class="footer-notice">
+            본 서비스는 교육 프로젝트 목적으로 제작되었습니다.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<script th:if="${message}">
+    alert('[[${message}]]');
+</script>
+
 </body>
 </html>
