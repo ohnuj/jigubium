@@ -21,6 +21,9 @@ public class BoardDetailResponse {
     private String content;
     private String nickname;
     private LocalDateTime createdAt;
+    private Integer viewCount;
+    private Integer likeCount;
+    private boolean liked;
 
     private List<BoardImage> images;
 }

@@ -46,6 +46,34 @@
             'yyyy-MM-dd HH:mm')}">
     </span>
   </p>
+
+    <p>
+        조회수:
+        <span th:text="${board.viewCount}">
+            0
+        </span>
+    </p>
+
+    <p>
+        좋아요:
+        <span th:text="${board.likeCount}">
+            0
+        </span>
+    </p>
+
+    <!-- 로그인했고, 작성자가 아닐 때만 좋아요 버튼 -->
+    <form th:if="${loginUser != null
+        and loginUser.memberId != board.memberId}"
+          th:action="@{/boards/{boardId}/like(
+            boardId=${board.boardId}
+      )}"
+          method="post">
+
+        <button type="submit"
+                th:text="${board.liked ? '좋아요 취소' : '좋아요'}">
+            좋아요
+        </button>
+    </form>
 </div>
 
 <hr>

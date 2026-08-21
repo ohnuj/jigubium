@@ -40,7 +40,8 @@ public class BoardService {
             int page,
             String keyword,
             String searchType,
-            BoardType boardType) {
+            BoardType boardType,
+            String sort) {
 
         int totalCount =
                 boardMapper.countBoards(
@@ -51,10 +52,12 @@ public class BoardService {
 
         Paging paging = new Paging(page, PAGE_SIZE, totalCount);
 
-        List<BoardListResponse> boards = boardMapper.findBoards(
+        List<BoardListResponse> boards =
+                boardMapper.findBoards(
                 keyword,
                 searchType,
                 boardType,
+                sort,
                 paging.getOffset(),
                 paging.getSize()
         );
@@ -122,6 +125,33 @@ public class BoardService {
         }
 
         // 게시글 이미지 조회
+        List<BoardImage> images =
+                boardImageMapper.findByBoardId(boardId);
+
+        board.setImages(images);
+
+        return board;
+    }
+
+    @Transactional
+    public BoardDetailResponse getBoardDetail(Long boardId) {
+
+        BoardDetailResponse board =
+                boardMapper.findById(boardId);
+
+        if (board == null) {
+            throw new NotFoundException(
+                    "존재하지 않는 게시글입니다."
+            );
+        }
+
+        // 조회수 증가
+        boardMapper.increaseViewCount(boardId);
+
+        // 증가된 조회수 다시 조회
+        board = boardMapper.findById(boardId);
+
+        // 이미지 조회
         List<BoardImage> images =
                 boardImageMapper.findByBoardId(boardId);
 

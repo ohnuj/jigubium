@@ -93,13 +93,22 @@
                 b.board_type,
                 b.title,
                 m.nickname,
+                b.view_count,
                 b.created_at,
-                b.updated_at
+                b.updated_at,
+                COUNT(DISTINCT c.comment_id) AS comment_count,
+                COUNT(DISTINCT bl.like_id) AS like_count
 
             FROM board b
 
             JOIN member m
                 ON b.member_id = m.member_id
+
+            LEFT JOIN comment c
+                ON b.board_id = c.board_id
+
+            LEFT JOIN board_like bl
+                ON b.board_id = bl.board_id
 
             <where>
 
@@ -133,8 +142,42 @@
                </choose>
             </if>
             </where>
+            GROUP BY
+                b.board_id,
+                b.board_type,
+                b.title,
+                m.nickname,
+                b.view_count,
+                b.created_at,
+                b.updated_at
 
-            ORDER BY b.created_at DESC
+            <choose>
+
+                <!-- 조회수 많은 순 -->
+            <when test="sort == 'view'">
+                ORDER BY b.view_count DESC,
+                         b.board_id DESC
+            </when>
+
+                <!-- 댓글 많은 순 -->
+            <when test="sort == 'comment'">
+                ORDER BY comment_count DESC,
+                        b.board_id DESC
+            </when>
+
+            <!-- 좋아요 많은 순 -->
+            <when test="sort == 'like'">
+                ORDER BY like_count DESC,
+                            b.board_id DESC
+            </when>
+
+            <!-- 기본 최신순 -->
+            <otherwise>
+                ORDER BY b.created_at DESC,
+                        b.board_id DESC
+            </otherwise>
+
+            </choose>
 
             LIMIT #{size}
             OFFSET #{offset}
@@ -151,7 +194,9 @@
             b.title,
             b.content,
             m.nickname,
-            b.created_at
+            b.view_count,
+            b.created_at,
+            b.updated_at
         FROM board b
         JOIN member m
             ON b.member_id = m.member_id
@@ -178,4 +223,10 @@
         WHERE board_id = #{boardId}
             AND member_id = #{memberId}
     </delete>
+
+    <update id="increaseViewCount">
+        UPDATE board
+        SET view_count = view_count + 1
+        WHERE board_id = #{boardId}
+    </update>
 </mapper>

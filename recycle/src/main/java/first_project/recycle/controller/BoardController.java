@@ -5,6 +5,7 @@ import first_project.recycle.config.SessionConst;
 import first_project.recycle.domain.BoardType;
 import first_project.recycle.dto.*;
 import first_project.recycle.exception.ForbiddenException;
+import first_project.recycle.service.BoardLikeService;
 import first_project.recycle.service.BoardService;
 import first_project.recycle.domain.User;
 import first_project.recycle.service.CommentService;
@@ -25,6 +26,7 @@ public class BoardController {
 
     private final BoardService boardService;
     private final CommentService commentService;
+    private final BoardLikeService boardLikeService;
 
 
 
@@ -40,6 +42,7 @@ public class BoardController {
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String searchType,
             @RequestParam(required = false)BoardType boardType,
+            @RequestParam(required = false) String sort,
             Model model) {
 
         BoardPageResponse result =
@@ -47,7 +50,8 @@ public class BoardController {
                         page,
                         keyword,
                         searchType,
-                        boardType
+                        boardType,
+                        sort
                 );
 
         // 게시글 목록
@@ -63,6 +67,8 @@ public class BoardController {
 
         // 검색 후 선택한 게시판 타입 유지
         model.addAttribute("boardType", boardType);
+
+        model.addAttribute("sort", sort);
 
         return "board/list";
     }
@@ -125,14 +131,21 @@ public class BoardController {
             Model model,
             HttpSession session) {
 
+        BoardDetailResponse board =
+                boardService.getBoardDetail(boardId);
+
         // 게시글 상세 정보
         model.addAttribute(
                 "board",
-                boardService.getBoard(boardId)
+                board
         );
 
         // 댓글 페이징 조회
-        CommentPageResponse commentResult = commentService.getCommentPage(boardId, commentPage);
+        CommentPageResponse commentResult =
+                commentService.getCommentPage(
+                        boardId,
+                        commentPage
+                );
 
         // 해당 게시글의 댓글 목록
         model.addAttribute(
@@ -147,6 +160,21 @@ public class BoardController {
                 (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         model.addAttribute("loginUser", loginUser);
+
+        // 좋아요 수
+        board.setLikeCount(
+                boardLikeService.getLikeCount(boardId)
+        );
+
+        // 로그인한 사용자의 좋아요 여부
+        if (loginUser != null) {
+            board.setLiked(
+                    boardLikeService.isLiked(
+                            boardId,
+                            loginUser.getMemberId()
+                    )
+            );
+        }
 
         return "board/detail";
     }
