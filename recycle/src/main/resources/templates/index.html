@@ -3,29 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
 
 <body>
 
 <nav>
     <div>
-        <a th:href="@{/}">Home</a>
-            <th:block th:unless="${session.checkLogin}">
-                <a th:href="@{/login}">로그인</a>
-                <a th:href="@{/signup}">회원가입</a>
-            </th:block>
-
-            <th:block th:if="${session.checkLogin}">
-                <a th:href="@{/mypage}">마이페이지</a>
-                <a th:href="@{/logout}">로그아웃</a>
-                <a th:href="@{/reward}">리워드 상점</a>
-            </th:block>
+        <a th:href="@{/}">♻️ 지구비우기</a>
+        <div class="nav-center">
+            <a th:href="@{/eco-map}">에코맵</a>
+            <a th:href="@{/game}">재활용게임</a>
+            <a th:href="@{/boards}">커뮤니티</a>
         </div>
+        <th:block th:unless="${session.checkLogin}">
+            <a th:href="@{/login}">로그인</a>
+            <a th:href="@{/signup}">회원가입</a>
+        </th:block>
+
+        <th:block th:if="${session.checkLogin}">
+            <a th:href="@{/mypage}">마이페이지</a>
+            <a th:href="@{/logout}">로그아웃</a>
+            <a th:href="@{/reward}">리워드 상점</a>
+        </th:block>
+    </div>
 </nav>
 
 <main>
     <!-- 검색 -->
     <div>
+        <div class="hero-badge">
+            ● 더 나은 지구를 위한 첫 걸음
+        </div>
+
+        <h1 class="hero-title">
+            올바른 분리수거,<br>
+            <strong>함께 시작해요</strong>
+        </h1>
+
+        <p class="hero-description">
+            재활용품을 검색하고, 가까운 수거함을 찾고,<br>
+            게임으로 분리배출을 쉽게 배워보세요.
+        </p>
         <form th:action="@{/recycle/search}" method="get">
             <input
                     type="text"
@@ -37,12 +56,13 @@
         <div class="quick-search">
             <span>자주 찾는 품목</span>
 
-            <a th:href="@{/recycle/search(keyword='페트병')}">페트병</a>
-            <a th:href="@{/recycle/search(keyword='스티로폼')}">스티로폼</a>
-            <a th:href="@{/recycle/search(keyword='건전지')}">건전지</a>
-            <a th:href="@{/recycle/search(keyword='계란 껍데기')}">계란 껍데기</a>
-            <a th:href="@{/recycle/search(keyword='유리병')}">유리병</a>
+            <a th:href="@{/recycle(keyword='페트병')}">페트병</a>
+            <a th:href="@{/recycle(keyword='스티로폼')}">스티로폼</a>
+            <a th:href="@{/recycle(keyword='건전지')}">건전지</a>
+            <a th:href="@{/recycle(keyword='계란 껍데기')}">계란 껍데기</a>
+            <a th:href="@{/recycle(keyword='유리병')}">유리병</a>
         </div>
+
     </div>
     <br><br>
     <!-- 메인 콘텐츠 전체 -->
@@ -175,7 +195,7 @@
 
         <!-- 왼쪽: 서비스 소개 -->
         <div class="footer-brand">
-            <h3>🌱 ECO RECYCLE</h3>
+            <h3>♻️ 지구비우기</h3>
             <p>
                 올바른 분리배출부터 주변 수거시설 확인까지,<br>
                 일상 속 친환경 실천을 돕는 서비스입니다.
@@ -193,7 +213,7 @@
                 </li>
 
                 <li>
-                    <a th:href="@{/board}">커뮤니티</a>
+                    <a th:href="@{/boards}">커뮤니티</a>
                 </li>
 
                 <li>
@@ -222,7 +242,7 @@
     <!-- 아래 -->
     <div class="footer-bottom">
         <p>
-            © 2026 ECO RECYCLE. All rights reserved.
+            © 2026 딱갈라. 지구비우기.All rights reserved.
         </p>
 
         <p class="footer-notice">
