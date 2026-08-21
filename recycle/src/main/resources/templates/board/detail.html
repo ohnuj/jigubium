@@ -106,33 +106,50 @@
     <div th:if="${loginUser != null
             and loginUser.memberId == comment.memberId}">
 
-        <!-- 댓글 수정 -->
-        <form th:action="@{/boards/{boardId}/comments/{commentId}/edit(
-                boardId=${board.boardId},
-                commentId=${comment.commentId}
-                )}"
-              method="post">
+        <!-- 처음에는 수정/삭제 버튼만 표시 -->
+        <button type="button"
+                th:onclick="'toggleEdit(' + ${comment.commentId} + ')'">
+            수정
+        </button>
 
-            <textarea name="content"
-                      th:text="${comment.content}"
-                      required></textarea>
-
-            <button type="submit">
-                수정
-            </button>
-        </form>
-
-        <!-- 댓글 삭제 -->
         <form th:action="@{/boards/{boardId}/comments/{commentId}/delete(
                 boardId=${board.boardId},
                 commentId=${comment.commentId}
               )}"
-              method="post">
+              method="post"
+              style="display: inline;"
+              onsubmit="return confirm('정말 삭제하시겠습니까?');">
 
             <button type="submit">
                 삭제
             </button>
         </form>
+
+        <!-- 수정 버튼을 눌렀을 때만 보이는 수정 폼 -->
+        <div th:id="'editForm-' + ${comment.commentId}"
+             style="display: none;">
+
+            <form th:action="@{/boards/{boardId}/comments/{commentId}/edit(
+                    boardId=${board.boardId},
+                    commentId=${comment.commentId}
+                  )}"
+                  method="post">
+
+                <textarea name="content"
+                          th:text="${comment.content}"
+                          required></textarea>
+
+                <button type="submit">
+                    수정 완료
+                </button>
+
+                <button type="button"
+                        th:onclick="'toggleEdit(' + ${comment.commentId} + ')'">
+                    취소
+                </button>
+            </form>
+        </div>
+
     </div>
 
     <hr>
@@ -195,12 +212,27 @@
 <form th:action="@{/boards/{boardId}/delete(
         boardId=${board.boardId}
         )}"
-      method="post">
+      method="post"
+      onsubmit="return confirm('게시글을 정말 삭제하시겠습니까?');">
 
     <button type="submit">
       삭제
     </button>
 </form>
 </div>
+
+<script>
+    function toggleEdit(commentId) {
+
+        const editForm =
+            document.getElementById("editForm-" + commentId);
+
+        if (editForm.style.display === "none") {
+            editForm.style.display = "block";
+        }else {
+            editForm.style.display = "none";
+        }
+    }
+</script>
 </body>
 </html>
