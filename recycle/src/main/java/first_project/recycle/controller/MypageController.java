@@ -1,9 +1,11 @@
 package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
+import first_project.recycle.domain.EcoPointHistory;
 import first_project.recycle.domain.Member;
 import first_project.recycle.domain.MemberInfo;
 import first_project.recycle.domain.User;
+import first_project.recycle.service.BoardService;
 import first_project.recycle.service.EcoPointHistoryService;
 import first_project.recycle.service.MypageService;
 import jakarta.servlet.http.HttpServlet;
@@ -15,6 +17,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 @RequiredArgsConstructor
 @RequestMapping("/mypage")
 @Controller
@@ -22,6 +28,7 @@ public class MypageController {
 
     private final MypageService mypageService;
     private final EcoPointHistoryService ecoPointHistoryService;
+    private final BoardService boardService;
 
     // 1. 디폴트 진입 -> 로그인 체크 후 내 정보(myinfo) 페이지로 이동
     @GetMapping("")
@@ -32,6 +39,8 @@ public class MypageController {
         }
         return "redirect:/mypage/myinfo";
     }
+
+    // 내 정보 화면
     @GetMapping("/myinfo")
     public String myInfo(HttpServletRequest request, Model model){
         HttpSession session = request.getSession(false);
@@ -47,9 +56,13 @@ public class MypageController {
         Member member = mypageService.getMemberInfo(memberId);
         int currentPoint = ecoPointHistoryService.findCurrentBalance(memberId);
 
+        // 누적 적립된 에코포인트 조회
+        int totalEarnPoint = ecoPointHistoryService.findTotalPoint(memberId);
+
         model.addAttribute("member",member);
         model.addAttribute("currentTab","myinfo");
         model.addAttribute("currentPoint", currentPoint);
+        model.addAttribute("totalPoint", totalEarnPoint);
 
         return "mypage/myinfo";
     }
@@ -188,11 +201,55 @@ public class MypageController {
     }
 
     // 회원 활동 조회
- //   @GetMapping("/activity")
-  //  public String memberActicity(HttpServletRequest request, Model model) {
-  //      HttpSession session = request.getSession(false);
-   //     if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
-   //     return "redirect:/login";
-   //     }
+    @GetMapping("/memberactivity")
+   public String memberActicity(
+           @RequestParam(name = "page", defaultValue = "1") int page,
+           HttpServletRequest request, Model model) {
+
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
+        return "redirect:/login";
+        }
+
+        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        Long memberId = loginUser.getMemberId();
+
+        // 한 페이지당 보여줄 게시물 개수
+        int pageSize = 10;
+
+        // 1. 포인트 내역 페이징 데이터 조회
+        int pointPageCount = mypageService.getPointPageCount(memberId);
+        int pagingPages = (int) Math.ceil((double) pointPageCount / pageSize);
+
+        if(pagingPages == 0) pagingPages = 1;
+
+        // 2. 에코포인트 변동 내역 조회
+            List<EcoPointHistory> pointHistoryList = mypageService.getPointHistoryPaging(memberId, page, pageSize);
+
+        // 3. 현재 보유 포인트
+            int currentPoint = ecoPointHistoryService.findCurrentBalance(memberId);
+
+        // 4. 작성한 총 게시글 수 조회
+            int boardCount = boardService.getBoardCount(memberId);
+
+        // 5. 리워드 상품명 및 보유 갯수
+        List<Map<String, Object>> myRewardList = mypageService.getMyReward(memberId);
+
+            // 모델에 데이터 바인딩
+            model.addAttribute("boardCount",boardCount);
+            model.addAttribute("pointHistoryList", pointHistoryList);
+            model.addAttribute("currentTab","activity");
+            model.addAttribute("currentPoint", currentPoint);
+            model.addAttribute("rewardList", myRewardList);
+
+            // 페이징 관련 변수 전달
+            model.addAttribute("currentPage",page);
+            model.addAttribute("pagingPages", pagingPages);
+            model.addAttribute("pointPageCount", pointPageCount);
+
+            return "mypage/myActivity";
+        }
+
+
 
 }
