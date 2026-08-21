@@ -29,4 +29,70 @@
         WHERE member_id = #{memberId}
     </delete>
 
+    <!-- 4. 특정 회원의 게시글 작성 수 조회 -->
+    <select id="countBoardsById" resultType="int">
+        SELECT COUNT(*)
+        FROM board
+        WHERE member_id = #{memberId}
+    </select>
+
+    <!-- 5. 에코포인트 변동 내역 목록 -->
+    <select id="findPointHistoryById" resultType="first_project.recycle.domain.EcoPointHistory">
+        SELECT
+            eco_point_history_id AS ecoPointHistoryId,
+            member_id AS memberId,
+            point_amount AS pointAmount,
+            balance_after AS balanceAfter,
+            point_type AS pointType,
+            reference_type AS referenceType,
+            reference_id AS referenceId,
+            created_at AS createdAt
+
+        FROM eco_point_history
+        WHERE member_id=#{memberId}
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 5-1. 에코포인트 총 내역 건수 조회 -->
+    <select id = "countPointHistoryById" resultType="int">
+        SELECT COUNT(*)
+        FROM eco_point_history
+        WHERE member_id =#{memberId}
+    </select>
+
+    <!-- 페이징 적용된 에코포인트 변동 내역 목록 (최신순 10개) -->
+    <select id="findPointHistoryPagingById" resultType="first_project.recycle.domain.EcoPointHistory">
+        SELECT
+            eco_point_history_id AS ecoPointHistoryId,
+            member_id            AS memberId,
+            point_amount         AS pointAmount,
+            balance_after        AS balanceAfter,
+            point_type           AS pointType,
+            reference_type       AS referenceType,
+            reference_id         AS referenceId,
+            created_at           AS createdAt
+        FROM eco_point_history
+        WHERE member_id = #{memberId}
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 6. 회원이 보유한 리워드 상품명과 갯수(구매한 행의 갯수로 계산)조회 -->
+    <!-- 회원이 보유한 리워드 상품명 및 개수 조회 -->
+    <select id="findMyRewardById" resultType="java.util.HashMap">
+        SELECT
+            CASE
+                WHEN r.reward_name = 'eco_sticker' THEN '친환경 스티커'
+                WHEN r.reward_name = 'tumbler_coupon' THEN '텀블러 할인 쿠폰'
+                WHEN r.reward_name = 'eco_bag' THEN '에코백'
+                WHEN r.reward_name = 'eco_goods' THEN '친환경 굿즈 세트'
+                ELSE r.reward_name
+                END AS rewardName,
+            COUNT(re.exchange_id) AS itemCount
+        FROM reward_exchange re
+                 JOIN reward r ON re.reward_id = r.reward_id
+        WHERE re.member_id = #{memberId}
+        GROUP BY r.reward_id, r.reward_name
+    </select>
+
 </mapper>

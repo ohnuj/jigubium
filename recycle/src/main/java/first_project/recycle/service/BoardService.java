@@ -12,6 +12,7 @@ import first_project.recycle.dto.BoardUpdateRequest;
 import first_project.recycle.dto.BoardCreateRequest;
 import first_project.recycle.repository.BoardImageMapper;
 import first_project.recycle.repository.BoardMapper;
+import first_project.recycle.repository.MypageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ public class BoardService {
     private final FileStorageService fileStorageService;
     private final CommentService commentService;
     private final EcoPointHistoryService ecoPointHistoryService;
+    private final MypageMapper mypageMapper;
 
     // 메인페이지 최신 게시글 조회
     public List<BoardListResponse> getRecentBoards() {
@@ -198,8 +200,8 @@ public class BoardService {
         return true;
     }
 
-
-
-
-
+    // 마이파이지 활동 조회 - 작성한 총 게시글 수
+    public int getBoardCount(Long memberId) {
+        return mypageMapper.countBoardsById(memberId);
+    }
 }
