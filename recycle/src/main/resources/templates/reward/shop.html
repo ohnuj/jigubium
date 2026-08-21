@@ -2,73 +2,387 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>리워드 상점</title>
+
+    <link rel="stylesheet" th:href="@{/css/shop.css}">
 </head>
+
 <body>
+
+<!-- =========================
+     상단 네비게이션
+========================= -->
 <nav>
     <div>
-        <a th:href="@{/}">Home</a>
+        <a th:href="@{/}">♻️ 지구비우기</a>
+
+        <div class="nav-center">
+            <a th:href="@{/eco-map}">에코맵</a>
+            <a th:href="@{/game}">재활용게임</a>
+            <a th:href="@{/boards}">커뮤니티</a>
+        </div>
+
+        <!-- 로그인 전 -->
         <th:block th:unless="${session.checkLogin}">
             <a th:href="@{/login}">로그인</a>
             <a th:href="@{/signup}">회원가입</a>
         </th:block>
 
+        <!-- 로그인 후 -->
         <th:block th:if="${session.checkLogin}">
             <a th:href="@{/mypage}">마이페이지</a>
             <a th:href="@{/logout}">로그아웃</a>
-            <a th:href="@{/reward}">리워드 상점</a>
+            <a class="active" th:href="@{/reward}">리워드 상점</a>
         </th:block>
     </div>
 </nav>
+
+
 <main>
-    <div>
-        <h1>리워드 상점</h1>
-        <div>
-            보유 에코포인트 :
-            <strong>
-                <span th:text="${currentPoint}">0</span>P
-            </strong>
-        </div>
-        <div th:if="${message}">
-            <p th:text="${message}"></p>
-        </div>
 
-        <div th:if="${eMessage}">
-            <p th:text="${eMessage}"></p>
-        </div>
-        <div>
-            <div th:each="reward : ${rewards}">
+    <!-- =========================
+         리워드 Hero
+    ========================= -->
+    <div class="reward-hero">
 
-                <img th:src="${reward.imageUrl}" width="300" th:alt="${reward.rewardName}">
+        <div class="reward-hero-inner">
 
-                <div th:text="${reward.rewardName}">
-                    상품명
-                </div>
-
-                <div>
-                    <span th:text="${reward.requiredPoint}">0</span>P
-                </div>
-
-                <div>
-                    남은 수량 :
-                    <span th:text="${reward.stockQuantity}">0</span>개
-                </div>
-                <!-- 리워드 교환 -->
-                <form th:action="@{/reward/exchange}" method="post">
-                    <input type="hidden"
-                           name="rewardId"
-                           th:value="${reward.rewardId}">
-
-                    <button type="submit"
-                            th:disabled="${reward.stockQuantity <= 0}"
-                            th:text="${reward.stockQuantity > 0 ? '교환하기' : '품절'}">
-                        교환하기
-                    </button>
-
-                </form>
+            <div class="hero-badge">
+                ● 친환경 실천으로 모은 포인트
             </div>
+
+            <h1 class="hero-title">
+                에코포인트를<br>
+                <strong>리워드로 바꿔보세요</strong>
+            </h1>
+
+            <p class="hero-description">
+                지구를 위한 작은 실천으로 모은 에코포인트를<br>
+                다양한 리워드 상품으로 교환할 수 있어요.
+            </p>
+
+
+            <!-- 보유 포인트 -->
+            <div class="point-summary">
+
+                <div class="point-icon">
+                    🌱
+                </div>
+
+                <div class="point-info">
+
+                    <span class="point-label">
+                        현재 보유 에코포인트
+                    </span>
+
+                    <div class="point-value">
+                        <strong th:text="${currentPoint}">0</strong>
+                        <span>P</span>
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
+
     </div>
+
+
+    <!-- =========================
+         리워드 콘텐츠
+    ========================= -->
+    <div class="reward-content">
+
+
+        <!-- =========================
+             성공 / 안내 메시지
+        ========================= -->
+        <div class="reward-message success-message"
+             th:if="${message}">
+
+            <span class="message-icon">✓</span>
+
+            <p th:text="${message}">
+                교환이 완료되었습니다.
+            </p>
+
+        </div>
+
+
+        <!-- =========================
+             에러 메시지
+        ========================= -->
+        <div class="reward-message error-message"
+             th:if="${eMessage}">
+
+            <span class="message-icon">!</span>
+
+            <p th:text="${eMessage}">
+                교환에 실패했습니다.
+            </p>
+
+        </div>
+
+
+
+        <!-- =========================
+             상품 영역 제목
+        ========================= -->
+        <div class="reward-section-header">
+
+            <div>
+                <span class="section-label">
+                    REWARD SHOP
+                </span>
+
+                <h2>
+                    리워드 상품
+                </h2>
+
+                <p>
+                    보유한 에코포인트로 원하는 상품을 교환해보세요.
+                </p>
+            </div>
+
+
+            <div class="reward-count"
+                 th:if="${rewards != null}">
+
+                총
+                <strong th:text="${#lists.size(rewards)}">0</strong>
+                개 상품
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             리워드 상품 목록
+        ========================= -->
+        <div class="reward-grid"
+             th:if="${rewards != null and !#lists.isEmpty(rewards)}">
+
+
+            <!-- 상품 하나 -->
+            <div class="reward-card"
+                 th:each="reward : ${rewards}"
+                 th:classappend="${reward.stockQuantity <= 0} ? ' sold-out' : ''">
+
+
+                <!-- 상품 이미지 -->
+                <div class="reward-image-area">
+
+                    <img th:src="${reward.imageUrl}"
+                         th:alt="${reward.rewardName}">
+
+
+                    <!-- 품절 표시 -->
+                    <div class="sold-out-overlay"
+                         th:if="${reward.stockQuantity <= 0}">
+
+                        <span>
+                            SOLD OUT
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- 상품 내용 -->
+                <div class="reward-card-body">
+
+
+                    <!-- 상품명 -->
+                    <div class="reward-name"
+                         th:text="${reward.rewardName}">
+                        상품명
+                    </div>
+
+
+                    <!-- 포인트 -->
+                    <div class="reward-point">
+
+                        <span class="point-leaf">
+                            🌱
+                        </span>
+
+                        <strong th:text="${reward.requiredPoint}">
+                            0
+                        </strong>
+
+                        <span>P</span>
+
+                    </div>
+
+
+
+                    <!-- 재고 -->
+                    <div class="reward-stock">
+
+                        <span>
+                            남은 수량
+                        </span>
+
+                        <strong th:text="${reward.stockQuantity}">
+                            0
+                        </strong>
+
+                        <span>
+                            개
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- 리워드 교환 -->
+                    <form th:action="@{/reward/exchange}"
+                          method="post">
+
+                        <input type="hidden"
+                               name="rewardId"
+                               th:value="${reward.rewardId}">
+
+
+                        <button type="submit"
+                                th:disabled="${reward.stockQuantity <= 0}"
+                                th:text="${reward.stockQuantity > 0 ? '교환하기' : '품절'}">
+
+                            교환하기
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             상품이 없을 때
+        ========================= -->
+        <div class="empty-reward"
+             th:if="${rewards == null or #lists.isEmpty(rewards)}">
+
+            <div class="empty-icon">
+                🎁
+            </div>
+
+            <h3>
+                등록된 리워드가 없습니다.
+            </h3>
+
+            <p>
+                새로운 리워드 상품이 준비되면 이곳에서 확인할 수 있어요.
+            </p>
+
+        </div>
+
+    </div>
+
 </main>
+
+
+<!-- =========================
+     Footer
+========================= -->
+<footer th:fragment="footer" class="footer">
+
+    <div class="footer-container">
+
+        <!-- 왼쪽: 서비스 소개 -->
+        <div class="footer-brand">
+
+            <h3>♻️ 지구비우기</h3>
+
+            <p>
+                올바른 분리배출부터 주변 수거시설 확인까지,<br>
+                일상 속 친환경 실천을 돕는 서비스입니다.
+            </p>
+
+        </div>
+
+
+        <!-- 가운데: 주요 서비스 -->
+        <div class="footer-menu">
+
+            <h4>서비스</h4>
+
+            <ul>
+
+                <li>
+                    <a th:href="@{/}">
+                        홈
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/boards}">
+                        커뮤니티
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/reward}">
+                        리워드 상점
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/mypage}">
+                        마이페이지
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- 오른쪽: 프로젝트 정보 -->
+        <div class="footer-info">
+
+            <h4>Project</h4>
+
+            <p>생활형 친환경 실천 플랫폼</p>
+
+            <p>
+                Spring Boot · MyBatis · Thymeleaf · MySQL
+            </p>
+
+            <p>
+                공공데이터 기반 재활용 정보 서비스
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 딱갈라. 지구비우기.All rights reserved.
+        </p>
+
+        <p class="footer-notice">
+            본 서비스는 교육 프로젝트 목적으로 제작되었습니다.
+        </p>
+
+    </div>
+
+</footer>
+
 </body>
 </html>
