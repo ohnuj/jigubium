@@ -26,7 +26,7 @@
 <main>
     <!-- 검색 -->
     <div>
-        <form action="/recylce" method="get">
+        <form th:action="@{/recycle/search}" method="get">
             <input
                     type="text"
                     name="keyword"
@@ -34,6 +34,15 @@
                     autocomplete="off">
             <button type="submit">검색</button>
         </form>
+        <div class="quick-search">
+            <span>자주 찾는 품목</span>
+
+            <a th:href="@{/recycle/search(keyword='페트병')}">페트병</a>
+            <a th:href="@{/recycle/search(keyword='스티로폼')}">스티로폼</a>
+            <a th:href="@{/recycle/search(keyword='건전지')}">건전지</a>
+            <a th:href="@{/recycle/search(keyword='계란 껍데기')}">계란 껍데기</a>
+            <a th:href="@{/recycle/search(keyword='유리병')}">유리병</a>
+        </div>
     </div>
     <br><br>
     <!-- 메인 콘텐츠 전체 -->
@@ -44,11 +53,11 @@
                 <!-- 에코맵 -->
                 <td width="400" >
                     <h3>
-                        <a th:href="@{/templates/eco-map}">
+                        <a th:href="@{/eco-map}">
                             에코맵
                         </a>
                     </h3>
-                    <a th:href="@{/templates/eco-map}">
+                    <a th:href="@{/eco-map}">
                         <img th:src="@{/images/eco-map.png}" alt="에코맵" width="300">
                     </a>
                     <p>
@@ -72,59 +81,158 @@
             </tr>
         </table>
         <br><br>
+        <!-- 커뮤니티 제목 -->
+        <div style="
+    width: 800px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+">
+            <h3>
+                <a th:href="@{/boards}">
+                    커뮤니티
+                </a>
+            </h3>
+
+            <a th:href="@{/boards}">
+                더보기 &gt;
+            </a>
+        </div>
+
+
         <!-- 커뮤니티 -->
-        <table width="800">
-            <!-- 커뮤니티 제목 -->
-            <tr>
-                <td colspan="3">
-                    <h3>
-                        <a th:href="@{/boards}">
-                            커뮤니티
-                        </a>
-                    </h3>
-                </td>
-            </tr>
+        <table style="
+    width: 800px;
+    table-layout: fixed;
+    border-collapse: collapse;
+">
+
+            <!-- 컬럼 너비 고정 -->
+            <colgroup>
+                <col style="width: 10%;">
+                <col style="width: 50%;">
+                <col style="width: 25%;">
+                <col style="width: 15%;">
+            </colgroup>
+
             <!-- 컬럼명 -->
+            <thead>
             <tr>
-                <th width="80" >
-                    번호
-                </th>
-                <th width="520" >
-                    제목
-                </th>
-                <th width="200" >
-                    작성자
-                </th>
-                <th width="200" >
-                    작성일
-                </th>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일</th>
             </tr>
+            </thead>
+
             <!-- 최신 게시글 -->
+            <tbody>
             <tr th:each="board : ${recentBoards}">
+
                 <!-- 번호 -->
                 <td th:text="${board.boardId}">
                     1
                 </td>
+
                 <!-- 제목 -->
-                <td>
+                <td style="
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        ">
                     <a th:href="@{/boards/{id}(id=${board.boardId})}"
                        th:text="${board.title}">
                         게시글 제목
                     </a>
                 </td>
+
                 <!-- 작성자 닉네임 -->
-                <td align="center"
+                <td style="
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        "
                     th:text="${board.nickname}">
                     홍길동
                 </td>
+
                 <!-- 작성일 -->
-                <td th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd')}">
+                <td style="text-align: center;"
+                    th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd')}">
                     2026-08-19
                 </td>
+
             </tr>
+            </tbody>
+
         </table>
     </div>
 </main>
+<footer th:fragment="footer" class="footer">
+
+    <div class="footer-container">
+
+        <!-- 왼쪽: 서비스 소개 -->
+        <div class="footer-brand">
+            <h3>🌱 ECO RECYCLE</h3>
+            <p>
+                올바른 분리배출부터 주변 수거시설 확인까지,<br>
+                일상 속 친환경 실천을 돕는 서비스입니다.
+            </p>
+        </div>
+
+
+        <!-- 가운데: 주요 서비스 -->
+        <div class="footer-menu">
+            <h4>서비스</h4>
+
+            <ul>
+                <li>
+                    <a th:href="@{/}">홈</a>
+                </li>
+
+                <li>
+                    <a th:href="@{/board}">커뮤니티</a>
+                </li>
+
+                <li>
+                    <a th:href="@{/reward}">리워드 상점</a>
+                </li>
+
+                <li>
+                    <a th:href="@{/mypage}">마이페이지</a>
+                </li>
+            </ul>
+        </div>
+
+
+        <!-- 오른쪽: 프로젝트 정보 -->
+        <div class="footer-info">
+            <h4>Project</h4>
+
+            <p>생활형 친환경 실천 플랫폼</p>
+            <p>Spring Boot · MyBatis · Thymeleaf · MySQL</p>
+            <p>공공데이터 기반 재활용 정보 서비스</p>
+        </div>
+
+    </div>
+
+
+    <!-- 아래 -->
+    <div class="footer-bottom">
+        <p>
+            © 2026 ECO RECYCLE. All rights reserved.
+        </p>
+
+        <p class="footer-notice">
+            본 서비스는 교육 프로젝트 목적으로 제작되었습니다.
+        </p>
+    </div>
+
+</footer>
+
+</html>
 <script th:if="${message}">
     alert('[[${message}]]');
 </script>

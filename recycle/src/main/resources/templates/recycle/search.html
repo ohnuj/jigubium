@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>재활용 검색</title>
+</head>
+<body>
+<nav>
+    <div>
+        <a th:href="@{/}">Home</a>
+        <th:block th:unless="${session.checkLogin}">
+            <a th:href="@{/login}">로그인</a>
+            <a th:href="@{/signup}">회원가입</a>
+        </th:block>
+
+        <th:block th:if="${session.checkLogin}">
+            <a th:href="@{/mypage}">마이페이지</a>
+            <a th:href="@{/logout}">로그아웃</a>
+            <a th:href="@{/reward}">리워드 상점</a>
+        </th:block>
+    </div>
+</nav>
+<main>
+    <!-- 검색 -->
+    <div>
+        <form action="/recycle/search" method="get">
+            <input
+                    type="text"
+                    name="keyword"
+                    placeholder="재활용품을 입력하세요"
+                    autocomplete="off">
+            <button type="submit">검색</button>
+        </form>
+    </div>
+    <br><br>
+    <p>
+        검색어 :
+        <strong th:text="${keyword}"></strong>
+    </p>
+    <hr>
+    <!-- 검색 결과가 있을 때 -->
+    <div th:if="${!#lists.isEmpty(recycleItems)}">
+        <div th:each="item : ${recycleItems}">
+            <h3 th:text="${item.itemName}">품목명</h3>
+            <div>
+                <strong>분류</strong>
+                <ul>
+                    <li th:text="${item.categoryName}"></li>
+                </ul>
+
+            </div>
+            <div th:if="${item.dischargeMethod != null}">
+                <strong>배출방법</strong>
+                <ul>
+            <li th:text="${item.dischargeMethod}"></li>
+                 </ul>
+
+            </div>
+            <div>
+                <strong>배출 상세설명</strong>
+
+                <ul>
+                    <li th:each="text : ${#strings.arraySplit(item.disposalMethod, '·')}"
+                        th:if="${!#strings.isEmpty(#strings.trim(text))}"
+                        th:text="${#strings.trim(text)}">
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <strong>부가설명</strong>
+
+                <ul>
+                    <li th:each="text : ${#strings.arraySplit(item.feature, '·')}"
+                        th:if="${!#strings.isEmpty(#strings.trim(text))}"
+                        th:text="${#strings.trim(text)}">
+                    </li>
+                </ul>
+            </div>
+            <div th:if="${item.caution != null and !#strings.isEmpty(item.caution)}">
+                <strong>주의사항</strong>
+
+                <ul>
+                    <li th:each="text : ${#strings.arraySplit(item.caution, '·')}"
+                        th:if="${!#strings.isEmpty(#strings.trim(text))}"
+                        th:text="${#strings.trim(text)}">
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <strong>관련품목</strong>
+
+                <ul>
+                    <li th:each="relatedItem : ${item.relatedItems}">
+                        <a th:href="@{/recycle/search(keyword=${relatedItem})}"
+                           th:text="${relatedItem}">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <hr>
+        </div>
+    </div>
+
+    <!-- 검색 결과가 없을 때 -->
+    <div th:if="${#lists.isEmpty(recycleItems)}">
+        <p>검색 결과가 없습니다.</p>
+    </div>
+</main>
+</body>
+</html>
