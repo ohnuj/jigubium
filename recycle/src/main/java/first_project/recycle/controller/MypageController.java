@@ -54,6 +54,10 @@ public class MypageController {
 
         // 회원 기본 정보 및 포인트 잔액 조회
         Member member = mypageService.getMemberInfo(memberId);
+        if (member == null) {
+            session.invalidate();
+            return "redirect:/login";
+        }
         int currentPoint = ecoPointHistoryService.findCurrentBalance(memberId);
 
         // 누적 적립된 에코포인트 조회
@@ -120,6 +124,11 @@ public class MypageController {
         Long memberId = loginUser.getMemberId();
 
         Member member = mypageService.getMemberInfo(memberId);
+
+        if (member == null) {
+            session.invalidate();
+            return "redirect:/login";
+        }
 
         model.addAttribute("member", member);
         model.addAttribute("currentTab", "info");
