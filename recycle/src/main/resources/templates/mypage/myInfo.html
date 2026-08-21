@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지 - 내 정보</title>
+</head>
+<body>
+<div style="display:flex; gap: 40px; max-width: 900px; margin:30px auto">
+    <!-- 좌측 4가지 탭 메뉴 (1번 탭 강조) -->
+    <aside style="width: 180px;">
+        <ul style="list-style: none; padding: 0; line-height: 2.2;">
+            <li style="font-weight: bold;"><a th:href="@{/mypage/myinfo}">내 정보</a></li>
+            <li><a th:href="@{/mypage/memberinfoconfirm}">회원정보 수정</a></li>
+            <li><a th:href="@{/mypage/memberactivity}">나의 활동</a></li>
+            <li><a th:href="@{/mypage/memberdelete}">회원 탈퇴</a></li>
+        </ul>
+    </aside>
+
+    <!-- 내 정보 본문 -->
+    <main style="flex:1;">
+        <h2>내 정보</h2>
+        <div style="background-color: #f8f9fa; padding: 25px; border-radius: 8px; line-height: 2; border: 1px solid #e9ecef;">
+
+            <!-- 뱃지(회원 등급) -->
+            <div>
+                <strong>회원 등급:</strong>
+            </div>
+
+            <!-- 이름 -->
+            <div>
+                <strong>이름:</strong>
+                <span th:text="${member.name != null ? member.name : '이름 없음'}">홍길동</span>
+            </div>
+
+            <!-- 닉네임 -->
+            <div>
+                <strong>닉네임:</strong>
+                <span th:text="${member.nickname}">닉네임</span>
+            </div>
+
+            <!-- 이메일 -->
+            <div>
+                <strong>이메일:</strong>
+                <span th:text="${member.email}">user@example.com</span>
+            </div>
+
+            <!-- 보유 에코포인트 (EcoPointHistory의 가장 최신 balance_after) -->
+            <div>
+                <strong>보유 에코포인트:</strong>
+                <strong style="color: #28a745; font-size: 1.15em;"
+                        th:text="${#numbers.formatInteger(currentPoint, 0, 'COMMA')} + ' P'">
+                    0 P
+                </strong>
+            </div>
+            <!-- 가입일 (Member 도메인의 필드명에 맞게 매핑) -->
+            <div th:if="${member.createdAt != null}">
+                <strong>가입일:</strong>
+                <span th:text="${#temporals.format(member.createdAt, 'yyyy-MM-dd HH:mm')}">2026-08-20 18:30</span>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
