@@ -102,32 +102,35 @@
             sort='view'
         )}">
                 조회수
+                <span th:if="${sort == 'view'}">▼</span>
             </a>
         </th>
 
-    <th>
-        <a th:href="@{/boards(
+        <th>
+            <a th:href="@{/boards(
             page=1,
             keyword=${keyword},
             searchType=${searchType},
             boardType=${boardType},
             sort='comment'
         )}">
-            댓글수
-        </a>
-    </th>
+                댓글수
+                <span th:if="${sort == 'comment'}">▼</span>
+            </a>
+        </th>
 
-    <th>
-        <a th:href="@{/boards(
+        <th>
+            <a th:href="@{/boards(
             page=1,
             keyword=${keyword},
             searchType=${searchType},
             boardType=${boardType},
             sort='like'
         )}">
-            좋아요수
-        </a>
-    </th>
+                좋아요수
+                <span th:if="${sort == 'like'}">▼</span>
+            </a>
+        </th>
     </tr>
 
 
@@ -136,14 +139,16 @@
     <tbody>
 
     <!-- 게시글 목록 출력 -->
-    <tr th:each="board : ${boards}">
+    <tr th:each="board, boardStat : ${boards}">
 
-        <td th:text="${board.boardId}">
+        <td th:text="${paging.totalCount - ((paging.page - 1) * paging.size) - boardStat.index}">
             1
         </td>
 
-        <td th:text="${board.boardType}">
-            FREE
+        <td>
+            <span th:if="${board.boardType.name() == 'FREE'}">자유</span>
+            <span th:if="${board.boardType.name() == 'INFO'}">정보</span>
+            <span th:if="${board.boardType.name() == 'SUGGESTION'}">건의</span>
         </td>
 
         <td>
@@ -208,7 +213,8 @@
     </a>
 
     <!-- 페이지 번호 -->
-    <span th:each="pageNum : ${#numbers.sequence(1, paging.totalPages)}">
+    <span th:each="pageNum :
+        ${#numbers.sequence(startPage, endPage)}">
 
         <a th:if="${pageNum != paging.page}"
            th:href="@{/boards(

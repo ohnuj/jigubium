@@ -21,9 +21,16 @@ public class BoardDetailResponse {
     private String content;
     private String nickname;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private Integer viewCount;
     private Integer likeCount;
     private boolean liked;
 
     private List<BoardImage> images;
+
+    public boolean isModified() {
+        return updatedAt != null
+                && createdAt != null
+                && !createdAt.equals(updatedAt);
+    }
 }

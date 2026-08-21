@@ -333,6 +333,14 @@ public class BoardService {
         return true;
     }
 
+    public BoardListResponse getPreviousBoard(Long boardId) {
+        return boardMapper.findPreviousBoard(boardId);
+    }
+
+    public BoardListResponse getNextBoard(Long boardId) {
+        return boardMapper.findNextBoard(boardId);
+    }
+
 
 
 

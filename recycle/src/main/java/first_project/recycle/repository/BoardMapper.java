@@ -55,4 +55,8 @@ public interface BoardMapper {
 
     //조회수 증가
     int increaseViewCount(Long boarId);
+
+    BoardListResponse findPreviousBoard(Long boardId);
+
+    BoardListResponse findNextBoard(Long boardId);
 }

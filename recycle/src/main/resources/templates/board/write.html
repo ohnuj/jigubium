@@ -24,7 +24,8 @@
 </nav>
 <h2>게시글 작성</h2>
 
-<form th:action="@{/boards}"
+<form id="writeForm"
+      th:action="@{/boards}"
       method="post"
       enctype="multipart/form-data">
 
@@ -63,9 +64,14 @@
                   required></textarea>
     </div>
 
-    <!--이미지-->
+    <!-- 이미지 -->
     <div>
         <label for="images">이미지</label>
+
+        <!-- 이미지 업로드 안내 -->
+        <p>
+            이미지는 최대 5장, 파일당 5MB까지 등록할 수 있습니다.
+        </p>
 
         <!-- 한 장씩 선택 -->
         <input type="file"
@@ -83,9 +89,10 @@
         <div id="imageList"></div>
     </div>
 
-    <button type="submit">등록</button>
+    <button type="submit" id="submitBtn">등록</button>
 
-    <a th:href="@{/boards}">
+    <a th:href="@{/boards}"
+       onclick="return confirm('작성 중인 내용이 사라집니다. 취소하시겠습니까?');">
         취소
     </a>
 
@@ -100,11 +107,29 @@
     // 선택한 파일을 누적해서 보관
     let selectedFiles = [];
 
+    const MAX_IMAGES = 5;
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
     imageInput.addEventListener("change", function () {
 
         if (this.files.length === 0) {
             return;
         }
+
+        const file = this.files[0];
+
+        if (selectedFiles.length >= MAX_IMAGES) {
+            alert("이미지는 최대 5장까지 등록할 수 있습니다.");
+            this.value = "";
+            return;
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+            alert("이미지 한 장의 크기는 최대 5MB까지 가능합니다.");
+            this.value = "";
+            return;
+        }
+
 
         // 이번에 선택한 파일 추가
         selectedFiles.push(this.files[0]);
@@ -161,6 +186,16 @@
         // 서버 전송 파일 목록도 다시 생성
         updateFiles();
     }
+
+    const writeForm = document.getElementById("writeForm");
+    const submitBtn = document.getElementById("submitBtn");
+
+    writeForm.addEventListener("submit", function () {
+
+        // 중복 등록 방지
+        submitBtn.disabled = true;
+        submitBtn.textContent = "등록 중...";
+    });
 </script>
 </body>
 </html>

@@ -3,6 +3,7 @@ package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
 import first_project.recycle.domain.BoardType;
+import first_project.recycle.domain.Paging;
 import first_project.recycle.dto.*;
 import first_project.recycle.exception.ForbiddenException;
 import first_project.recycle.service.BoardLikeService;
@@ -57,8 +58,25 @@ public class BoardController {
         // 게시글 목록
         model.addAttribute("boards", result.getBoards());
 
+        Paging paging = result.getPaging();
+
+
         // 페이징 정보
-        model.addAttribute("paging", result.getPaging());
+        model.addAttribute("paging", paging);
+
+        int blockSize = 5;
+
+        int startPage =
+                ((paging.getPage() - 1) / blockSize) * blockSize + 1;
+
+        int endPage =
+                Math.min(
+                        startPage + blockSize - 1,
+                        paging.getTotalPages()
+                );
+
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
 
         // 검색 후 검색어 유지
         model.addAttribute("keyword", keyword);
@@ -160,6 +178,16 @@ public class BoardController {
                 (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         model.addAttribute("loginUser", loginUser);
+
+        model.addAttribute(
+                "previousBoard",
+                boardService.getPreviousBoard(boardId)
+        );
+
+        model.addAttribute(
+                "nextBoard",
+                boardService.getNextBoard(boardId)
+        );
 
         // 좋아요 수
         board.setLikeCount(
