@@ -143,10 +143,12 @@ public class MypageController {
             session.setAttribute(SessionConst.LOGIN_MEMBER, loginUser);
         }
 
+        // 1. 성공 메시지 전달
         redirectAttributes.addFlashAttribute("successMsg", "회원정보가 성공적으로 수정되었습니다.");
+
+        // 2. 메인페이지("/")로 이동
         return "redirect:/?updated=true";
     }
-
 
     // 6. 회원 탈퇴 화면 (GET)
     @GetMapping("/memberdelete")
@@ -180,7 +182,17 @@ public class MypageController {
             return "redirect:/mypage/memberdelete";
         }
 
+        // 탈퇴 성공 시 세션 파기 후 이동
         session.invalidate();
-        return "redirect:/?deleted=true";
+        return "redirect:/login?deleted=true";
     }
+
+    // 회원 활동 조회
+ //   @GetMapping("/activity")
+  //  public String memberActicity(HttpServletRequest request, Model model) {
+  //      HttpSession session = request.getSession(false);
+   //     if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
+   //     return "redirect:/login";
+   //     }
+
 }

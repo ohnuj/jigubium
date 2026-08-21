@@ -1,7 +1,7 @@
-package first_project.recycle.service;
+package first_project.recycle.service.mapservice.jongnoservice;
 
-import first_project.recycle.domain.ecoLocationDTO.JongnoClothingBinDto;
-import first_project.recycle.domain.ecoLocationDTO.JongnoClothingBinResponse;
+import first_project.recycle.domain.ecoLocationdto.jongno.JongnoClothingBinDto;
+import first_project.recycle.domain.ecoLocationdto.jongno.JongnoClothingBinResponse;
 import first_project.recycle.domain.ecoLocation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
