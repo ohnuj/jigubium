@@ -24,10 +24,12 @@
 <h2>게시글 상세</h2>
 
 <div>
-  <p>
-    타입:
-    <span th:text="${board.boardType}"></span>
-  </p>
+    <p>
+        타입:
+        <span th:if="${board.boardType.name() == 'FREE'}">자유</span>
+        <span th:if="${board.boardType.name() == 'INFO'}">정보</span>
+        <span th:if="${board.boardType.name() == 'SUGGESTION'}">건의</span>
+    </p>
 
   <p>
     제목:
@@ -39,13 +41,45 @@
     <span th:text="${board.nickname}"></span>
   </p>
 
-  <p>
-    작성일:
-    <span th:text="${#temporals.format(
+    <p>
+        작성일:
+        <span th:text="${#temporals.format(
             board.createdAt,
             'yyyy-MM-dd HH:mm')}">
     </span>
-  </p>
+
+        <span th:if="${board.modified}">
+        (수정됨)
+    </span>
+    </p>
+
+    <p>
+        조회수:
+        <span th:text="${board.viewCount}">
+            0
+        </span>
+    </p>
+
+    <p>
+        좋아요:
+        <span th:text="${board.likeCount}">
+            0
+        </span>
+    </p>
+
+    <!-- 로그인했고, 작성자가 아닐 때만 좋아요 버튼 -->
+    <form th:if="${loginUser != null
+        and loginUser.memberId != board.memberId}"
+          th:action="@{/boards/{boardId}/like(
+            boardId=${board.boardId}
+      )}"
+          method="post">
+
+        <button type="submit"
+                th:text="${board.liked ? '좋아요 취소' : '좋아요'}">
+            좋아요
+        </button>
+    </form>
 </div>
 
 <hr>
@@ -57,27 +91,82 @@
 <!--첨부 이미지-->
 <div th:if="${board.images != null}">
 
-  <div th:each="image : ${board.images}">
-      <img th:src="${image.imageUrl}"
-        alt="게시글 이미지">
-  </div>
+    <div th:each="image : ${board.images}">
+        <img th:src="${image.imageUrl}"
+             alt="게시글 이미지">
+    </div>
 
 </div>
 
 <hr>
 
-<h3>댓글</h3>
+<!-- 이전글 / 다음글 -->
+<div>
 
-<!-- 댓글 작성 -->
-<form th:action="@{/boards/{boardId}/comments(boardId=${board.boardId})}"
+    <!-- 이전글 -->
+    <div th:if="${previousBoard != null}">
+        이전글:
+        <a th:href="@{/boards/{boardId}(
+                boardId=${previousBoard.boardId}
+            )}"
+           th:text="${previousBoard.title}">
+            이전글 제목
+        </a>
+    </div>
+
+    <div th:if="${previousBoard == null}">
+        이전글: 없습니다.
+    </div>
+
+    <!-- 다음글 -->
+    <div th:if="${nextBoard != null}">
+        다음글:
+        <a th:href="@{/boards/{boardId}(
+                boardId=${nextBoard.boardId}
+            )}"
+           th:text="${nextBoard.title}">
+            다음글 제목
+        </a>
+    </div>
+
+    <div th:if="${nextBoard == null}">
+        다음글: 없습니다.
+    </div>
+
+</div>
+
+<hr>
+
+<h3>
+    댓글 (
+    <span th:text="${commentPaging.totalCount}">0</span>
+    )
+</h3>
+
+<!-- 로그인 사용자만 댓글 작성 가능 -->
+<form th:if="${loginUser != null}"
+      th:action="@{/boards/{boardId}/comments(boardId=${board.boardId})}"
       method="post">
 
     <textarea name="content"
               placeholder="댓글을 입력하세요"
               required></textarea>
 
-    <button type="submit">댓글 작성</button>
+    <button type="submit">
+        댓글 작성
+    </button>
 </form>
+
+<!-- 비로그인 사용자 -->
+<div th:if="${loginUser == null}">
+    <p>
+        댓글을 작성하려면 로그인이 필요합니다.
+    </p>
+
+    <a th:href="@{/login}">
+        로그인
+    </a>
+</div>
 
 <!-- 댓글 목록 -->
 <div th:each="comment : ${comments}">
@@ -106,33 +195,50 @@
     <div th:if="${loginUser != null
             and loginUser.memberId == comment.memberId}">
 
-        <!-- 댓글 수정 -->
-        <form th:action="@{/boards/{boardId}/comments/{commentId}/edit(
-                boardId=${board.boardId},
-                commentId=${comment.commentId}
-                )}"
-              method="post">
+        <!-- 처음에는 수정/삭제 버튼만 표시 -->
+        <button type="button"
+                th:onclick="'toggleEdit(' + ${comment.commentId} + ')'">
+            수정
+        </button>
 
-            <textarea name="content"
-                      th:text="${comment.content}"
-                      required></textarea>
-
-            <button type="submit">
-                수정
-            </button>
-        </form>
-
-        <!-- 댓글 삭제 -->
         <form th:action="@{/boards/{boardId}/comments/{commentId}/delete(
                 boardId=${board.boardId},
                 commentId=${comment.commentId}
               )}"
-              method="post">
+              method="post"
+              style="display: inline;"
+              onsubmit="return confirm('정말 삭제하시겠습니까?');">
 
             <button type="submit">
                 삭제
             </button>
         </form>
+
+        <!-- 수정 버튼을 눌렀을 때만 보이는 수정 폼 -->
+        <div th:id="'editForm-' + ${comment.commentId}"
+             style="display: none;">
+
+            <form th:action="@{/boards/{boardId}/comments/{commentId}/edit(
+                    boardId=${board.boardId},
+                    commentId=${comment.commentId}
+                  )}"
+                  method="post">
+
+                <textarea name="content"
+                          th:text="${comment.content}"
+                          required></textarea>
+
+                <button type="submit">
+                    수정 완료
+                </button>
+
+                <button type="button"
+                        th:onclick="'toggleEdit(' + ${comment.commentId} + ')'">
+                    취소
+                </button>
+            </form>
+        </div>
+
     </div>
 
     <hr>
@@ -195,12 +301,27 @@
 <form th:action="@{/boards/{boardId}/delete(
         boardId=${board.boardId}
         )}"
-      method="post">
+      method="post"
+      onsubmit="return confirm('게시글을 정말 삭제하시겠습니까?');">
 
     <button type="submit">
       삭제
     </button>
 </form>
 </div>
+
+<script>
+    function toggleEdit(commentId) {
+
+        const editForm =
+            document.getElementById("editForm-" + commentId);
+
+        if (editForm.style.display === "none") {
+            editForm.style.display = "block";
+        }else {
+            editForm.style.display = "none";
+        }
+    }
+</script>
 </body>
 </html>

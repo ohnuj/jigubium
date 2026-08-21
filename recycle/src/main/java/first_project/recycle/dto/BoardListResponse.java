@@ -18,6 +18,9 @@ public class BoardListResponse {
     private String nickname;        // 작성자 닉네임
     private LocalDateTime createdAt;    // 작성일
     private LocalDateTime updatedAt; // 수정일
+    private Integer viewCount;
+    private Integer commentCount;
+    private Integer likeCount;
 
     /**
      * 게시글 수정 여부 확인

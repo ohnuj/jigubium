@@ -5,20 +5,26 @@
 <mapper namespace="first_project.recycle.repository.CommentMapper">
 
     <!--댓글 등록-->
-    <insert id="insertComment">
-        INSERT INTO comment (board_id,
-                             member_id,
-                             content,
-                             created_at,
-                             updated_at
+    <insert id="insertComment"
+            useGeneratedKeys="true"
+            keyProperty="commentId"
+            keyColumn="comment_id">
+
+        INSERT INTO comment (
+            board_id,
+            member_id,
+            content,
+            created_at,
+            updated_at
         )
         VALUES (
-                #{boardId},
-                #{memberId},
-                #{content},
-                NOW(),
-                NOW()
+                   #{boardId},
+                   #{memberId},
+                   #{content},
+                   NOW(),
+                   NOW()
                )
+
     </insert>
 
     <!-- 특정 게시글의 댓글 목록 조회 -->
@@ -47,7 +53,10 @@
         SET
             content = #{content},
             updated_at = NOW()
-        WHERE comment_id = #{commentId}
+        WHERE
+            board_id = #{boardId}
+            AND
+            comment_id = #{commentId}
             AND member_id = #{memberId}
     </update>
 
@@ -55,7 +64,10 @@
     <delete id="deleteComment">
 
         DELETE FROM comment
-        WHERE comment_id = #{commentId}
+        WHERE
+            board_id = #{boardId}
+            AND
+            comment_id = #{commentId}
             AND member_id = #{memberId}
     </delete>
 

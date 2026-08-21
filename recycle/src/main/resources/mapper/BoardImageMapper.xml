@@ -37,4 +37,30 @@
         DELETE FROM board_image
         WHERE board_id = #{boardId}
     </delete>
+
+    <delete id="deleteImage">
+        DELETE FROM board_image
+        WHERE image_id = #{imageId}
+            AND board_id = #{boardId}
+    </delete>
+
+    <select id="findById"
+            resultType="first_project.recycle.domain.BoardImage">
+
+            SELECT
+                image_id,
+                board_id,
+                image_url,
+                sort_order
+            FROM board_image
+            WHERE image_id = #{imageId}
+    </select>
+
+    <select id="findMaxSortOrder"
+            resultType="java.lang.Integer">
+
+        SELECT  MAX(sort_order)
+        FROM board_image
+        WHERE board_id = #{boardId}
+    </select>
 </mapper>

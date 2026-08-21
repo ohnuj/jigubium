@@ -19,11 +19,13 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
+
 public class CommentService {
 
     private static final int COMMENT_PAGE_SIZE = 5;
 
     private final CommentMapper commentMapper;
+    private final EcoPointHistoryService ecoPointHistoryService;
 
     /**
      * 특정 게시글의 댓글 목록 조회
@@ -49,6 +51,7 @@ public class CommentService {
         comment.setContent(request.getContent());
 
         commentMapper.insertComment(comment);
+        ecoPointHistoryService.earnPoint(memberId,10,"COMMENT", comment.getCommentId());
     }
 
     /**
@@ -57,11 +60,13 @@ public class CommentService {
      */
     @Transactional
     public boolean updateComment(
+            Long boardId,
             Long commentId,
             Long memberId,
             CommentUpdateRequest request) {
 
         int result = commentMapper.updateComment(
+                boardId,
                 commentId,
                 memberId,
                 request.getContent()
@@ -77,11 +82,15 @@ public class CommentService {
      */
     @Transactional
     public boolean deleteComment(
+            Long boardId,
             Long commentId,
             Long memberId) {
 
         int result =
-                commentMapper.deleteComment(commentId, memberId);
+                commentMapper.deleteComment(
+                        boardId,
+                        commentId,
+                        memberId);
 
         return result > 0;
     }
