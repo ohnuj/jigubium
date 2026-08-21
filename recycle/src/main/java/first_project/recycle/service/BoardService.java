@@ -6,6 +6,8 @@ import first_project.recycle.domain.BoardImage;
 import first_project.recycle.domain.BoardType;
 import first_project.recycle.domain.Paging;
 import first_project.recycle.dto.*;
+import first_project.recycle.exception.ForbiddenException;
+import first_project.recycle.exception.NotFoundException;
 import first_project.recycle.repository.BoardImageMapper;
 import first_project.recycle.repository.BoardMapper;
 import lombok.RequiredArgsConstructor;
@@ -115,7 +117,7 @@ public class BoardService {
                 boardMapper.findById(boardId);
 
         if (board == null) {
-            throw new IllegalArgumentException(
+            throw new NotFoundException(
                     "존재하지 않는 게시글입니다.");
         }
 
@@ -132,10 +134,32 @@ public class BoardService {
      * 게시글 수정
      * 작성자 본인인 경우에만 수정
      */
+
+    @Transactional
     public boolean updateBoard(
             Long boardId,
             Long memberId,
-            BoardUpdateRequest request) {
+            BoardUpdateRequest request,
+            List<MultipartFile> images) {
+
+        // 게시글 존재 여부 확인
+        BoardDetailResponse board =
+                boardMapper.findById(boardId);
+
+        if (board == null) {
+            throw new NotFoundException(
+                    "존재하지 않는 게시글입니다."
+            );
+        }
+
+        // 작성자 확인
+        if (!Objects.equals(
+                board.getMemberId(),
+                memberId)) {
+            throw new ForbiddenException(
+                    "게시글을 수정할 권한이 없습니다."
+            );
+        }
 
         int result = boardMapper.updateBoard(
                 boardId,
@@ -145,8 +169,43 @@ public class BoardService {
                 request.getContent()
         );
 
-        return  result > 0;
+        if (result == 0) {
+            return false;
+        }
+
+       Integer maxSortOrder =
+               boardImageMapper.findMaxSortOrder(boardId);
+
+        int startOrder =
+                maxSortOrder == null ? 0 : maxSortOrder + 1;
+
+        // 새 이미지 추가
+        if (images != null) {
+            for (int i = 0; i < images.size(); i++) {
+
+                String imageUrl =
+                        fileStorageService.store(images.get(i));
+
+                if (imageUrl != null) {
+
+                    BoardImage boardImage =
+                            new BoardImage();
+
+                    boardImage.setBoardId(boardId);
+                    boardImage.setImageUrl(imageUrl);
+                    boardImage.setSortOrder(
+                            startOrder + i
+                    );
+
+                    boardImageMapper.insertBoardImage(
+                            boardImage
+                    );
+                }
+            }
+        }
+        return true;
     }
+
 
     /**
      * 게시글 삭제
@@ -161,11 +220,20 @@ public class BoardService {
         BoardDetailResponse board =
                 boardMapper.findById(boardId);
 
-        if (board == null
-                || !Objects.equals(
-                        board.getMemberId(),
-                        memberId)) {
-            return false;
+       // 게시글 없음
+        if (board == null) {
+            throw new NotFoundException(
+                    "존재하지 않는 게시글입니다."
+            );
+        }
+
+        // 작성자 아님
+        if (!Objects.equals(
+                board.getMemberId(),
+                memberId)) {
+            throw new ForbiddenException(
+                    "게시글을 삭제할 권한이 없습니다."
+            );
         }
 
         // 실제 파일 삭제를 위해 이미지 목록을 먼저 조회
@@ -193,6 +261,48 @@ public class BoardService {
 
         return true;
     }
+
+    /**
+     * 게시글 기존 이미지 개별 삭제
+     */
+    @Transactional
+    public boolean deleteBoardImage(
+            Long boardId,
+            Long imageId,
+            Long memberId) {
+
+        // 게시글 작성자 확인
+        BoardDetailResponse board =
+                boardMapper.findById(boardId);
+
+        if (board == null ||
+                !Objects.equals(board.getMemberId(), memberId)) {
+            return false;
+        }
+
+        // 이미지 정보 조회
+        BoardImage image =
+                boardImageMapper.findById(imageId);
+
+        if (image == null ||
+                !Objects.equals(image.getBoardId(), boardId)) {
+            return false;
+        }
+
+        // DB 이미지 삭제
+        int result =
+                boardImageMapper.deleteImage(imageId, boardId);
+
+        if (result == 0) {
+            return false;
+        }
+
+        // 실제 파일 삭제
+        fileStorageService.delete(image.getImageUrl());
+
+        return true;
+    }
+
 
 
 

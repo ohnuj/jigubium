@@ -4,6 +4,7 @@ package first_project.recycle.controller;
 import first_project.recycle.config.SessionConst;
 import first_project.recycle.domain.BoardType;
 import first_project.recycle.dto.*;
+import first_project.recycle.exception.ForbiddenException;
 import first_project.recycle.service.BoardService;
 import first_project.recycle.domain.User;
 import first_project.recycle.service.CommentService;
@@ -173,7 +174,7 @@ public class BoardController {
         if (!Objects.equals(
                 board.getMemberId(),
                 loginUser.getMemberId())) {
-            throw new IllegalArgumentException(
+            throw new ForbiddenException(
                     "게시글을 수정할 권한이 없습니다."
             );
         }
@@ -191,9 +192,11 @@ public class BoardController {
     public String updateBoard(
             @PathVariable Long boardId,
             @ModelAttribute BoardUpdateRequest request,
-            HttpSession session) {
+            @RequestParam(required = false)
+            List<MultipartFile> images,
+            HttpSession session, Model model) {
 
-        // 로그인 기능 연동 전 임시 회원 ID
+
         User loginUser =
                 (User)  session.getAttribute(SessionConst.LOGIN_MEMBER);
 
@@ -201,22 +204,26 @@ public class BoardController {
             return "redirect:/login";
         }
 
-        Long memberId = loginUser.getMemberId();
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
 
         boolean updated =
                 boardService.updateBoard(
                         boardId,
-                        memberId,
-                        request
+                        loginUser.getMemberId(),
+                        request,
+                        images
                 );
 
         if (!updated) {
-            throw new IllegalArgumentException(
+            throw new ForbiddenException(
                     "게시글을 수정할 권한이 없습니다."
             );
         }
 
         return "redirect:/boards/" + boardId;
+
     }
 
     /**
@@ -241,13 +248,46 @@ public class BoardController {
                 boardService.deleteBoard(boardId, memberId);
 
         if (!deleted) {
-            throw new IllegalArgumentException(
+            throw new ForbiddenException(
                     "게시글을 삭제할 권한이 없습니다."
             );
         }
 
         return "redirect:/boards";
     }
+
+    /**
+     * 게시글 기존 이미지 개별 삭제
+     */
+    @PostMapping("/{boardId}/images/{imageId}/delete")
+    public String deleteImage(
+            @PathVariable Long boardId,
+            @PathVariable Long imageId,
+            HttpSession session) {
+
+        User loginUser =
+                (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+
+        boolean deleted =
+                boardService.deleteBoardImage(
+                        boardId,
+                        imageId,
+                        loginUser.getMemberId()
+                );
+
+        if (!deleted) {
+            throw new ForbiddenException(
+                    "이미지를 삭제할 권한이 없습니다."
+            );
+        }
+
+        return "redirect:/boards/" + boardId + "/edit";
+    }
+
 
 
 

@@ -22,6 +22,7 @@ public interface CommentMapper {
 
     // 댓글 수정
     int updateComment(
+            @Param("boardId") Long boarId,
             @Param("commentId") Long commentId,
             @Param("memberId") Long memberId,
             @Param("content") String content
@@ -29,6 +30,7 @@ public interface CommentMapper {
 
     // 댓글 삭제
     int deleteComment(
+            @Param("boardId") Long boardId,
             @Param("commentId") Long commentId,
             @Param("memberId") Long memberId
     );

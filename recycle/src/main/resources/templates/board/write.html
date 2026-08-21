@@ -67,11 +67,20 @@
     <div>
         <label for="images">이미지</label>
 
+        <!-- 한 장씩 선택 -->
         <input type="file"
-                id="images"
-                name="images"
-                accept="image/*"
-                multiple>
+               id="imageInput"
+               accept="image/*">
+
+        <!-- 실제 서버로 전송할 파일 input -->
+        <input type="file"
+               id="images"
+               name="images"
+               multiple
+               hidden>
+
+        <!-- 선택한 이미지 목록 -->
+        <div id="imageList"></div>
     </div>
 
     <button type="submit">등록</button>
@@ -82,5 +91,76 @@
 
 
 </form>
+
+<script>
+    const imageInput = document.getElementById("imageInput");
+    const images = document.getElementById("images");
+    const imageList = document.getElementById("imageList");
+
+    // 선택한 파일을 누적해서 보관
+    let selectedFiles = [];
+
+    imageInput.addEventListener("change", function () {
+
+        if (this.files.length === 0) {
+            return;
+        }
+
+        // 이번에 선택한 파일 추가
+        selectedFiles.push(this.files[0]);
+
+        updateFiles();
+
+        // 같은 파일도 다시 선택할 수 있도록 초기화
+        this.value = "";
+    });
+
+    function updateFiles() {
+
+        // 서버로 전송할 파일 목록 생성
+        const dataTransfer = new DataTransfer();
+
+        selectedFiles.forEach(file => {
+            dataTransfer.items.add(file);
+        });
+
+        images.files = dataTransfer.files;
+
+        // 화면의 파일 목록 다시 출력
+        imageList.innerHTML = "";
+
+        selectedFiles.forEach((file, index) => {
+
+            const div = document.createElement("div");
+
+            // 선택한 이미지의 임시 미리보기 주소
+            const previewUrl = URL.createObjectURL(file);
+
+            div.innerHTML = `
+             <img src="${previewUrl}"
+                     alt="이미지 미리보기"
+                     width="100">
+
+                <span>${file.name}</span>
+
+                <button type="button"
+                        onclick="removeImage(${index})">
+                    취소
+                </button>
+                `;
+
+            imageList.appendChild(div);
+        });
+    }
+
+    function removeImage(index) {
+
+        // 해당 이미지 제거
+        selectedFiles.splice(index, 1);
+
+        // 서버 전송 파일 목록도 다시 생성
+        updateFiles();
+    }
+</script>
 </body>
 </html>
