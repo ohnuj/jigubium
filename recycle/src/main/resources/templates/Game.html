@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>재활용 분리배출 미니게임</title>
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+            background-color: #f8f9fa;
+            margin: 0;
+        }
+        .game-container {
+            width: 680px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #495057;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .item-box {
+            min-height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+            border: 2px dashed #ced4da;
+            border-radius: 10px;
+            background-color: #fcfcfc;
+        }
+        .trash-item {
+            padding: 14px 28px;
+            background-color: #212529;
+            color: #ffffff;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: grab;
+            user-select: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .trash-item:active {
+            cursor: grabbing;
+        }
+        .drop-zones {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .drop-zone {
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 25px 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #343a40;
+            background-color: #ffffff;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .drop-zone.hover {
+            background-color: #e7f5ff;
+            border-color: #339af0;
+            transform: scale(1.02);
+        }
+        .result-box {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f1f3f5;
+            border-radius: 8px;
+        }
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 6px;
+            background-color: #28a745;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <h2>분리배출 미니게임</h2>
+
+    <div class="status-bar">
+        <span>남은 기회: <span id="chances" th:text="${remainingChances != null ? remainingChances : 3}">3</span>회</span>
+        <span>문제 진행: <span id="currentQuestion">1</span> / 3</span>
+    </div>
+
+    <!-- 쓰레기 아이템 표시 영역 -->
+    <div class="item-box" id="itemContainer">
+        <div class="trash-item" id="trash" draggable="true"></div>
+    </div>
+
+    <!-- 분리수거함 6종 -->
+    <div class="drop-zones">
+        <div class="drop-zone" data-category="GENERAL">일반쓰레기 (종량제)</div>
+        <div class="drop-zone" data-category="PLASTIC">플라스틱류</div>
+        <div class="drop-zone" data-category="VINYL">비닐류</div>
+        <div class="drop-zone" data-category="PAPER">종이 / 종이팩</div>
+        <div class="drop-zone" data-category="CAN">캔 / 고철류</div>
+        <div class="drop-zone" data-category="GLASS">유리병류</div>
+    </div>
+
+    <!-- 3문제 종료 후 결과 영역 -->
+    <div class="result-box" id="resultBox">
+        <h3 id="resultText"></h3>
+        <button class="btn" onclick="submitResult()">포인트 받기 및 완료</button>
+    </div>
+</div>
+
+<script>
+    // 100개 분리배출 데이터 풀
+    const questionPool = [
+        // [일반쓰레기 - GENERAL]
+        { name: "기름 묻은 피자 박스", category: "GENERAL" },
+        { name: "음식물이 묻은 컵라면 용기", category: "GENERAL" },
+        { name: "영수증 (감열지)", category: "GENERAL" },
+        { name: "치킨 뼈 / 갈비 뼈", category: "GENERAL" },
+        { name: "달걀 껍데기", category: "GENERAL" },
+        { name: "양파 / 마늘 껍질", category: "GENERAL" },
+        { name: "조개 / 소라 껍데기", category: "GENERAL" },
+        { name: "깨진 유리 / 깨진 도자기", category: "GENERAL" },
+        { name: "코팅된 전단지 / 사진", category: "GENERAL" },
+        { name: "기저귀 / 생리대", category: "GENERAL" },
+        { name: "나무 젓가락 / 이쑤시개", category: "GENERAL" },
+        { name: "빨대", category: "GENERAL" },
+        { name: "치약 튜브 (복합재질)", category: "GENERAL" },
+        { name: "칫솔", category: "GENERAL" },
+        { name: "고무장갑", category: "GENERAL" },
+        { name: "실리콘 조리도구", category: "GENERAL" },
+        { name: "노트 스프링 (플라스틱 코팅철)", category: "GENERAL" },
+        { name: "스티커 / 테이프", category: "GENERAL" },
+        { name: "보온보냉팩 (젤 타입)", category: "GENERAL" },
+        { name: "알약 포장재 (PTP)", category: "GENERAL" },
+        { name: "화장솜 / 물티슈", category: "GENERAL" },
+        { name: "볼펜 / 샤프", category: "GENERAL" },
+        { name: "가죽 지갑 / 벨트", category: "GENERAL" },
+        { name: "거울", category: "GENERAL" },
+        { name: "내열 식기 (오븐/전자레인지 전용 유리)", category: "GENERAL" },
+        { name: "도자기 그릇", category: "GENERAL" },
+        { name: "양초 / 파라핀", category: "GENERAL" },
+        { name: "담배꽁초", category: "GENERAL" },
+        { name: "우산 (분리 불가능한 상태)", category: "GENERAL" },
+        { name: "CD / DVD 디스크", category: "GENERAL" },
+        { name: "벽지", category: "GENERAL" },
+        { name: "부직포 가방", category: "GENERAL" },
+        { name: "비닐 랩 (음식물 포장용)", category: "GENERAL" },
+        { name: "카세트 테이프", category: "GENERAL" },
+
+        // [플라스틱 - PLASTIC]
+        { name: "투명 페트병 (라벨 제거)", category: "PLASTIC" },
+        { name: "플라스틱 음료수 뚜껑", category: "PLASTIC" },
+        { name: "깨끗이 씻은 배달용기 (PP/PE)", category: "PLASTIC" },
+        { name: "샴푸 / 린스 용기 (펌프 분리 후)", category: "PLASTIC" },
+        { name: "세탁세제 통 (플라스틱)", category: "PLASTIC" },
+        { name: "투명 테이크아웃 플라스틱 컵", category: "PLASTIC" },
+        { name: "요거트 플라스틱 용기 (세척 완료)", category: "PLASTIC" },
+        { name: "플라스틱 물바가지", category: "PLASTIC" },
+        { name: "케찹 / 마요네즈 통 (내부 세척)", category: "PLASTIC" },
+        { name: "플라스틱 바구니", category: "PLASTIC" },
+        { name: "플라스틱 장난감 (건전지/모터 제외)", category: "PLASTIC" },
+        { name: "플라스틱 밀폐용기", category: "PLASTIC" },
+        { name: "플라스틱 옷걸이", category: "PLASTIC" },
+        { name: "식용유 플라스틱 병 (세척 완료)", category: "PLASTIC" },
+        { name: "화장품 플라스틱 스킨 통", category: "PLASTIC" },
+
+        // [비닐류 - VINYL]
+        { name: "과자 봉지 (내부 은박 포함)", category: "VINYL" },
+        { name: "라면 봉지 및 스프 봉지", category: "VINYL" },
+        { name: "에어캡 (택배 뽁뽁이)", category: "VINYL" },
+        { name: "투명 비닐봉투", category: "VINYL" },
+        { name: "검정 비닐봉지", category: "VINYL" },
+        { name: "페트병 라벨 비닐", category: "VINYL" },
+        { name: "빵 포장 비닐", category: "VINYL" },
+        { name: "세탁소 비닐 커버", category: "VINYL" },
+        { name: "택배 겉 비닐 포장재 (송장 제거)", category: "VINYL" },
+        { name: "양파망", category: "VINYL" },
+        { name: "커피믹스 스틱 봉지", category: "VINYL" },
+        { name: "아이스크림 비닐 포장지", category: "VINYL" },
+        { name: "김 포장 봉지", category: "VINYL" },
+        { name: "비닐 지퍼백 (오염 없는 것)", category: "VINYL" },
+
+        // [종이 / 종이팩 - PAPER]
+        { name: "신문지", category: "PAPER" },
+        { name: "골판지 택배 박스 (테이프 제거)", category: "PAPER" },
+        { name: "우유팩 (물로 헹구고 펼친 것)", category: "PAPER" },
+        { name: "두유 멸균팩 (내부 알루미늄)", category: "PAPER" },
+        { name: "서적 / 책 (스프링/하드커버 제거)", category: "PAPER" },
+        { name: "A4 복사용지 / 서류철 종이", category: "PAPER" },
+        { name: "달력 (스프링 제거)", category: "PAPER" },
+        { name: "종이 쇼핑백 (손잡이 끈 제거)", category: "PAPER" },
+        { name: "계란 종이 판 (오염 없는 것)", category: "PAPER" },
+        { name: "깨끗한 종이컵 (물로 헹군 것)", category: "PAPER" },
+        { name: "휴지심", category: "PAPER" },
+        { name: "과자 종이 상자", category: "PAPER" },
+        { name: "화장품 종이 포장 상자", category: "PAPER" },
+        { name: "종이 봉투", category: "PAPER" },
+
+        // [캔 / 고철류 - CAN]
+        { name: "알루미늄 탄산음료 캔", category: "CAN" },
+        { name: "통조림 캔 (참치, 스팸 등 세척)", category: "CAN" },
+        { name: "부탄가스 통 (구멍 뚫어 가스 배출)", category: "CAN" },
+        { name: "살충제 / 에어로졸 캔", category: "CAN" },
+        { name: "맥주 캔", category: "CAN" },
+        { name: "통조림 쇠 뚜껑", category: "CAN" },
+        { name: "분유 깡통", category: "CAN" },
+        { name: "철제 프라이팬", category: "CAN" },
+        { name: "스테인리스 냄비", category: "CAN" },
+        { name: "철사 / 못 / 나사", category: "CAN" },
+        { name: "알루미늄 냄비 (양은냄비)", category: "CAN" },
+        { name: "금속 수저 / 포크", category: "CAN" },
+        { name: "철제 옷걸이", category: "CAN" },
+
+        // [유리병 - GLASS]
+        { name: "소주병 / 맥주병 (보증금 대상)", category: "GLASS" },
+        { name: "음료수 유리병", category: "GLASS" },
+        { name: "잼 / 소스 유리병 (내부 세척)", category: "GLASS" },
+        { name: "유리 화장품 병 (내용물 비움)", category: "GLASS" },
+        { name: "유리 앰플병", category: "GLASS" },
+        { name: "유리 꿀병", category: "GLASS" }
+    ];
+
+    // 무작위 3문제 추출
+    function getRandomQuestions(pool, count) {
+        const shuffled = [...pool].sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, count);
+    }
+
+    const questions = getRandomQuestions(questionPool, 3);
+    let currentIndex = 0;
+    let correctCount = 0;
+
+    const trashElem = document.getElementById("trash");
+    const itemContainer = document.getElementById("itemContainer");
+    const dropZones = document.querySelectorAll(".drop-zone");
+    const currentQuestionElem = document.getElementById("currentQuestion");
+    const resultBox = document.getElementById("resultBox");
+    const resultText = document.getElementById("resultText");
+
+    function loadQuestion() {
+        if (currentIndex >= questions.length) {
+            finishGame();
+            return;
+        }
+        currentQuestionElem.textContent = currentIndex + 1;
+        trashElem.textContent = questions[currentIndex].name;
+        itemContainer.style.display = "flex";
+    }
+
+    // Drag & Drop 이벤트 설정
+    trashElem.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData("text/plain", questions[currentIndex].category);
+    });
+
+    dropZones.forEach(zone => {
+        zone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            zone.classList.add("hover");
+        });
+
+        zone.addEventListener("dragleave", () => {
+            zone.classList.remove("hover");
+        });
+
+        zone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            zone.classList.remove("hover");
+
+            const selectedCategory = zone.getAttribute("data-category");
+            const answerCategory = e.dataTransfer.getData("text/plain");
+
+            if (selectedCategory === answerCategory) {
+                correctCount++;
+                alert("정답입니다! (+10P)");
+            } else {
+                alert("오답입니다!");
+            }
+
+            currentIndex++;
+            loadQuestion();
+        });
+    });
+
+    function finishGame() {
+        itemContainer.style.display = "none";
+        document.querySelector(".drop-zones").style.display = "none";
+        resultBox.style.display = "block";
+        resultText.innerHTML = `총 3문제 중 <strong>${correctCount}문제</strong> 정답!<br>획득 포인트: <strong>${correctCount * 10}P</strong>`;
+    }
+
+    function submitResult() {
+        fetch("/game/finish", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ correctCount: correctCount })
+        })
+            .then(res => {
+                if (res.ok) {
+                    alert(`${correctCount * 10}포인트가 정상 적립되었습니다.`);
+                    location.href = "/";
+                } else {
+                    return res.text().then(text => { throw new Error(text); });
+                }
+            })
+            .catch(err => {
+                alert(err.message || "포인트 적립 처리 중 오류가 발생했습니다.");
+                location.href = "/";
+            });
+    }
+
+    loadQuestion();
+</script>
+</body>
+</html>
