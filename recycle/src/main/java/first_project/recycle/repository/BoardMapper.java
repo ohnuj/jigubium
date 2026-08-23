@@ -29,6 +29,7 @@ public interface BoardMapper {
             @Param("keyword") String keyword,
             @Param("searchType") String searchType,
             @Param("boardType") BoardType boardType,
+            @Param("sort") String sort,
             @Param("offset") int offset,
             @Param("size") int size
 
@@ -51,4 +52,11 @@ public interface BoardMapper {
             @Param("boardId") Long boardId,
             @Param("memberId") Long memberId
     );
+
+    //조회수 증가
+    int increaseViewCount(Long boarId);
+
+    BoardListResponse findPreviousBoard(Long boardId);
+
+    BoardListResponse findNextBoard(Long boardId);
 }

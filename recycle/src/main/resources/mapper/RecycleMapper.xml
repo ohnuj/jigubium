@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="first_project.recycle.repository.RecycleMapper">
+    <select id="searchRecycleItems"
+            resultType="first_project.recycle.dto.RecycleSearchResponse">
+
+        SELECT
+            ri.item_id AS itemId,
+            ri.item_name AS itemName,
+            GROUP_CONCAT(
+                    DISTINCT rc.category_name
+                    ORDER BY rc.category_name
+                    SEPARATOR ', '
+            ) AS categoryName,
+            ri.disposal_method AS disposalMethod,
+            ri.feature AS feature,
+            ri.caution AS caution,
+            ri.search_keyword AS searchKeyword
+        FROM recycle_item ri
+                 JOIN recycle_item_category ric
+                      ON ri.item_id = ric.item_id
+
+                 JOIN recycle_category rc
+                      ON ric.category_id = rc.category_id
+        WHERE ri.item_name LIKE CONCAT('%', #{keyword}, '%')
+        GROUP BY
+            ri.item_id,
+            ri.item_name,
+            ri.disposal_method,
+            ri.feature,
+            ri.caution,
+            ri.search_keyword
+        ORDER BY
+            CASE
+                WHEN ri.item_name = #{keyword} THEN 1
+                ELSE 2
+                END,
+            ri.item_name
+
+    </select>
+
+    <select id="findExistingItemNames" resultType="string">
+
+        SELECT item_name
+        FROM recycle_item
+
+        WHERE item_name IN
+        <foreach collection="itemNames"
+                 item="itemName"
+                 open="("
+                 separator=","
+                 close=")">
+            #{itemName}
+        </foreach>
+
+    </select>
+
+</mapper>

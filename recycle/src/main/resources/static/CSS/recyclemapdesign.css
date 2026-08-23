@@ -1,0 +1,702 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+/* =========================
+   0. 기본 설정
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family:
+            Pretendard,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif;
+
+    background-color: #f5f8f1;
+    color: #183c2a;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+
+/* =========================
+   1. 상단 네비게이션
+========================= */
+
+.main-nav {
+    height: 64px;
+
+    background-color: #16492f;
+    color: white;
+}
+
+.nav-inner {
+    position: relative;
+
+    max-width: 1120px;
+    height: 100%;
+
+    margin: 0 auto;
+    padding: 0 20px;
+
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo {
+    margin-right: auto;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: flex;
+    align-items: center;
+    gap: 36px;
+}
+
+.nav-center a,
+.nav-user a {
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: color 0.2s ease;
+}
+
+.nav-center a:hover,
+.nav-user a:hover {
+    color: #9bdd68;
+}
+
+.nav-center a.active {
+    color: #9bdd68;
+}
+
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+/* =========================
+   2. 에코맵 Hero
+========================= */
+
+.map-hero {
+    padding: 55px 20px 45px;
+
+    background: linear-gradient(
+            135deg,
+            #194d32 0%,
+            #347748 100%
+    );
+
+    color: white;
+    text-align: center;
+}
+
+/* 상단 작은 배지 */
+.map-hero-badge {
+    display: inline-block;
+
+    padding: 7px 14px;
+
+    background-color: rgba(122, 201, 67, 0.15);
+    border: 1px solid rgba(122, 201, 67, 0.45);
+    border-radius: 20px;
+
+    color: #9bdd68;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* 메인 제목 */
+.map-hero h1 {
+    margin: 20px 0 14px;
+
+    font-size: 42px;
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+/* 강조 문구 */
+.map-hero h1 strong {
+    color: #7ac943;
+}
+
+/* 설명 */
+.map-hero p {
+    margin: 0;
+
+    color: rgba(255, 255, 255, 0.72);
+
+    font-size: 15px;
+    line-height: 1.7;
+}
+/* =========================
+   3. 에코맵 검색 / 필터 영역
+========================= */
+
+.map-content {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 40px 20px 70px;
+}
+
+/* 필터 버튼 영역 */
+.filter-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    margin-bottom: 18px;
+}
+
+/* 필터 버튼 공통 */
+.filter-buttons button {
+    padding: 10px 16px;
+
+    border: 1px solid #cfe0c9;
+    border-radius: 20px;
+
+    background-color: white;
+    color: #355c43;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+            background-color 0.2s ease,
+            color 0.2s ease,
+            border-color 0.2s ease;
+}
+
+.filter-buttons button:hover {
+    background-color: #eef7e8;
+    border-color: #a9cf9f;
+}
+
+
+/* 현재 선택된 필터 */
+.filter-buttons button.active {
+    background-color: #174d32;
+    border-color: #174d32;
+    color: white;
+}
+
+.filter-buttons button.active:hover {
+    background-color: #21633f;
+    border-color: #21633f;
+}
+
+
+/* 검색 영역 */
+.search-controls {
+    max-width: 780px;
+    margin: 0 auto;
+
+    padding: 8px;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    background-color: white;
+
+    border: 1px solid #dce8d8;
+    border-radius: 15px;
+
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* 검색 입력창 */
+.search-controls input {
+    flex: 1;
+    min-width: 0;
+
+    height: 46px;
+    padding: 0 16px;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: #183c2a;
+    font-size: 14px;
+}
+
+.search-controls input::placeholder {
+    color: #91a096;
+}
+
+
+/* 검색 버튼 */
+#addressSearchButton {
+    height: 46px;
+    padding: 0 22px;
+
+    border: none;
+    border-radius: 10px;
+
+    background-color: #174d32;
+    color: white;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: background-color 0.2s ease;
+}
+
+#addressSearchButton:hover {
+    background-color: #21633f;
+}
+
+
+/* 내 위치 버튼 */
+#myLocationButton {
+    height: 46px;
+    padding: 0 18px;
+
+    border: 1px solid #b9d7ad;
+    border-radius: 10px;
+
+    background-color: #eef7e8;
+    color: #35652d;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+            background-color 0.2s ease,
+            border-color 0.2s ease;
+}
+
+#myLocationButton:hover {
+    background-color: #dff0d5;
+    border-color: #9fc78f;
+}
+
+
+/* 위치 정확도 안내 */
+.location-accuracy-message {
+    min-height: 22px;
+    margin-top: 8px;
+
+    color: #bf6b32;
+
+    font-size: 12px;
+    text-align: center;
+}
+/* =========================
+   4. 지도 카드
+========================= */
+
+.map-card {
+    margin-top: 22px;
+
+    padding: 10px;
+
+    background-color: white;
+
+    border: 1px solid #dce8d8;
+    border-radius: 18px;
+
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+
+    overflow: hidden;
+}
+
+/* 카카오맵 */
+#map {
+    width: 100% !important;
+    height: 600px !important;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+}
+/* =========================
+   5. Footer
+========================= */
+
+.footer {
+    margin-top: 70px;
+
+    background-color: #16492f;
+    color: white;
+}
+
+.footer-container {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 42px 20px 32px;
+
+    display: grid;
+    grid-template-columns: 1.4fr 0.8fr 1fr;
+    gap: 48px;
+}
+
+.footer h3,
+.footer h4 {
+    margin-top: 0;
+    margin-bottom: 14px;
+}
+
+.footer-brand h3 {
+    font-size: 18px;
+}
+
+.footer-brand p,
+.footer-info p {
+    color: rgba(255, 255, 255, 0.7);
+
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.footer-brand p {
+    margin: 0;
+}
+
+.footer-info p {
+    margin: 0 0 8px;
+}
+
+.footer-menu h4,
+.footer-info h4 {
+    font-size: 14px;
+}
+
+.footer-menu ul {
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.footer-menu li {
+    margin-bottom: 8px;
+}
+
+.footer-menu a {
+    color: rgba(255, 255, 255, 0.7);
+
+    font-size: 13px;
+
+    transition: color 0.2s ease;
+}
+
+.footer-menu a:hover {
+    color: #9bdd68;
+}
+
+/* Footer 아래 영역 */
+.footer-bottom {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 18px 20px 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+
+    color: rgba(255, 255, 255, 0.5);
+
+    font-size: 12px;
+}
+
+.footer-bottom p {
+    margin: 0;
+}
+/* =========================
+   6. 반응형
+========================= */
+
+/* 태블릿 */
+@media (max-width: 900px) {
+
+    .nav-inner {
+        padding: 0 24px;
+    }
+
+    .map-hero {
+        padding: 48px 24px 38px;
+    }
+
+    .map-hero h1 {
+        font-size: 36px;
+    }
+
+    .map-content {
+        padding: 34px 24px 60px;
+    }
+
+    .search-controls {
+        max-width: 100%;
+    }
+
+    #map {
+        height: 560px !important;
+    }
+
+    .footer-container {
+        grid-template-columns: 1.3fr 0.8fr 1fr;
+        gap: 30px;
+
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .footer-bottom {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+
+/* 모바일 */
+@media (max-width: 650px) {
+
+    /* 헤더 */
+    .main-nav {
+        height: auto;
+    }
+
+    .nav-inner {
+        min-height: 60px;
+        padding: 12px 16px;
+
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .nav-logo {
+        font-size: 16px;
+    }
+
+    .nav-center {
+        position: static;
+        transform: none;
+
+        width: 100%;
+
+        order: 3;
+
+        justify-content: center;
+        gap: 18px;
+    }
+
+    .nav-center a,
+    .nav-user a {
+        font-size: 12px;
+    }
+
+
+    /* Hero */
+    .map-hero {
+        padding: 42px 16px 36px;
+    }
+
+    .map-hero-badge {
+        padding: 6px 11px;
+        font-size: 11px;
+    }
+
+    .map-hero h1 {
+        margin: 18px 0 12px;
+
+        font-size: 30px;
+        line-height: 1.2;
+    }
+
+    .map-hero p {
+        font-size: 13px;
+    }
+
+
+    /* 메인 영역 */
+    .map-content {
+        padding: 28px 16px 50px;
+    }
+
+
+    /* 필터 */
+    .filter-buttons {
+        gap: 7px;
+        margin-bottom: 16px;
+    }
+
+    .filter-buttons button {
+        padding: 8px 12px;
+
+        font-size: 11px;
+    }
+
+
+    /* 검색 */
+    .search-controls {
+        padding: 7px;
+
+        flex-wrap: wrap;
+    }
+
+    .search-controls input {
+        width: 100%;
+        flex-basis: 100%;
+
+        height: 42px;
+        padding: 0 12px;
+
+        font-size: 13px;
+    }
+
+    #addressSearchButton,
+    #myLocationButton {
+        height: 42px;
+
+        flex: 1;
+
+        padding: 0 12px;
+
+        font-size: 12px;
+    }
+
+    .location-accuracy-message {
+        font-size: 11px;
+    }
+
+
+    /* 지도 */
+    .map-card {
+        margin-top: 18px;
+        padding: 7px;
+
+        border-radius: 14px;
+    }
+
+    #map {
+        height: 480px !important;
+        border-radius: 10px;
+    }
+
+
+    /* Footer */
+    .footer {
+        margin-top: 50px;
+    }
+
+    .footer-container {
+        padding: 34px 20px 26px;
+
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .footer-bottom {
+        padding: 18px 20px 24px;
+
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}/* =========================
+   6. 지도 정보창
+========================= */
+
+.map-info-window {
+    width: 270px;
+
+    background-color: white;
+    color: #183c2a;
+
+    font-family: Pretendard, sans-serif;
+
+    overflow: hidden;
+}
+
+/* 정보창 제목 */
+.map-info-title {
+    padding: 13px 15px;
+
+    background-color: #174d32;
+    color: white;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* 정보 영역 */
+.map-info-body {
+    padding: 12px 15px;
+}
+
+/* 한 줄 */
+.map-info-row {
+    display: grid;
+    grid-template-columns: 58px 1fr;
+    gap: 8px;
+
+    padding: 6px 0;
+
+    border-bottom: 1px solid #edf2eb;
+}
+
+.map-info-row:last-child {
+    border-bottom: none;
+}
+
+/* 행정동 / 도로명 / 지번 */
+.map-info-row span {
+    color: #78907d;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* 실제 주소 */
+.map-info-row p {
+    margin: 0;
+
+    color: #34493b;
+
+    font-size: 12px;
+    line-height: 1.5;
+
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+}

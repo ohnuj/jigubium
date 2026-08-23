@@ -13,4 +13,5 @@ public class Board {
    private String content; // 글작성내용
    private LocalDateTime createdAt; // 작성일자
    private LocalDateTime updatedAt; // 수정일자
+   private Integer viewCount;
 }

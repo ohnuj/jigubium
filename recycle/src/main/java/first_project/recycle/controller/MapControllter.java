@@ -1,6 +1,10 @@
 package first_project.recycle.controller;
 
 import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
+import first_project.recycle.domain.ecoLocationdto.seodaemun.SeodaemunMedicineBinResponse;
+import first_project.recycle.service.mapservice.dongjakservice.DongjakBatteryBinService;
+import first_project.recycle.service.mapservice.seodaemunservice.SeodaemunClothingBinService;
 import first_project.recycle.service.mapservice.wasteelectronicsservice.WasteElectronicsService;
 import first_project.recycle.service.EcoLocationService;
 import first_project.recycle.service.mapservice.jongnoservice.JongnoBatteryBinService;
@@ -13,7 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import first_project.recycle.service.mapservice.gwanakservice.GwanakClothingBinService;
 import first_project.recycle.service.mapservice.gwanakservice.GwanakBatteryBinService;
 import first_project.recycle.service.mapservice.gwanakservice.GwanakMedicineBinService;
-
+import first_project.recycle.service.mapservice.seodaemunservice.SeodaemunMedicineBinService;
+import first_project.recycle.domain.ecoLocationdto.seodaemun.SeodaemunMedicineBinResponse;
 import java.util.List;
 
 @Controller
@@ -36,6 +41,12 @@ public class MapControllter {
     private final GwanakMedicineBinService gwanakMedicineBinService;
     // 폐가전 API 서비스 객체
     private final WasteElectronicsService wasteElectronicsService;
+    // 서대문구 폐의약품 수거함 서비스 객체
+    private final SeodaemunMedicineBinService seodaemunMedicineBinService;
+    // 서대문구 의류수거함 서비스 객체
+    private final SeodaemunClothingBinService seodaemunClothingBinService;
+    // 동작구 폐건전지·폐형광등 서비스 객체
+    private final DongjakBatteryBinService dongjakBatteryBinService;
 
     //DB 조회용 서비스 객체
     private final EcoLocationService ecoLocationService;
@@ -51,7 +62,10 @@ public class MapControllter {
             GwanakClothingBinService gwanakClothingBinService,
             GwanakBatteryBinService gwanakBatteryBinService,
             GwanakMedicineBinService gwanakMedicineBinService,
-            WasteElectronicsService wasteElectronicsService
+            WasteElectronicsService wasteElectronicsService,
+            SeodaemunMedicineBinService seodaemunMedicineBinService,
+            SeodaemunClothingBinService seodaemunClothingBinService,
+            DongjakBatteryBinService dongjakBatteryBinService
     ) {
         this.jongnoClothingBinService = jongnoClothingBinService;
         this.jongnoBatteryBinService = jongnoBatteryBinService;
@@ -62,6 +76,9 @@ public class MapControllter {
         this.gwanakBatteryBinService = gwanakBatteryBinService;
         this.gwanakMedicineBinService = gwanakMedicineBinService;
         this.wasteElectronicsService = wasteElectronicsService;
+        this.seodaemunMedicineBinService = seodaemunMedicineBinService;
+        this.seodaemunClothingBinService = seodaemunClothingBinService;
+        this.dongjakBatteryBinService = dongjakBatteryBinService;
     }
 
     //지도 페이지 이동
@@ -123,6 +140,25 @@ public class MapControllter {
     public List<ecoLocation> importGwanakMedicineBins() {
         return gwanakMedicineBinService.importMedicineBins();
     }
+    // 서대문구 폐의약품 API 호출 및 DB 저장 테스트
+    @GetMapping("/api/seodaemun-medicine-bins/import")
+    @ResponseBody
+    public List<ecoLocation> importSeodaemunMedicineBins() {
+        return seodaemunMedicineBinService.getMedicineBins();
+    }
+    // 서대문구 의류수거함 API 호출 및 DB 저장
+    @GetMapping("/api/seodaemun-clothing-bins/import")
+    @ResponseBody
+    public List<ecoLocation> importSeodaemunClothingBins() {
+        return seodaemunClothingBinService.getClothingBins();
+    }
+    //동작구 폐건전지, 폐형광등 api 저장
+    @GetMapping("/api/dongjak-battery-bins/import")
+    @ResponseBody
+    public List<ecoLocation> importDongjakBatteryBins() {
+        return dongjakBatteryBinService.getBatteryBins();
+    }
+
     // 폐가전 CSV DB 저장
     @GetMapping("/api/waste-electronics/import")
     @ResponseBody
