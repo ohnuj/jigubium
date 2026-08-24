@@ -1,113 +1,133 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마이페이지 - 내 정보</title>
+    <link rel="stylesheet" th:href="@{/css/mypage.css(v=12)}">
 </head>
 <body>
-<nav>
-    <div>
-        <a th:href="@{/}">Home</a>
-        <th:block th:unless="${session.checkLogin}">
-            <a th:href="@{/login}">로그인</a>
-            <a th:href="@{/signup}">회원가입</a>
-        </th:block>
 
-        <th:block th:if="${session.checkLogin}">
-            <a th:href="@{/mypage}">마이페이지</a>
-            <a th:href="@{/logout}">로그아웃</a>
-            <a th:href="@{/reward}">리워드 상점</a>
-        </th:block>
+<!-- 상단 네비게이션 바 -->
+<nav>
+    <div class="nav-inner">
+        <div class="nav-left">
+            <a th:href="@{/}">♻️ 지구비우기</a>
+        </div>
+        <div class="nav-center">
+            <a th:href="@{/eco-map}">에코맵</a>
+            <a th:href="@{/game}">재활용게임</a>
+            <a th:href="@{/boards}">커뮤니티</a>
+        </div>
+        <div class="nav-right">
+            <th:block th:unless="${session.checkLogin}">
+                <a th:href="@{/login}">로그인</a>
+                <a th:href="@{/signup}">회원가입</a>
+            </th:block>
+
+            <th:block th:if="${session.checkLogin}">
+                <a th:href="@{/mypage}" class="active">마이페이지</a>
+                <a th:href="@{/logout}">로그아웃</a>
+                <a th:href="@{/reward}">리워드 상점</a>
+            </th:block>
+        </div>
     </div>
 </nav>
-<div style="display:flex; gap: 40px; max-width: 900px; margin:30px auto">
-    <!-- 좌측 4가지 탭 메뉴 (1번 탭 강조) -->
-    <aside style="width: 180px;">
-        <ul style="list-style: none; padding: 0; line-height: 2.2;">
-            <li style="font-weight: bold;"><a th:href="@{/mypage/myinfo}">내 정보</a></li>
+
+<div class="mypage-container">
+    <!-- 좌측 사이드바 (1번 탭 활성화) -->
+    <aside class="mypage-sidebar">
+        <ul class="mypage-menu-list">
+            <li class="active"><a th:href="@{/mypage/myinfo}">내 정보</a></li>
             <li><a th:href="@{/mypage/memberinfoconfirm}">회원정보 수정</a></li>
             <li><a th:href="@{/mypage/memberactivity}">나의 활동</a></li>
             <li><a th:href="@{/mypage/memberdelete}">회원 탈퇴</a></li>
         </ul>
     </aside>
 
-    <!-- 내 정보 본문 -->
-    <main style="flex:1;">
-        <h2>내 정보</h2>
-        <!-- 전체 정보를 감싸는 회색 박스 시작 -->
-        <div style="background-color: #f8f9fa; padding: 25px; border-radius: 8px; line-height: 2.2; border: 1px solid #e9ecef;">
-
-            <!-- 뱃지(회원 등급) -->
-            <div style="display: flex; align-items: center; gap: 6px;">
-                <strong>회원 등급:</strong>
-
-                <!-- 1단계: 씨앗 (0 ~ 249점) -->
-                <span th:if="${totalPoint == null or totalPoint < 250}" style="display: inline-flex; align-items: center; gap: 5px;">
-                    <img th:src="@{/images/seeds.png}" alt="씨앗" style="width: 18px; height: 18px; object-fit: contain; vertical-align: middle;">
-                    <span style="font-weight: 600; color: #8d6e63;">씨앗(1단계)</span>
-                </span>
-
-                <!-- 2단계: 새싹 (250 ~ 499점) -->
-                <span th:if="${totalPoint != null and totalPoint >= 250 and totalPoint < 500}" style="display: inline-flex; align-items: center; gap: 5px;">
-                    <img th:src="@{/images/sprout.png}" alt="새싹" style="width: 18px; height: 18px; object-fit: contain; vertical-align: middle;">
-                    <span style="font-weight: 600; color: #4caf50;">새싹(2단계)</span>
-                </span>
-
-                <!-- 3단계: 나무 (500 ~ 749점) -->
-                <span th:if="${totalPoint != null and totalPoint >= 500 and totalPoint < 750}" style="display: inline-flex; align-items: center; gap: 5px;">
-                    <img th:src="@{/images/tree.png}" alt="나무" style="width: 18px; height: 18px; object-fit: contain; vertical-align: middle;">
-                    <span style="font-weight: 600; color: #2e7d32;">나무(3단계)</span>
-                </span>
-
-                <!-- 4단계: 열매 (750점 이상) -->
-                <span th:if="${totalPoint != null and totalPoint >= 750}" style="display: inline-flex; align-items: center; gap: 5px;">
-                    <img th:src="@{/images/fruit.png}" alt="열매" style="width: 18px; height: 18px; object-fit: contain; vertical-align: middle;">
-                    <span style="font-weight: 600; color: #e91e63;">열매(4단계)</span>
-                </span>
-
-                <!-- 누적 포인트 표기 -->
-                <span style="font-size: 0.85em; color: #888; margin-left: 4px;"
-                      th:text="'(누적 ' + ${#numbers.formatInteger(totalPoint != null ? totalPoint : 0, 0, 'COMMA')} + 'P)'">
-                    (누적 0P)
-                </span>
-            </div>
-
-            <!-- 이름 -->
-            <div>
-                <strong>이름:</strong>
-                <span th:text="${member.name != null ? member.name : '이름 없음'}">홍길동</span>
-            </div>
-
-            <!-- 닉네임 -->
-            <div>
-                <strong>닉네임:</strong>
-                <span th:text="${member.nickname}">닉네임</span>
-            </div>
-
-            <!-- 이메일 -->
-            <div>
-                <strong>이메일:</strong>
-                <span th:text="${member.email}">user@example.com</span>
-            </div>
-
-            <!-- 보유 에코포인트 (EcoPointHistory의 가장 최신 balance_after) -->
-            <div>
-                <strong>보유 에코포인트:</strong>
-                <strong style="color: #28a745; font-size: 1.15em;"
-                        th:text="${#numbers.formatInteger(currentPoint != null ? currentPoint : 0, 0, 'COMMA')} + ' P'">
-                    0 P
-                </strong>
-            </div>
-
-            <!-- 가입일 -->
-            <div th:if="${member.createdAt != null}">
-                <strong>가입일:</strong>
-                <span th:text="${#temporals.format(member.createdAt, 'yyyy-MM-dd HH:mm')}">2026-08-20 18:30</span>
-            </div>
-
+    <!-- 우측 본문 -->
+    <main class="mypage-main">
+        <div class="mypage-title-area">
+            <h2>내 정보</h2>
+            <p>기본 회원 정보와 현재 보유 에코포인트를 확인합니다.</p>
         </div>
-        <!-- 전체 정보를 감싸는 회색 박스 끝 -->
+
+        <div class="mypage-card">
+            <!-- 1. 회원 등급 (씨앗 / 새싹 / 나무 / 열매) -->
+            <div class="info-row">
+                <span class="info-label">회원 등급</span>
+                <div class="info-value">
+                    <div class="grade-badge-wrap">
+                        <!-- 1단계 씨앗 (0 ~ 249P) -->
+                        <th:block th:if="${totalPoint == null or totalPoint < 250}">
+                            <img th:src="@{/images/seed.png}" alt="씨앗" onerror="this.style.display='none'">
+                            <span class="grade-name" style="color: #795548;">씨앗 (1단계)</span>
+                        </th:block>
+
+                        <!-- 2단계 새싹 (250 ~ 499P) -->
+                        <th:block th:if="${totalPoint != null and totalPoint >= 250 and totalPoint < 500}">
+                            <img th:src="@{/images/sprout.png}" alt="새싹" onerror="this.style.display='none'">
+                            <span class="grade-name" style="color: #2e7d32;">새싹 (2단계)</span>
+                        </th:block>
+
+                        <!-- 3단계 나무 (500 ~ 749P) -->
+                        <th:block th:if="${totalPoint != null and totalPoint >= 500 and totalPoint < 750}">
+                            <img th:src="@{/images/tree.png}" alt="나무" onerror="this.style.display='none'">
+                            <span class="grade-name" style="color: #1b5e20;">나무 (3단계)</span>
+                        </th:block>
+
+                        <!-- 4단계 열매 (750P 이상) -->
+                        <th:block th:if="${totalPoint != null and totalPoint >= 750}">
+                            <img th:src="@{/images/fruit.png}" alt="열매" onerror="this.style.display='none'">
+                            <span class="grade-name" style="color: #d32f2f;">열매 (4단계)</span>
+                        </th:block>
+
+                        <!-- 누적 적립 표시 -->
+                        <span class="grade-total"
+                              th:text="'(누적 적립 ' + ${#numbers.formatInteger(totalPoint != null ? totalPoint : 0, 0, 'COMMA')} + ' P)'">
+                            (누적 적립 0 P)
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 닉네임 -->
+            <div class="info-row">
+                <span class="info-label">닉네임</span>
+                <div class="info-value" th:text="${member != null ? member.nickname : ''}">닉네임</div>
+            </div>
+
+            <!-- 3. 이메일 -->
+            <div class="info-row">
+                <span class="info-label">이메일</span>
+                <div class="info-value" th:text="${member != null ? member.email : ''}">user@example.com</div>
+            </div>
+
+            <!-- 4. 현재 보유 포인트 -->
+            <div class="info-row">
+                <span class="info-label">보유 포인트</span>
+                <div class="info-value">
+                    <div class="point-badge">
+                        <strong th:text="${#numbers.formatInteger(currentPoint != null ? currentPoint : 0, 0, 'COMMA')}">0</strong>
+                        <span>P</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. 가입일 -->
+            <div class="info-row">
+                <span class="info-label">가입일</span>
+                <div class="info-value"
+                     th:text="${member != null and member.createdAt != null ? #temporals.format(member.createdAt, 'yyyy년 MM월 dd일') : '-'}">
+                    2026년 08월 24일
+                </div>
+            </div>
+        </div>
     </main>
 </div>
+
+<!-- 공통 푸터 -->
+<footer th:replace="~{index :: footer}"></footer>
+
 </body>
 </html>

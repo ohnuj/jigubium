@@ -19,6 +19,7 @@ import java.util.Map;
 @Service
 public class MypageService {
 
+    // DB 접근을 담당하는 매퍼 인터페이스 주입
     private final MypageMapper mypageMapper;
 
     // 회원 정보 조회
@@ -27,26 +28,29 @@ public class MypageService {
     }
 
     // 회원 정보 수정
-    @Transactional
+    @Transactional // DB수정 작업 중 예외가 터지면 롤백하여 데이터 무결성 보장
     public void updateMemberInfo(Long memberId, MemberInfo memberinfo) {
         mypageMapper.updateMember(memberId, memberinfo);
     }
-    // 비밀번호 확인 절차
+    // 비밀번호 확인 절차 -> DB의 기존 비밀번호와 사용자가 입력창에 적은 문자열이 같은지 비교
     public boolean verifyPassword(Long memberId, String password) {
         Member member = mypageMapper.findById(memberId);
         if (member == null || member.getPassword() == null) {
             return false;
         }
+        // 문지 동등 비교 결과 반환
         return member.getPassword().equals(password);
     }
 
     // 회원 탈퇴
+    // 입력한 비밀번호 검증 -> 일치 시 DB행 삭제
     @Transactional
     public boolean deleteMember(Long memberId, String password) {
         Member member = mypageMapper.findById(memberId);
         if (member == null || !password.equals(member.getPassword())) {
             return false;
         }
+        // DB에서 회원 행 삭제 실행
         mypageMapper.deleteById(memberId);
         return true;
     }
@@ -55,6 +59,9 @@ public class MypageService {
     public int getBoardCount(Long memberId){
         return mypageMapper.countBoardsById(memberId);
     }
+
+    // 작성한 댓글 수
+    public int getCommentCount(Long memberId) { return mypageMapper.commentCountById(memberId); }
 
     // 포인트 변동 내역 목록
     public ArrayList<EcoPointHistory> getPointHistory(Long memberId){

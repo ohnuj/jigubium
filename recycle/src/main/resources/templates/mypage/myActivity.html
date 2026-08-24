@@ -1,162 +1,196 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마이페이지 - 나의 활동</title>
+    <link rel="stylesheet" th:href="@{/css/mypage.css(v=12)}">
 </head>
 <body>
-<nav>
-    <div>
-        <a th:href="@{/}">Home</a>
-        <th:block th:unless="${session.checkLogin}">
-            <a th:href="@{/login}">로그인</a>
-            <a th:href="@{/signup}">회원가입</a>
-        </th:block>
 
-        <th:block th:if="${session.checkLogin}">
-            <a th:href="@{/mypage}">마이페이지</a>
-            <a th:href="@{/logout}">로그아웃</a>
-            <a th:href="@{/reward}">리워드 상점</a>
-        </th:block>
+<!-- 상단 네비게이션 바 -->
+<nav>
+    <div class="nav-inner">
+        <div class="nav-left">
+            <a th:href="@{/}">♻️ 지구비우기</a>
+        </div>
+        <div class="nav-center">
+            <a th:href="@{/eco-map}">에코맵</a>
+            <a th:href="@{/game}">재활용게임</a>
+            <a th:href="@{/boards}">커뮤니티</a>
+        </div>
+        <div class="nav-right">
+            <th:block th:unless="${session.checkLogin}">
+                <a th:href="@{/login}">로그인</a>
+                <a th:href="@{/signup}">회원가입</a>
+            </th:block>
+
+            <th:block th:if="${session.checkLogin}">
+                <a th:href="@{/mypage}" class="active">마이페이지</a>
+                <a th:href="@{/logout}">로그아웃</a>
+                <a th:href="@{/reward}">리워드 상점</a>
+            </th:block>
+        </div>
     </div>
 </nav>
-<div style="display: flex; gap: 40px; max-width: 900px; margin: 30px auto;">
 
-    <!-- 좌측 4가지 탭 메뉴 (3번 탭 강조) -->
-    <aside style="width: 180px;">
-        <ul style="list-style: none; padding: 0; line-height: 2.2;">
+<div class="mypage-container">
+    <!-- 좌측 사이드바 -->
+    <aside class="mypage-sidebar">
+        <ul class="mypage-menu-list">
             <li><a th:href="@{/mypage/myinfo}">내 정보</a></li>
             <li><a th:href="@{/mypage/memberinfoconfirm}">회원정보 수정</a></li>
-            <li style="font-weight: bold;"><a th:href="@{/mypage/memberactivity}">나의 활동</a></li>
+            <li class="active"><a th:href="@{/mypage/memberactivity}">나의 활동</a></li>
             <li><a th:href="@{/mypage/memberdelete}">회원 탈퇴</a></li>
         </ul>
     </aside>
 
-    <!-- 본문 영역 -->
-    <main style="flex: 1;">
-        <h2>나의 활동</h2>
+    <!-- 우측 메인 본문 -->
+    <main class="mypage-main">
+        <div class="mypage-title-area">
+            <h2>나의 활동</h2>
+            <p>회원님의 활동 요약과 에코포인트 적립·사용 내역입니다.</p>
+        </div>
 
-        <!-- 활동 요약 카드 -->
-        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #e9ecef; margin-bottom: 25px; line-height: 2;">
-            <div>
-                <strong>작성한 게시글 수:</strong>
-                <span th:text="${boardCount} + ' 개'">0 개</span>
+        <!-- 1. 활동 요약 카드 -->
+        <div class="mypage-card" style="margin-bottom: 24px;">
+            <div class="info-row">
+                <span class="info-label">보유 포인트</span>
+                <div class="info-value">
+                    <div class="point-badge">
+                        <strong th:text="${#numbers.formatInteger(currentPoint != null ? currentPoint : 0, 0, 'COMMA')}">0</strong>
+                        <span>P</span>
+                    </div>
+                </div>
             </div>
-            <div>
-                <strong>보유 리워드 상품:</strong>
-                <!-- rewardList가 비어있는 경우 -->
-                <span th:if="${#lists.isEmpty(rewardList)}" style="color: #888;">없음</span>
 
-                <!-- rewardList에 데이터가 있는 경우 -->
-                <span th:unless="${#lists.isEmpty(rewardList)}">
-                    <span th:each="item, stat : ${rewardList}">
-                        <strong style="color: #28a745;">
-                            <!-- 영문 코드명 대응 및 한글 출력 -->
-                            <th:block th:with="name=${item.rewardName != null ? item.rewardName : item.REWARDNAME}">
-                                <span th:if="${name == 'eco_sticker'}">친환경 스티커</span>
-                                <span th:if="${name == 'tumbler_coupon'}">텀블러 할인 쿠폰</span>
-                                <span th:if="${name == 'eco_bag'}">에코백</span>
-                                <span th:if="${name == 'eco_goods'}">친환경 굿즈 세트</span>
-                                <span th:if="${name != 'eco_sticker' and name != 'tumbler_coupon' and name != 'eco_bag' and name != 'eco_goods'}" th:text="${name}">상품</span>
-                            </th:block>
-                            <span th:text="' (' + ${(item.itemCount != null ? item.itemCount : item.ITEMCOUNT)} + '개)'"> (0개)</span>
-                        </strong>
-                        <span th:if="${!stat.last}">, </span>
+            <div class="info-row">
+                <span class="info-label">작성 내역</span>
+                <div class="info-value" style="display: flex; gap: 24px; align-items: center;">
+                    <div>
+                        <span style="color: #617065; font-size: 14px; margin-right: 6px;">내가 작성한 게시글:</span>
+                        <span style="font-weight: 700; color: #174d32;" th:text="${boardCount != null ? boardCount : 0} + '개'">0개</span>
+                    </div>
+                    <div style="border-left: 1px solid #dce8d8; padding-left: 24px;">
+                        <span style="color: #617065; font-size: 14px; margin-right: 6px;">내가 작성한 댓글:</span>
+                        <span style="font-weight: 700; color: #174d32;" th:text="${commentCount != null ? commentCount : 0} + '개'">0개</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">보유 리워드</span>
+                <div class="info-value">
+                    <div class="reward-chip-list" th:if="${rewardList != null and not #lists.isEmpty(rewardList)}">
+                        <div class="reward-chip-item" th:each="rw : ${rewardList}">
+                            <span th:text="${rw.rewardName}">친환경 스티커</span>
+                            <span th:text="${rw.itemCount} + '개'">1개</span>
+                        </div>
+                    </div>
+                    <span th:if="${rewardList == null or #lists.isEmpty(rewardList)}" style="color: #8b978f; font-size: 13px;">
+                        보유 중인 리워드가 없습니다.
                     </span>
-                </span>
-            </div>
-            <div>
-                <strong>현재 보유 에코포인트:</strong>
-                <strong style="color: #28a745; font-size: 1.1em;"
-                        th:text="${#numbers.formatInteger(currentPoint, 0, 'COMMA')} + ' P'">0 P</strong>
+                </div>
             </div>
         </div>
 
-        <!-- 에코포인트 변동 내역 테이블 -->
-        <h3 style="margin-top: 20px;">에코포인트 변동 내역</h3>
-        <table style="width: 100%; border-collapse: collapse; text-align: center; margin-top: 10px; font-size: 14px;">
-            <thead>
-            <tr style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6;">
-                <th style="padding: 10px;">일시</th>
-                <th style="padding: 10px;">구분</th>
-                <th style="padding: 10px; text-align: left; padding-left: 15px;">사유</th>
-                <th style="padding: 10px;">변동 포인트</th>
-                <th style="padding: 10px;">잔액</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- 내역 없음 -->
-            <tr th:if="${#lists.isEmpty(pointHistoryList)}">
-                <td colspan="5" style="padding: 30px; color: #888; border-bottom: 1px solid #dee2e6;">
-                    포인트 적립 및 사용 내역이 없습니다.
-                </td>
-            </tr>
+        <!-- 2. 에코포인트 변동 내역 테이블 -->
+        <div class="mypage-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: #163d29;">에코포인트 변동 내역</h3>
+                <span style="font-size: 12px; color: #78887d;" th:text="'전체 ' + ${pointPageCount != null ? pointPageCount : 0} + '건'">전체 0건</span>
+            </div>
 
-            <!-- 내역 목록 (10개씩 페이징 출력) -->
-            <tr th:each="history : ${pointHistoryList}" style="border-bottom: 1px solid #e9ecef;">
-                <!-- 일시 -->
-                <td style="padding: 10px; color: #666;"
-                    th:text="${#temporals.format(history.createdAt, 'yyyy-MM-dd HH:mm')}">2026-08-21 12:07</td>
+            <div style="width: 100%; overflow-x: auto;">
+                <table class="mypage-point-table">
+                    <thead>
+                    <tr>
+                        <th style="width: 130px; padding: 10px 12px; font-size: 12px; color: #2c3e35; font-weight: 600;">일시</th>
+                        <th style="width: 60px; text-align: center; padding: 10px 12px; font-size: 12px; color: #2c3e35; font-weight: 600;">구분</th>
+                        <th style="padding: 10px 12px; font-size: 12px; color: #2c3e35; font-weight: 600;">활동 내용</th>
+                        <th style="width: 110px; text-align: right; padding: 10px 12px; font-size: 12px; color: #2c3e35; font-weight: 600;">포인트 변동</th>
+                        <th style="width: 110px; text-align: right; padding: 10px 12px; font-size: 12px; color: #2c3e35; font-weight: 600;">잔여 포인트</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="history : ${pointHistoryList}">
+                        <td style="padding: 11px 12px; font-size: 12px; color: #78887d; font-weight: 400; border-bottom: 1px solid #edf2eb;"
+                            th:text="${#temporals.format(history.createdAt, 'yyyy-MM-dd HH:mm')}">2026-08-24 10:30</td>
 
-                <!-- 구분 (적립 / 사용) -->
-                <td style="padding: 10px;">
-                    <span th:if="${history.pointType == 'EARN'}" style="color: #28a745; font-weight: bold;">적립</span>
-                    <span th:if="${history.pointType == 'USE'}" style="color: #dc3545; font-weight: bold;">사용</span>
-                </td>
+                        <td style="text-align: center; padding: 11px 12px; font-size: 12px; font-weight: 400; border-bottom: 1px solid #edf2eb;">
+                            <span th:if="${history.pointType == 'EARN'}" style="color: #28a745;">적립</span>
+                            <span th:if="${history.pointType == 'USE'}" style="color: #dc3545;">사용</span>
+                        </td>
 
-                <!-- 포인트 변동 사유 -->
-                <td style="padding: 10px; text-align: left; padding-left: 15px;">
-                    <span th:if="${history.referenceType == 'GAME'}">미니게임 참여 보상</span>
-                    <span th:if="${history.referenceType == 'REWARD'}">리워드 상품 구매</span>
-                    <span th:if="${history.referenceType == 'BOARD'}">게시판 글 작성 적립</span>
-                    <span th:if="${history.referenceType == 'SIGNUP'}">신규 회원가입 축하 적립</span>
-                    <span th:if="${history.referenceType == 'COMMENT'}">댓글 작성</span>
-                    <span th:if="${history.referenceType != 'GAME' and history.referenceType != 'REWARD' and history.referenceType != 'BOARD' and history.referenceType != 'SIGNUP' and history.referenceType != 'COMMENT'}"
-                          th:text="${history.referenceType != null ? history.referenceType : '기타 변동'}">기타</span>
-                </td>
+                        <!-- 활동 내용 (댓글 작성 및 상세 활동 분기 처리) -->
+                        <td style="padding: 11px 12px; font-size: 12px; color: #536359; font-weight: 400; border-bottom: 1px solid #edf2eb;">
+                            <!-- 1. 댓글 작성 적립 -->
+                            <span th:if="${history.referenceType == 'COMMENT' or history.referenceType == 'REPLY'}">
+                          커뮤니티 댓글 작성
+                            </span>
 
-                <!-- 변동량 (+ / -) -->
-                <td style="padding: 10px; font-weight: bold;">
-                    <span th:if="${history.pointType == 'EARN'}" style="color: #28a745;"
-                          th:text="'+' + ${#numbers.formatInteger(history.pointAmount, 0, 'COMMA')} + ' P'">+2,000 P</span>
-                    <span th:if="${history.pointType == 'USE'}" style="color: #dc3545;"
-                          th:text="'-' + ${#numbers.formatInteger(history.pointAmount, 0, 'COMMA')} + ' P'">-300 P</span>
-                </td>
+                            <!-- 2. 게시글 작성 / 분리배출 인증 -->
+                            <span th:if="${history.referenceType == 'BOARD' or history.referenceType == 'RECYCLE' or history.referenceType == 'POST'}">
+                          커뮤니티 게시글 작성
+                            </span>
 
-                <!-- 잔액 -->
-                <td style="padding: 10px;"
-                    th:text="${#numbers.formatInteger(history.balanceAfter, 0, 'COMMA')} + ' P'">2,000 P</td>
-            </tr>
-            </tbody>
-        </table>
+                            <!-- 3. 회원가입 축하 적립 -->
+                            <span th:if="${history.referenceType == 'JOIN' or history.referenceType == 'SIGNUP' or history.referenceType == 'WELCOME' or history.referenceType == 'MEMBER'}">
+                          회원가입 축하 적립
+                          </span>
 
-        <!-- 페이징 번호 네비게이션 영역 (테이블 하단 위치) -->
-        <div th:if="${pagingPages > 1}" style="text-align: center; margin-top: 25px; display: flex; justify-content: center; gap: 6px;">
-            <!-- 이전 페이지 링크 -->
-            <a th:if="${currentPage > 1}"
-               th:href="@{/mypage/memberactivity(page=${currentPage - 1})}"
-               style="text-decoration: none; padding: 5px 10px; border: 1px solid #dee2e6; border-radius: 4px; color: #333;">&laquo; 이전</a>
+                            <!-- 4. 에코 퀴즈 / 게임 -->
+                            <span th:if="${history.referenceType == 'QUIZ' or history.referenceType == 'GAME'}">
+                          에코 퀴즈 및 게임 참여
+                           </span>
 
-            <!-- 페이지 번호 나열 -->
-            <span th:each="pageNum : ${#numbers.sequence(1, pagingPages)}">
-                <a th:if="${pageNum != currentPage}"
+                            <!-- 5. 리워드 상점 사용 -->
+                            <span th:if="${history.referenceType == 'SHOP' or history.referenceType == 'REWARD'}">
+                          에코 리워드 상품 교환
+                            </span>
+
+                            <!-- 6. 기타/기본값 -->
+                            <span th:if="${history.referenceType == null or (history.referenceType != 'COMMENT' and history.referenceType != 'REPLY' and history.referenceType != 'BOARD' and history.referenceType != 'RECYCLE' and history.referenceType != 'POST' and history.referenceType != 'JOIN' and history.referenceType != 'SIGNUP' and history.referenceType != 'WELCOME' and history.referenceType != 'MEMBER' and history.referenceType != 'QUIZ' and history.referenceType != 'GAME' and history.referenceType != 'SHOP' and history.referenceType != 'REWARD')}">
+                          포인트 적립/사용
+                          </span>
+                        </td>
+
+                        <td style="text-align: right; padding: 11px 12px; font-size: 12px; font-weight: 400; border-bottom: 1px solid #edf2eb;">
+                                <span th:if="${history.pointType == 'EARN'}" style="color: #28a745;"
+                                      th:text="'+' + ${#numbers.formatInteger(history.pointAmount, 0, 'COMMA')} + ' P'">+50 P</span>
+                            <span th:if="${history.pointType == 'USE'}" style="color: #dc3545;"
+                                  th:text="'-' + ${#numbers.formatInteger(history.pointAmount, 0, 'COMMA')} + ' P'">-1,000 P</span>
+                        </td>
+
+                        <td style="text-align: right; padding: 11px 12px; font-size: 12px; color: #536359; font-weight: 400; border-bottom: 1px solid #edf2eb;"
+                            th:text="${#numbers.formatInteger(history.balanceAfter != null ? history.balanceAfter : 0, 0, 'COMMA')} + ' P'">500 P</td>
+                    </tr>
+
+                    <tr th:if="${pointHistoryList == null or #lists.isEmpty(pointHistoryList)}">
+                        <td colspan="5" style="text-align: center; padding: 40px 0; color: #8b978f; font-size: 12px;">
+                            에코포인트 변동 내역이 존재하지 않습니다.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 페이징 버튼 -->
+            <div th:if="${pagingPages > 1}" style="display: flex; justify-content: center; gap: 5px; margin-top: 20px;">
+                <a th:each="pageNum : ${#numbers.sequence(1, pagingPages)}"
                    th:href="@{/mypage/memberactivity(page=${pageNum})}"
                    th:text="${pageNum}"
-                   style="text-decoration: none; padding: 5px 10px; border: 1px solid #dee2e6; border-radius: 4px; color: #333;">1</a>
-
-                <!-- 현재 활성화된 페이지 -->
-                <strong th:if="${pageNum == currentPage}"
-                        th:text="${pageNum}"
-                        style="padding: 5px 10px; border: 1px solid #28a745; background-color: #28a745; color: #fff; border-radius: 4px;">1</strong>
-            </span>
-
-            <!-- 다음 페이지 링크 -->
-            <a th:if="${currentPage < pagingPages}"
-               th:href="@{/mypage/memberactivity(page=${currentPage + 1})}"
-               style="text-decoration: none; padding: 5px 10px; border: 1px solid #dee2e6; border-radius: 4px; color: #333;">다음 &raquo;</a>
+                   th:style="${pageNum == currentPage} ?
+                             'display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:6px; background-color:#174d32; color:white; font-weight:600; font-size:12px;' :
+                             'display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:6px; border:1px solid #dce8d8; background-color:white; color:#536359; font-size:12px;'">
+                </a>
+            </div>
         </div>
-
     </main>
 </div>
+
+<!-- Home 파일의 공통 푸터 조각 include -->
+<footer th:replace="~{index :: footer}"></footer>
+
 </body>
 </html>
