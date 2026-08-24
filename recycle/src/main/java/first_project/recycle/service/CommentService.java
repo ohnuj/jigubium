@@ -3,6 +3,7 @@ package first_project.recycle.service;
 
 import first_project.recycle.domain.Comment;
 import first_project.recycle.domain.Paging;
+import first_project.recycle.domain.ecoLocationdto.Paging;
 import first_project.recycle.dto.CommentCreateRequest;
 import first_project.recycle.dto.CommentPageResponse;
 import first_project.recycle.dto.CommentResponse;

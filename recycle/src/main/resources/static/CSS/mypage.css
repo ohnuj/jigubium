@@ -1,0 +1,528 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+/* =========================================================
+   0. 기본 설정 & 푸터 하단 고정(Sticky Footer) & 스크롤바 흔들림 방지
+========================================================= */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    /* 페이지 이동 시 세로 스크롤바 유무로 화면이 좌우로 덜컹거리는 현상 방지 */
+    scrollbar-gutter: stable;
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background-color: #f5f8f1;
+    color: #183c2a;
+
+    /* [핵심] 모니터 화면 전체 높이를 채우고 세로 플렉스 구조로 설정하여 푸터를 바닥으로 밀어냄 */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================================================
+   1. 상단 글로벌 네비게이션 (GNB)
+========================================================= */
+nav {
+    width: 100%;
+    height: 64px;
+    background-color: #16492f;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+nav > .nav-inner {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 좌측 로고 */
+.nav-left a {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 중앙 메인 메뉴 */
+.nav-center {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+}
+
+.nav-center a {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.nav-center a:hover {
+    color: #9bdd68;
+}
+
+/* 우측 사용자 메뉴 (마이페이지/로그아웃 등) */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-right a {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.nav-right a:hover {
+    color: #9bdd68;
+}
+
+.nav-right a.active {
+    color: #9bdd68;
+    font-weight: 700;
+}
+
+/* =========================================================
+   2. 마이페이지 본문 레이아웃 (사이드바 + 콘텐츠 영역)
+========================================================= */
+.mypage-container {
+    width: 100%;
+    max-width: 1120px;
+    margin: 40px auto 80px;
+    padding: 0 20px;
+    display: flex;
+    gap: 32px;
+
+    /* [핵심] 본문 내용이 짧아도 남은 공간을 채워 푸터를 브라우저 최하단으로 밀어냄 */
+    flex: 1;
+}
+
+/* 좌측 사이드바 메뉴 */
+.mypage-sidebar {
+    width: 220px;
+    flex-shrink: 0;
+}
+
+.mypage-menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: white;
+    border: 1px solid #dce8d8;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(31, 70, 45, 0.04);
+}
+
+.mypage-menu-list li {
+    border-bottom: 1px solid #edf2eb;
+}
+
+.mypage-menu-list li:last-child {
+    border-bottom: none;
+}
+
+.mypage-menu-list a {
+    display: block;
+    padding: 16px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #536359;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.mypage-menu-list a:hover {
+    background-color: #f7faf5;
+    color: #16492f;
+}
+
+/* 활성화된 사이드바 메뉴 탭 */
+.mypage-menu-list li.active a {
+    background-color: #16492f;
+    color: #9bdd68;
+    font-weight: 700;
+}
+
+/* 우측 메인 콘텐츠 영역 */
+.mypage-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.mypage-title-area {
+    margin-bottom: 24px;
+}
+
+.mypage-title-area h2 {
+    margin: 0 0 6px;
+    font-size: 28px;
+    font-weight: 800;
+    color: #163d29;
+}
+
+.mypage-title-area p {
+    margin: 0;
+    font-size: 14px;
+    color: #77887c;
+}
+
+/* 공통 흰색 카드 박스 */
+.mypage-card {
+    background-color: white;
+    border: 1px solid #dce8d8;
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 0 5px 20px rgba(31, 70, 45, 0.045);
+}
+
+/* 정보 목록 한 줄 행 */
+.info-row {
+    display: flex;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid #edf2eb;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    width: 140px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #617065;
+}
+
+.info-value {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 600;
+    color: #183c2a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 초록색 포인트 뱃지 */
+.point-badge {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    padding: 6px 14px;
+    background-color: #eef7e8;
+    border: 1px solid #cce4c2;
+    border-radius: 20px;
+    color: #2e7d32;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.point-badge span {
+    font-size: 13px;
+    font-weight: 600;
+    color: #5b9850;
+}
+
+/* 회원 등급 아이콘 및 명칭 영역 */
+.grade-badge-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.grade-badge-wrap img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+.grade-badge-wrap .grade-name {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.grade-total {
+    font-size: 13px;
+    color: #7b8c81;
+    font-weight: 500;
+}
+
+/* 보유 리워드 상품 칩 */
+.reward-chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.reward-chip-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: #f7faf5;
+    border: 1px solid #dce8d8;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #183c2a;
+    font-weight: 600;
+}
+
+.reward-chip-item span:last-child {
+    background-color: #174d32;
+    color: white;
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   3. 나의 활동 포인트 내역 전용 테이블
+========================================================= */
+.mypage-point-table {
+    width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #dce8d8 !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+}
+
+.mypage-point-table th {
+    background-color: #f7faf5 !important;
+    border-bottom: 1px solid #dce8d8 !important;
+    text-align: left;
+    white-space: nowrap !important;
+}
+
+.mypage-point-table td {
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+}
+
+.mypage-point-table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+.mypage-point-table tbody tr:nth-child(even) td {
+    background-color: #fbfcfa !important;
+}
+
+.mypage-point-table tbody tr:nth-child(odd) td {
+    background-color: #ffffff !important;
+}
+
+.mypage-point-table tbody tr:hover td {
+    background-color: #f2f7ef !important;
+}
+
+/* =========================================================
+   4. 폼 입력창 및 액션 버튼 (정보수정 / 탈퇴 공통)
+========================================================= */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #163d29;
+}
+
+.mypage-input {
+    width: 100%;
+    height: 46px;
+    padding: 0 16px;
+    border: 1px solid #dce8d8;
+    border-radius: 10px;
+    outline: none;
+    font-size: 14px;
+    color: #183c2a;
+    background-color: white;
+}
+
+.mypage-input:disabled,
+.mypage-input[readonly] {
+    background-color: #f7faf5;
+    color: #8b978f;
+    cursor: not-allowed;
+}
+
+/* 에러 알림 상자 */
+.alert-error {
+    background-color: #fff4ed;
+    border: 1px solid #efd1bc;
+    color: #96552f;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* 탈퇴 경고 및 도움말 안내 문구 */
+.info-help-text {
+    font-size: 13px;
+    color: #77887c;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+/* 초록색 메인 제출 버튼 */
+.btn-submit-green {
+    width: 100%;
+    height: 48px;
+    background-color: #174d32;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-submit-green:hover {
+    background-color: #21633f;
+}
+
+/* 빨간색 위험/탈퇴 버튼 */
+.btn-danger {
+    width: 100%;
+    height: 48px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-danger:hover {
+    background-color: #bd2130;
+}
+
+/* =========================================================
+   5. index.html 공통 푸터 (Footer) 연동 스타일
+========================================================= */
+footer.footer {
+    width: 100%;
+    background-color: #16492f;
+    color: white;
+    padding: 48px 0 24px;
+
+    /* [핵심] 상단 여백을 자동으로 계산하여 항상 브라우저 화면 맨 바닥에 밀착 */
+    margin-top: auto;
+    flex-shrink: 0;
+}
+
+.footer-container {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+.footer-brand {
+    flex: 1.5;
+}
+
+.footer-brand h3 {
+    margin: 0 0 14px;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+}
+
+.footer-brand p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #c5dccb;
+}
+
+.footer-menu {
+    flex: 1;
+}
+
+.footer-menu h4,
+.footer-info h4 {
+    margin: 0 0 14px;
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+}
+
+.footer-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.footer-menu a {
+    font-size: 13px;
+    color: #c5dccb;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-menu a:hover {
+    color: #9bdd68;
+}
+
+.footer-info {
+    flex: 1.5;
+}
+
+.footer-info p {
+    margin: 0 0 6px;
+    font-size: 13px;
+    color: #c5dccb;
+}
+
+.footer-bottom {
+    max-width: 1120px;
+    margin: 36px auto 0;
+    padding: 20px 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #a4c4ad;
+}
+
+.footer-bottom p {
+    margin: 0;
+}
