@@ -27,7 +27,7 @@ body {
 }
 
 /* =========================================================
-   1. 상단 글로벌 네비게이션 (GNB)
+   1. 상단 글로벌 네비게이션 (GNB) - 중앙 완전 고정 버전
 ========================================================= */
 nav {
     width: 100%;
@@ -36,16 +36,18 @@ nav {
     display: flex;
     align-items: center;
     flex-shrink: 0;
+    position: relative; /* 중앙 메뉴 절대 위치 기준점 */
 }
 
 nav > .nav-inner {
     width: 100%;
-    max-width: 1120px;
+    max-width: 1120px; /* 본문(.mypage-container)과 동일한 1120px */
     margin: 0 auto;
     padding: 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
 }
 
 /* 좌측 로고 */
@@ -59,8 +61,11 @@ nav > .nav-inner {
     gap: 8px;
 }
 
-/* 중앙 메인 메뉴 */
+/* [핵심] 중앙 메뉴를 화면 기준 정중앙에 영구 고정 */
 .nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     align-items: center;
     gap: 36px;
@@ -78,7 +83,7 @@ nav > .nav-inner {
     color: #9bdd68;
 }
 
-/* 우측 사용자 메뉴 (마이페이지/로그아웃 등) */
+/* 우측 사용자 메뉴 */
 .nav-right {
     display: flex;
     align-items: center;
@@ -93,13 +98,9 @@ nav > .nav-inner {
     transition: color 0.2s ease;
 }
 
-.nav-right a:hover {
-    color: #9bdd68;
-}
-
+.nav-right a:hover,
 .nav-right a.active {
     color: #9bdd68;
-    font-weight: 700;
 }
 
 /* =========================================================
