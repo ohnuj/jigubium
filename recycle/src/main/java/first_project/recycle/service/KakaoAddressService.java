@@ -5,6 +5,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+
+/**
+ * 위도 / 경도 제공 안하는 api들은 KakaoAddressService 활용해 위도 경도 찾아오기
+ */
 @Service
 public class KakaoAddressService {
     @Value("${kakao.rest-api-key}") // 프로퍼티스에서 카카오 RestApi 키 가져오기

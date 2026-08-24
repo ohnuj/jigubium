@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>분리배출 마스터 게임</title>
+    <link rel="stylesheet" th:href="@{/css/game.css}">
+</head>
+<body>
+
+<div class="game-wrapper">
+    <!-- 타이틀 -->
+    <h1 class="game-title">분리배출 마스터 게임</h1>
+
+    <!-- 점수 / 횟수 바 -->
+    <div class="score-board">
+        <span>점수: <strong id="currentScore">0</strong> / 30점</span>
+        <span class="divider">|</span>
+        <span>오늘 남은 횟수: <strong th:text="${remainCount}">3</strong>회</span>
+    </div>
+
+    <!-- 쓰레기 문제 카드 -->
+    <div class="item-list" id="itemList">
+        <div th:each="item : ${itemList}"
+             class="item-card"
+             draggable="true"
+             th:data-category="${item.category}">
+            <span class="item-icon">🗑️</span>
+            <span th:text="${item.name}"></span>
+        </div>
+    </div>
+
+    <!-- 10대 수거함 (이모지 + 색상 분기) -->
+    <div class="bins-container">
+        <div class="bin bin-plastic" data-category="plastic">
+            <span class="bin-icon">🥤</span>
+            <span class="bin-name">플라스틱</span>
+            <span class="bin-sub">스티로폼</span>
+        </div>
+        <div class="bin bin-paper" data-category="paper">
+            <span class="bin-icon">📦</span>
+            <span class="bin-name">종이류</span>
+            <span class="bin-sub">종이팩/신문</span>
+        </div>
+        <div class="bin bin-can" data-category="can">
+            <span class="bin-icon">🥫</span>
+            <span class="bin-name">캔류</span>
+            <span class="bin-sub">고철류</span>
+        </div>
+        <div class="bin bin-glass" data-category="glass">
+            <span class="bin-icon">🍾</span>
+            <span class="bin-name">유리병</span>
+            <span class="bin-sub">음료/주류병</span>
+        </div>
+        <div class="bin bin-vinyl" data-category="vinyl">
+            <span class="bin-icon">🛍️</span>
+            <span class="bin-name">비닐류</span>
+            <span class="bin-sub">필름/비닐봉투</span>
+        </div>
+
+        <div class="bin bin-food" data-category="food">
+            <span class="bin-icon">🍲</span>
+            <span class="bin-name">음식물쓰레기</span>
+            <span class="bin-sub">사료/퇴비용</span>
+        </div>
+        <div class="bin bin-general" data-category="general">
+            <span class="bin-icon">🗑️</span>
+            <span class="bin-name">일반쓰레기</span>
+            <span class="bin-sub">종량제/불연성</span>
+        </div>
+        <div class="bin bin-large" data-category="large">
+            <span class="bin-icon">🛋️</span>
+            <span class="bin-name">대형폐기물</span>
+            <span class="bin-sub">가구/방문수거</span>
+        </div>
+        <div class="bin bin-electronics" data-category="electronics">
+            <span class="bin-icon">🔌</span>
+            <span class="bin-name">소형가전</span>
+            <span class="bin-sub">전기전자제품</span>
+        </div>
+        <div class="bin bin-clothes" data-category="clothes">
+            <span class="bin-icon">👕</span>
+            <span class="bin-name">의류수거함</span>
+            <span class="bin-sub">신발/가방</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    let score = 0;
+    let correctCount = 0;
+    const totalItems = document.querySelectorAll('.item-card').length;
+    const scoreElement = document.getElementById('currentScore');
+
+    document.querySelectorAll('.item-card').forEach(card => {
+        card.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', card.dataset.category);
+            card.classList.add('dragging');
+        });
+        card.addEventListener('dragend', () => {
+            card.classList.remove('dragging');
+        });
+    });
+
+    document.querySelectorAll('.bin').forEach(bin => {
+        bin.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            bin.classList.add('dragover');
+        });
+        bin.addEventListener('dragleave', () => {
+            bin.classList.remove('dragover');
+        });
+        bin.addEventListener('drop', (e) => {
+            e.preventDefault();
+            bin.classList.remove('dragover');
+
+            const itemCategory = e.dataTransfer.getData('text/plain');
+            const targetCategory = bin.dataset.category;
+            const draggingCard = document.querySelector('.item-card.dragging');
+
+            if (!draggingCard) return;
+
+            if (itemCategory === targetCategory) {
+                score += 10;
+                correctCount++;
+                scoreElement.textContent = score;
+                draggingCard.remove();
+            } else {
+                alert(`틀렸습니다! (정답: ${getCategoryKoreanName(itemCategory)})`);
+                draggingCard.remove();
+            }
+
+            if (document.querySelectorAll('.item-card').length === 0) {
+                setTimeout(sendResult, 300);
+            }
+        });
+    });
+
+    function getCategoryKoreanName(category) {
+        switch (category) {
+            case 'plastic': return '플라스틱 (스티로폼)';
+            case 'paper': return '종이류 (종이팩)';
+            case 'can': return '캔류 (고철)';
+            case 'glass': return '유리병';
+            case 'vinyl': return '비닐류';
+            case 'food': return '음식물쓰레기';
+            case 'general': return '일반쓰레기 (종량제/불연성)';
+            case 'large': return '대형폐기물';
+            case 'electronics': return '소형가전 (전기전자제품)';
+            case 'clothes': return '의류수거함';
+            case 'medicine': return '폐의약품 수거함';
+            case 'battery': return '폐전지 수거함';
+            default: return '일반쓰레기';
+        }
+    }
+
+    function sendResult() {
+        alert(`게임 완료! 획득 점수: ${score}점 (${correctCount}/${totalItems} 정답)`);
+
+        fetch('/game/result', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                score: score,
+                totalCount: totalItems,
+                correctCount: correctCount
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    location.href = '/';
+                }
+            })
+            .catch(err => console.error('결과 저장 에러:', err));
+    }
+</script>
+
+</body>
+</html>

@@ -1,34 +1,64 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="first_project.recycle.repository.GameMapper">
 
-<mapper namespace="first_project.recycle.mapper.GameMapper">
+    <select id="findRandomItems" resultType="map">
+        SELECT
+        item_name AS name,
+        CASE
+        <!-- 1. 음식물 -->
+        WHEN disposal_method LIKE '%음식물%' THEN 'food'
 
-    <!--[1. 오늘 플레이 횟수 조회 쿼리]-->
+        <!-- 2. 대형폐기물 / 무상방문수거 -->
+        WHEN disposal_method LIKE '%대형폐기물%' OR disposal_method LIKE '%무상방문수거%' THEN 'large'
+
+        <!-- 3. 소형가전 / 전자제품 -->
+        WHEN disposal_method LIKE '%소형전기전자제품%' OR disposal_method LIKE '%소형전기전제품%' OR disposal_method LIKE '%전기전자제품%' THEN 'electronics'
+
+        <!-- 4. 폐의약품 / 생활계유해 -->
+        WHEN disposal_method LIKE '%폐의약품%' OR disposal_method LIKE '%유해폐기물%' OR disposal_method LIKE '%농약%' THEN 'medicine'
+
+        <!-- 5. 폐전지 -->
+        WHEN disposal_method LIKE '%전지%' THEN 'battery'
+
+        <!-- 6. 의류 -->
+        WHEN disposal_method LIKE '%의류 수거함%' OR disposal_method LIKE '%의류수거함%' THEN 'clothes'
+
+        <!-- 7. 비닐 -->
+        WHEN disposal_method LIKE '%비닐%' THEN 'vinyl'
+
+        <!-- 8. 유리병 -->
+        WHEN disposal_method LIKE '%유리병%' THEN 'glass'
+
+        <!-- 9. 캔 / 고철 -->
+        WHEN disposal_method LIKE '%금속캔%' OR disposal_method LIKE '%고철%' THEN 'can'
+
+        <!-- 10. 종이 / 종이팩 -->
+        WHEN disposal_method LIKE '%종이%' OR disposal_method LIKE '%종이팩%' OR disposal_method LIKE '%골판지%' THEN 'paper'
+
+        <!-- 11. 플라스틱 / 페트 -->
+        WHEN disposal_method LIKE '%플라스틱%' OR disposal_method LIKE '%무색페트병%' OR disposal_method LIKE '%스티로폼%' THEN 'plastic'
+
+        <!-- 12. 일반쓰레기 / 종량제 / 불연성 -->
+        ELSE 'general'
+        END AS category
+        FROM recycle_item
+        ORDER BY RAND()
+        LIMIT #{count}
+    </select>
+
     <select id="countTodayGamesByMemberId" resultType="int">
         SELECT COUNT(*)
         FROM game_history
         WHERE member_id = #{memberId}
-          AND played_at >= CURRENT_DATE
-          AND played_at &lt; CURRENT_DATE + INTERVAL 1 DAY
+          AND played_at >= CURDATE()
+          AND played_at &lt; CURDATE() + INTERVAL 1 DAY
     </select>
 
-
-     <!--[2. 게임 이력 저장 쿼리]-->
-
-    <insert id="insertGameHistory" useGeneratedKeys="true" keyProperty="gameHistoryId">
-        INSERT INTO game_history (
-            member_id,
-            score,
-            total_count,
-            correct_count,
-            played_at
-        ) VALUES (
-                     #{memberId},
-                     #{score},
-                     #{totalCount},
-                     #{correctCount},
-                     NOW()
-                 )
+    <insert id="insertGameHistory">
+        INSERT INTO game_history (member_id, score, total_count, correct_count, played_at)
+        VALUES (#{memberId}, #{score}, #{totalCount}, #{correctCount}, NOW())
     </insert>
+
 </mapper>
