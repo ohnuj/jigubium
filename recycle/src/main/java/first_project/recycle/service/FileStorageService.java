@@ -15,6 +15,18 @@ import java.util.UUID;
 
 @Service
 public class FileStorageService {
+    // 이미지 한 장 최대 크기: 5MB
+    private static final long MAX_FILE_SIZE =
+            5 * 1024 * 1024;
+
+    // 허용 가능한 이미지 MIME 타입
+    private static final List<String> ALLOWED_CONTENT_TYPES =
+            List.of(
+                    "image/jpeg",
+                    "image/png",
+                    "image/gif",
+                    "image/webp"
+            );
 
     // 업로드 가능한 이미지 확장자
     private static final List<String> ALLOWED_EXTENSIONS =
@@ -41,6 +53,26 @@ public class FileStorageService {
         if (file == null || file.isEmpty()) {
             return null;
         }
+
+        // 파일 크기 검사
+        if (file.getSize() > MAX_FILE_SIZE) {
+            throw new IllegalArgumentException(
+                    "이미지는 한 장당 5MB 이하만 업로드할 수 있습니다."
+            );
+        }
+
+        // Content-Type 검사
+        String contentType = file.getContentType();
+
+        if (contentType == null
+                || !ALLOWED_CONTENT_TYPES.contains(
+                contentType.toLowerCase(Locale.ROOT))) {
+
+            throw new IllegalArgumentException(
+                    "이미지 파일만 업로드할 수 있습니다."
+            );
+        }
+
 
         String originalName = StringUtils.cleanPath(
                 file.getOriginalFilename() == null

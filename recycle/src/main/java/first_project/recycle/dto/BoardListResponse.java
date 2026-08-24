@@ -21,6 +21,7 @@ public class BoardListResponse {
     private Integer viewCount;
     private Integer commentCount;
     private Integer likeCount;
+    private boolean hasImage;
 
     /**
      * 게시글 수정 여부 확인

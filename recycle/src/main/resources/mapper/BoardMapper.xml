@@ -102,7 +102,16 @@
                 b.created_at,
                 b.updated_at,
                 COUNT(DISTINCT c.comment_id) AS comment_count,
-                COUNT(DISTINCT bl.like_id) AS like_count
+                COUNT(DISTINCT bl.like_id) AS like_count,
+        CASE
+        WHEN EXISTS (
+        SELECT 1
+        FROM board_image bi
+        WHERE bi.board_id = b.board_id
+        )
+        THEN TRUE
+        ELSE FALSE
+        END AS has_image
 
             FROM board b
 

@@ -30,6 +30,7 @@ public class CommentController {
             @ModelAttribute CommentCreateRequest request,
 
             @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "1") int commentPage,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String searchType,
             @RequestParam(required = false) BoardType boardType,
@@ -56,6 +57,7 @@ public class CommentController {
         return redirectToDetail(
                 boardId,
                 page,
+                commentPage,
                 keyword,
                 searchType,
                 boardType,
@@ -74,6 +76,7 @@ public class CommentController {
             @ModelAttribute CommentUpdateRequest request,
 
             @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "1") int commentPage,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String searchType,
             @RequestParam(required = false) BoardType boardType,
@@ -108,6 +111,7 @@ public class CommentController {
         return redirectToDetail(
                 boardId,
                 page,
+                commentPage,
                 keyword,
                 searchType,
                 boardType,
@@ -125,6 +129,7 @@ public class CommentController {
             @PathVariable Long commentId,
 
             @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "1") int commentPage,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String searchType,
             @RequestParam(required = false) BoardType boardType,
@@ -158,6 +163,7 @@ public class CommentController {
         return redirectToDetail(
                 boardId,
                 page,
+                commentPage,
                 keyword,
                 searchType,
                 boardType,
@@ -168,6 +174,7 @@ public class CommentController {
     private String redirectToDetail(
             Long boardId,
             int page,
+            int commentPage,
             String keyword,
             String searchType,
             BoardType boardType,
@@ -178,6 +185,7 @@ public class CommentController {
                 UriComponentsBuilder
                         .fromPath("/boards/{boardId}")
                         .queryParam("page", page)
+                        .queryParam("commentPage", commentPage)
                         .queryParam("keyword", keyword)
                         .queryParam("searchType", searchType)
                         .queryParam("boardType", boardType)

@@ -212,6 +212,10 @@ public class BoardController {
             @RequestParam(defaultValue = "false") boolean myPosts,
             HttpSession session) {
 
+        // 게시글 존재 여부 먼저 확인
+        BoardDetailResponse board =
+                boardService.getBoardDetail(boardId);
+
         // 현재 세션에서 이미 조회한 게시글 목록
         Set<Long> viewedBoards =
                 (Set<Long>) session.getAttribute(
@@ -228,6 +232,10 @@ public class BoardController {
 
             boardService.increaseViewCount(boardId);
 
+            // 증가된 조회수를 화면에도 바로 반영
+            board =
+                    boardService.getBoardDetail(boardId);
+
             viewedBoards.add(boardId);
 
             session.setAttribute(
@@ -235,9 +243,6 @@ public class BoardController {
                     viewedBoards
             );
         }
-
-        BoardDetailResponse board =
-                boardService.getBoardDetail(boardId);
 
         // 게시글 상세 정보
         model.addAttribute(
