@@ -4,6 +4,8 @@ import first_project.recycle.domain.ecoLocation;
 import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
 import first_project.recycle.domain.ecoLocationdto.seodaemun.SeodaemunMedicineBinResponse;
 import first_project.recycle.service.mapservice.dongjakservice.DongjakBatteryBinService;
+import first_project.recycle.service.mapservice.dongjakservice.DongjakClothingBinService;
+import first_project.recycle.service.mapservice.dongjakservice.DongjakMedicineBinService;
 import first_project.recycle.service.mapservice.seodaemunservice.SeodaemunClothingBinService;
 import first_project.recycle.service.mapservice.wasteelectronicsservice.WasteElectronicsService;
 import first_project.recycle.service.EcoLocationService;
@@ -47,6 +49,10 @@ public class MapControllter {
     private final SeodaemunClothingBinService seodaemunClothingBinService;
     // 동작구 폐건전지·폐형광등 서비스 객체
     private final DongjakBatteryBinService dongjakBatteryBinService;
+    // 동작구 의류수거함 서비스 객체
+    private final DongjakClothingBinService dongjakClothingBinService;
+    // 동작구 폐의약품 수거함 서비스 객체
+    private final DongjakMedicineBinService dongjakMedicineBinService;
 
     //DB 조회용 서비스 객체
     private final EcoLocationService ecoLocationService;
@@ -65,7 +71,9 @@ public class MapControllter {
             WasteElectronicsService wasteElectronicsService,
             SeodaemunMedicineBinService seodaemunMedicineBinService,
             SeodaemunClothingBinService seodaemunClothingBinService,
-            DongjakBatteryBinService dongjakBatteryBinService
+            DongjakBatteryBinService dongjakBatteryBinService,
+            DongjakClothingBinService dongjakClothingBinService,
+            DongjakMedicineBinService dongjakMedicineBinService
     ) {
         this.jongnoClothingBinService = jongnoClothingBinService;
         this.jongnoBatteryBinService = jongnoBatteryBinService;
@@ -79,6 +87,8 @@ public class MapControllter {
         this.seodaemunMedicineBinService = seodaemunMedicineBinService;
         this.seodaemunClothingBinService = seodaemunClothingBinService;
         this.dongjakBatteryBinService = dongjakBatteryBinService;
+        this.dongjakClothingBinService = dongjakClothingBinService;
+        this.dongjakMedicineBinService = dongjakMedicineBinService;
     }
 
     //지도 페이지 이동
@@ -158,7 +168,16 @@ public class MapControllter {
     public List<ecoLocation> importDongjakBatteryBins() {
         return dongjakBatteryBinService.getBatteryBins();
     }
-
+    // 동작구 의류수거함 API 호출 및 DB 저장
+    @GetMapping("/api/dongjak-clothing-bins/import")
+    @ResponseBody
+    public List<ecoLocation> importDongjakClothingBins() {
+        return dongjakClothingBinService.getClothingBins();}
+    //동작구 폐의약품 api 호출 및 DB 저장
+    @GetMapping("/api/dongjak-medicine-bins/import")
+    @ResponseBody
+    public List<ecoLocation> importDongjakMedicineBins(){
+        return dongjakMedicineBinService.getMedicineBins();}
     // 폐가전 CSV DB 저장
     @GetMapping("/api/waste-electronics/import")
     @ResponseBody
@@ -170,9 +189,9 @@ public class MapControllter {
     @ResponseBody
     public List<ecoLocation> getWasteElectronics() {
         return ecoLocationService.getLocationsByType(
-                "폐가전 수거함"
-        );
-    }
+                "폐가전 수거함");}
+
+
 
 }
 
