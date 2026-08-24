@@ -1,0 +1,1815 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+
+/* =========================================================
+   0. 기본 설정
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family:
+            Pretendard,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif;
+
+    background-color: #f5f8f1;
+    color: #183c2a;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   1. 상단 네비게이션
+========================================================= */
+
+body > nav {
+    height: 64px;
+
+    background-color: #16492f;
+    color: white;
+}
+
+body > nav > div {
+    position: relative;
+
+    max-width: 1120px;
+    height: 100%;
+
+    margin: 0 auto;
+    padding: 0 20px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 18px;
+}
+
+
+/* 로고 */
+
+body > nav > div > a:first-child {
+    margin-right: auto;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* 중앙 메뉴 */
+
+.nav-center {
+    position: absolute;
+
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: flex;
+    align-items: center;
+
+    gap: 36px;
+}
+
+
+/* 링크 */
+
+body > nav a {
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: color 0.2s ease;
+}
+
+body > nav a:hover {
+    color: #9bdd68;
+}
+
+
+/* 우측 메인으로 */
+
+.main-link {
+    padding: 8px 13px;
+
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 8px;
+
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.main-link:hover {
+    border-color: rgba(157, 221, 104, 0.6);
+
+    color: #9bdd68;
+}
+
+
+/* =========================================================
+   2. 관리자 Hero
+========================================================= */
+
+.admin-hero {
+    padding: 62px 20px 58px;
+
+    background:
+            linear-gradient(
+                    135deg,
+                    #194d32 0%,
+                    #347748 100%
+            );
+
+    color: white;
+}
+
+.admin-hero-inner {
+    max-width: 900px;
+
+    margin: 0 auto;
+
+    text-align: center;
+}
+
+
+/* 관리자 배지 */
+
+.admin-badge {
+    display: inline-block;
+
+    padding: 7px 14px;
+
+    background-color: rgba(122, 201, 67, 0.15);
+
+    border: 1px solid rgba(122, 201, 67, 0.45);
+    border-radius: 20px;
+
+    color: #9bdd68;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+
+/* Hero 제목 */
+
+.admin-hero h1 {
+    margin: 21px 0 14px;
+
+    font-size: 44px;
+    line-height: 1.2;
+
+    font-weight: 800;
+}
+
+
+/* Hero 설명 */
+
+.admin-hero p {
+    margin: 0;
+
+    color: rgba(255, 255, 255, 0.74);
+
+    font-size: 15px;
+    line-height: 1.75;
+}
+
+
+/* =========================================================
+   3. 관리자 콘텐츠
+========================================================= */
+
+.admin-content {
+    max-width: 1120px;
+
+    margin: 0 auto;
+
+    padding: 50px 20px 85px;
+}
+
+
+/* =========================================================
+   4. 관리 영역 제목
+========================================================= */
+
+.admin-section-header {
+    margin-bottom: 25px;
+}
+
+.section-label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #649154;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+.admin-section-header h2 {
+    margin: 0 0 8px;
+
+    color: #153f2a;
+
+    font-size: 29px;
+    font-weight: 800;
+}
+
+.admin-section-header p {
+    margin: 0;
+
+    color: #77887c;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   5. 관리 카드 Grid
+========================================================= */
+
+.admin-card-grid {
+    display: grid;
+
+    grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    gap: 24px;
+}
+
+
+/* =========================================================
+   6. 관리 카드
+========================================================= */
+
+.admin-card {
+    min-height: 330px;
+
+    padding: 28px;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: white;
+
+    border: 1px solid #d5e5d1;
+    border-radius: 18px;
+
+    box-shadow:
+            0 5px 18px
+            rgba(31, 70, 45, 0.045);
+
+    transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+}
+
+.admin-card:hover {
+    border-color: #a6ce9c;
+
+    box-shadow:
+            0 10px 26px
+            rgba(31, 70, 45, 0.08);
+
+    transform: translateY(-3px);
+}
+
+
+/* =========================================================
+   7. 카드 아이콘
+========================================================= */
+
+.admin-card-icon {
+    width: 54px;
+    height: 54px;
+
+    margin-bottom: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #edf7e8;
+
+    border: 1px solid #d5e8ce;
+    border-radius: 14px;
+
+    font-size: 25px;
+}
+
+
+/* =========================================================
+   8. 카드 콘텐츠
+========================================================= */
+
+.admin-card-content {
+    flex: 1;
+}
+
+
+/* 영어 라벨 */
+
+.card-label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #68a04d;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+
+/* 제목 */
+
+.admin-card h3 {
+    margin: 0 0 13px;
+
+    color: #163f2a;
+
+    font-size: 22px;
+    font-weight: 800;
+}
+
+
+/* 설명 */
+
+.admin-card p {
+    margin: 0;
+
+    color: #65766a;
+
+    font-size: 14px;
+    line-height: 1.8;
+
+    word-break: keep-all;
+}
+
+
+/* =========================================================
+   9. 관리 버튼
+========================================================= */
+
+.admin-card-bottom {
+    margin-top: 25px;
+}
+
+.admin-button {
+    width: 100%;
+    height: 48px;
+
+    padding: 0 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background-color: #174d32;
+
+    border-radius: 10px;
+
+    color: white;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    transition:
+            background-color 0.2s ease,
+            transform 0.2s ease;
+}
+
+.admin-button span {
+    font-size: 18px;
+}
+
+.admin-button:hover {
+    background-color: #21633f;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   10. 관리자 안내
+========================================================= */
+
+.admin-notice {
+    margin-top: 25px;
+    padding: 18px 21px;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 13px;
+
+    background-color: #fff9ed;
+
+    border: 1px solid #ead7aa;
+    border-radius: 13px;
+}
+
+.notice-icon {
+    flex-shrink: 0;
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #ffedc0;
+
+    border-radius: 9px;
+
+    font-size: 16px;
+}
+
+.admin-notice strong {
+    display: block;
+
+    margin: 1px 0 5px;
+
+    color: #80591e;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.admin-notice p {
+    margin: 0;
+
+    color: #846f4d;
+
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   11. 메인으로 돌아가기
+========================================================= */
+
+.back-area {
+    margin-top: 26px;
+
+    text-align: center;
+}
+
+.back-area a {
+    display: inline-block;
+
+    padding: 10px 15px;
+
+    color: #52735c;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    transition: color 0.2s ease;
+}
+
+.back-area a:hover {
+    color: #4f9439;
+}
+
+
+/* =========================================================
+   12. Footer
+========================================================= */
+
+.footer {
+    margin-top: 70px;
+
+    background-color: #16492f;
+    color: white;
+}
+
+.footer-container {
+    max-width: 1120px;
+
+    margin: 0 auto;
+    padding: 42px 20px 32px;
+
+    display: grid;
+
+    grid-template-columns:
+            1.4fr
+            0.8fr
+            1fr;
+
+    gap: 48px;
+}
+
+.footer h3,
+.footer h4 {
+    margin-top: 0;
+    margin-bottom: 14px;
+}
+
+.footer-brand h3 {
+    font-size: 18px;
+}
+
+.footer-brand p {
+    margin: 0;
+
+    color: rgba(255, 255, 255, 0.7);
+
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.footer-menu h4,
+.footer-info h4 {
+    font-size: 14px;
+}
+
+.footer-menu ul {
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.footer-menu li {
+    margin-bottom: 8px;
+}
+
+.footer-menu a {
+    color: rgba(255, 255, 255, 0.7);
+
+    font-size: 13px;
+
+    transition: color 0.2s ease;
+}
+
+.footer-menu a:hover {
+    color: #9bdd68;
+}
+
+.footer-info p {
+    margin: 0 0 8px;
+
+    color: rgba(255, 255, 255, 0.7);
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.footer-bottom {
+    max-width: 1120px;
+
+    margin: 0 auto;
+    padding: 18px 20px 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border-top:
+            1px solid
+            rgba(255, 255, 255, 0.12);
+
+    color:
+            rgba(255, 255, 255, 0.5);
+
+    font-size: 12px;
+}
+
+.footer-bottom p {
+    margin: 0;
+}
+
+
+/* =========================================================
+   13. 태블릿
+========================================================= */
+
+@media (max-width: 900px) {
+
+    body > nav > div {
+        padding: 0 24px;
+    }
+
+    .admin-hero {
+        padding: 52px 24px;
+    }
+
+    .admin-hero h1 {
+        font-size: 38px;
+    }
+
+    .admin-content {
+        padding: 42px 24px 70px;
+    }
+
+    .admin-card {
+        padding: 24px;
+    }
+
+    .footer-container {
+        grid-template-columns:
+                1.3fr
+                0.8fr
+                1fr;
+
+        gap: 30px;
+
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .footer-bottom {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+
+/* =========================================================
+   14. 모바일
+========================================================= */
+
+@media (max-width: 650px) {
+
+    /* 네비 */
+
+    body > nav {
+        height: auto;
+    }
+
+    body > nav > div {
+        min-height: 60px;
+
+        padding: 12px 16px;
+
+        flex-wrap: wrap;
+
+        gap: 12px;
+    }
+
+    body > nav > div > a:first-child {
+        font-size: 16px;
+    }
+
+    body > nav a {
+        font-size: 12px;
+    }
+
+    .nav-center {
+        position: static;
+
+        width: 100%;
+
+        order: 10;
+
+        transform: none;
+
+        justify-content: center;
+
+        gap: 18px;
+    }
+
+
+    /* Hero */
+
+    .admin-hero {
+        padding: 43px 16px;
+    }
+
+    .admin-badge {
+        padding: 6px 11px;
+
+        font-size: 10px;
+    }
+
+    .admin-hero h1 {
+        margin: 18px 0 12px;
+
+        font-size: 31px;
+    }
+
+    .admin-hero p {
+        font-size: 13px;
+    }
+
+
+    /* 콘텐츠 */
+
+    .admin-content {
+        padding: 35px 16px 55px;
+    }
+
+    .admin-section-header h2 {
+        font-size: 23px;
+    }
+
+    .admin-section-header p {
+        font-size: 12px;
+    }
+
+
+    /* 관리 카드 */
+
+    .admin-card-grid {
+        grid-template-columns: 1fr;
+
+        gap: 18px;
+    }
+
+    .admin-card {
+        min-height: 0;
+
+        padding: 21px;
+    }
+
+    .admin-card-icon {
+        width: 48px;
+        height: 48px;
+
+        margin-bottom: 18px;
+
+        font-size: 21px;
+    }
+
+    .admin-card h3 {
+        font-size: 19px;
+    }
+
+    .admin-card p {
+        font-size: 13px;
+    }
+
+    .admin-button {
+        height: 45px;
+
+        font-size: 13px;
+    }
+
+
+    /* 관리자 안내 */
+
+    .admin-notice {
+        padding: 16px;
+    }
+
+
+    /* Footer */
+
+    .footer {
+        margin-top: 50px;
+    }
+
+    .footer-container {
+        padding: 34px 20px 26px;
+
+        grid-template-columns: 1fr;
+
+        gap: 30px;
+    }
+
+    .footer-bottom {
+        padding: 18px 20px 24px;
+
+        flex-direction: column;
+        align-items: flex-start;
+
+        gap: 8px;
+    }
+}
+
+/* =========================================================
+   15. 관리자 서브 페이지 공통 Header
+========================================================= */
+
+.admin-page-header {
+    padding: 44px 20px 40px;
+
+    background: linear-gradient(
+            135deg,
+            #194d32 0%,
+            #347748 100%
+    );
+
+    color: white;
+}
+
+
+.admin-page-header-inner {
+    max-width: 1120px;
+
+    margin: 0 auto;
+}
+
+
+.admin-page-label {
+    display: inline-block;
+
+    margin-bottom: 11px;
+
+    color: #9bdd68;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+
+.admin-page-header h1 {
+    margin: 0 0 10px;
+
+    font-size: 34px;
+    font-weight: 800;
+}
+
+
+.admin-page-header p {
+    margin: 0;
+
+    color: rgba(255, 255, 255, 0.72);
+
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+
+
+/* =========================================================
+   16. 관리자 리스트 콘텐츠
+========================================================= */
+
+.admin-list-content {
+    max-width: 1120px;
+
+    margin: 0 auto;
+
+    padding: 44px 20px 80px;
+}
+
+
+
+/* =========================================================
+   17. 리스트 Header
+========================================================= */
+
+.admin-list-header {
+    margin-bottom: 22px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+
+.admin-list-header h2 {
+    margin: 0 0 7px;
+
+    color: #153f2a;
+
+    font-size: 27px;
+    font-weight: 800;
+}
+
+
+.admin-list-header p {
+    margin: 0;
+
+    color: #77887c;
+
+    font-size: 13px;
+}
+
+
+/* 관리자 홈 */
+
+.admin-home-button {
+    flex-shrink: 0;
+
+    padding: 10px 14px;
+
+    background-color: white;
+
+    border: 1px solid #d1e2cc;
+    border-radius: 9px;
+
+    color: #507159;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    transition:
+            background-color 0.2s ease,
+            border-color 0.2s ease,
+            color 0.2s ease;
+}
+
+
+.admin-home-button:hover {
+    background-color: #edf7e8;
+
+    border-color: #acd09f;
+
+    color: #3f7f36;
+}
+
+
+
+/* =========================================================
+   18. 관리자 검색
+========================================================= */
+
+.admin-search-box {
+    margin-bottom: 22px;
+
+    padding: 12px;
+
+    background-color: white;
+
+    border: 1px solid #d7e6d3;
+    border-radius: 14px;
+
+    box-shadow:
+            0 4px 15px
+            rgba(31, 70, 45, 0.04);
+}
+
+
+.admin-search-box form {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+}
+
+
+.admin-search-input {
+    flex: 1;
+    min-width: 0;
+
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+
+    background-color: #f7faf5;
+
+    border: 1px solid #dfe9dc;
+    border-radius: 9px;
+}
+
+
+.search-icon {
+    margin-left: 14px;
+
+    font-size: 14px;
+}
+
+
+.admin-search-input input {
+    flex: 1;
+    min-width: 0;
+
+    height: 100%;
+
+    padding: 0 13px;
+
+    background: transparent;
+
+    border: none;
+    outline: none;
+
+    color: #244631;
+
+    font-size: 14px;
+}
+
+
+.admin-search-input input::placeholder {
+    color: #93a097;
+}
+
+
+
+/* 검색 버튼 */
+
+.search-button {
+    height: 46px;
+
+    padding: 0 23px;
+
+    background-color: #174d32;
+
+    border: none;
+    border-radius: 9px;
+
+    color: white;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: background-color 0.2s ease;
+}
+
+
+.search-button:hover {
+    background-color: #21633f;
+}
+
+
+
+/* 초기화 */
+
+.reset-button {
+    height: 46px;
+
+    padding: 0 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: white;
+
+    border: 1px solid #cfdcc9;
+    border-radius: 9px;
+
+    color: #647568;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    transition:
+            background-color 0.2s ease,
+            border-color 0.2s ease;
+}
+
+
+.reset-button:hover {
+    background-color: #f3f7f1;
+
+    border-color: #adc8a6;
+}
+
+
+
+/* =========================================================
+   19. 관리 테이블 Card
+========================================================= */
+
+.admin-table-card {
+    overflow: hidden;
+
+    background-color: white;
+
+    border: 1px solid #d4e4d0;
+    border-radius: 16px;
+
+    box-shadow:
+            0 5px 18px
+            rgba(31, 70, 45, 0.04);
+}
+
+
+.admin-table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+
+/* =========================================================
+   20. 관리자 테이블
+========================================================= */
+
+.admin-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+}
+
+
+/* 컬럼 폭 */
+
+.recycle-item-table .col-id {
+    width: 8%;
+}
+
+
+.recycle-item-table .col-name {
+    width: 24%;
+}
+
+
+.recycle-item-table .col-category {
+    width: 19%;
+}
+
+
+.recycle-item-table .col-keyword {
+    width: 33%;
+}
+
+
+.recycle-item-table .col-action {
+    width: 16%;
+}
+
+
+/* 테이블 Header */
+
+.admin-table thead {
+    background-color: #f2f7ef;
+}
+
+
+.admin-table th {
+    padding: 14px 16px;
+
+    border-bottom: 1px solid #dce8d8;
+
+    color: #68806d;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    text-align: left;
+}
+
+
+/* 테이블 Body */
+
+.admin-table td {
+    padding: 16px;
+
+    border-bottom: 1px solid #ebf0e8;
+
+    color: #58695d;
+
+    font-size: 13px;
+    line-height: 1.6;
+
+    vertical-align: middle;
+}
+
+
+.admin-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+.view-row {
+    transition: background-color 0.2s ease;
+}
+
+
+.view-row:hover {
+    background-color: #fafcf8;
+}
+
+
+
+/* =========================================================
+   21. 테이블 데이터 스타일
+========================================================= */
+
+.item-id {
+    color: #869389 !important;
+
+    font-size: 12px !important;
+}
+
+
+.item-name {
+    display: block;
+
+    overflow: hidden;
+
+    color: #173f2a;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+.category-tag {
+    display: inline-block;
+
+    max-width: 100%;
+
+    padding: 6px 10px;
+
+    overflow: hidden;
+
+    background-color: #edf7e8;
+
+    border: 1px solid #cee4c7;
+    border-radius: 18px;
+
+    color: #4c813d;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+.keyword-text {
+    overflow: hidden;
+
+    color: #68796e;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+
+/* =========================================================
+   22. 관리 버튼
+========================================================= */
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+}
+
+
+.action-buttons button {
+    padding: 7px 11px;
+
+    border-radius: 7px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+            background-color 0.2s ease,
+            border-color 0.2s ease;
+}
+
+
+/* 수정 */
+
+.edit-button {
+    background-color: #edf7e8;
+
+    border: 1px solid #c8e0bf;
+
+    color: #41783a;
+}
+
+
+.edit-button:hover {
+    background-color: #dfefd7;
+
+    border-color: #a8cd9c;
+}
+
+
+/* 삭제 */
+
+.delete-button {
+    background-color: #fff3ef;
+
+    border: 1px solid #eccbc1;
+
+    color: #a15642;
+}
+
+
+.delete-button:hover {
+    background-color: #ffe8e1;
+
+    border-color: #dfa996;
+}
+
+
+
+/* =========================================================
+   23. 수정 Row
+========================================================= */
+
+.edit-row > td {
+    padding: 0 !important;
+
+    background-color: #f7faf5;
+}
+
+
+.edit-panel {
+    padding: 27px;
+
+    border-top: 2px solid #7ac943;
+
+    border-bottom: 1px solid #dce7d9;
+}
+
+
+
+/* 수정 상단 */
+
+.edit-panel-header {
+    margin-bottom: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+
+.edit-panel-header span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #649154;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+
+.edit-panel-header h3 {
+    margin: 0;
+
+    color: #173f2a;
+
+    font-size: 20px;
+    font-weight: 800;
+}
+
+
+.edit-close-button {
+    padding: 8px 11px;
+
+    background-color: white;
+
+    border: 1px solid #d1ddd0;
+    border-radius: 8px;
+
+    color: #68776d;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+
+/* =========================================================
+   24. 수정 Form
+========================================================= */
+
+.admin-edit-form {
+    display: grid;
+
+    grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+.edit-form-group {
+    min-width: 0;
+}
+
+
+/*
+   품목명을 제외한 textarea 영역은
+   가로 전체 사용
+*/
+
+.edit-form-group:has(textarea) {
+    grid-column: 1 / -1;
+}
+
+
+.edit-form-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #355843;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+.edit-form-group input,
+.edit-form-group textarea {
+    width: 100%;
+
+    padding: 11px 13px;
+
+    background-color: white;
+
+    border: 1px solid #cfdccc;
+    border-radius: 9px;
+
+    outline: none;
+
+    color: #354c3c;
+
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.65;
+
+    transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+}
+
+
+.edit-form-group input {
+    height: 43px;
+}
+
+
+.edit-form-group textarea {
+    resize: vertical;
+}
+
+
+.edit-form-group input:focus,
+.edit-form-group textarea:focus {
+    border-color: #80b86d;
+
+    box-shadow:
+            0 0 0 3px
+            rgba(122, 201, 67, 0.12);
+}
+
+
+
+/* =========================================================
+   25. 수정 저장 / 취소
+========================================================= */
+
+.edit-form-actions {
+    grid-column: 1 / -1;
+
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 8px;
+}
+
+
+.save-button,
+.cancel-button {
+    min-width: 80px;
+    height: 42px;
+
+    padding: 0 17px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.save-button {
+    background-color: #174d32;
+
+    border: 1px solid #174d32;
+
+    color: white;
+}
+
+
+.save-button:hover {
+    background-color: #21633f;
+
+    border-color: #21633f;
+}
+
+
+.cancel-button {
+    background-color: white;
+
+    border: 1px solid #cedbca;
+
+    color: #637367;
+}
+
+
+.cancel-button:hover {
+    background-color: #f1f5ef;
+}
+
+
+
+/* =========================================================
+   26. 검색 결과 없음
+========================================================= */
+
+.empty-table {
+    padding: 65px 20px !important;
+
+    text-align: center;
+}
+
+
+.empty-table-icon {
+    width: 48px;
+    height: 48px;
+
+    margin: 0 auto 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #eef7e8;
+
+    border-radius: 50%;
+
+    font-size: 20px;
+}
+
+
+.empty-table strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #345440;
+
+    font-size: 14px;
+}
+
+
+.empty-table p {
+    margin: 0;
+
+    color: #8a978e;
+
+    font-size: 12px;
+}
+
+
+
+/* =========================================================
+   27. 관리자 페이징
+========================================================= */
+
+.admin-pagination {
+    margin-top: 26px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+}
+
+
+.admin-pagination a,
+.admin-pagination strong {
+    min-width: 36px;
+    height: 36px;
+
+    padding: 0 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+.page-number {
+    background-color: white;
+
+    border: 1px solid #d5e1d1;
+
+    color: #647369;
+
+    transition:
+            background-color 0.2s ease,
+            border-color 0.2s ease;
+}
+
+
+.page-number:hover {
+    background-color: #edf7e8;
+
+    border-color: #b5d4ac;
+}
+
+
+.current-page {
+    background-color: #174d32;
+
+    border: 1px solid #174d32;
+
+    color: white;
+}
+
+
+.page-direction {
+    background-color: transparent;
+
+    color: #4e7258;
+}
+
+
+
+/* =========================================================
+   28. 관리자 돌아가기
+========================================================= */
+
+.admin-back-area {
+    margin-top: 25px;
+
+    text-align: center;
+}
+
+
+.admin-back-area a {
+    color: #597460;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    transition: color 0.2s ease;
+}
+
+
+.admin-back-area a:hover {
+    color: #4f9439;
+}
+
+
+
+/* =========================================================
+   29. 관리자 리스트 태블릿
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .admin-page-header {
+        padding: 40px 24px;
+    }
+
+
+    .admin-list-content {
+        padding: 38px 24px 65px;
+    }
+
+
+    .admin-table {
+        min-width: 850px;
+    }
+
+}
+
+
+
+/* =========================================================
+   30. 관리자 리스트 모바일
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .admin-page-header {
+        padding: 35px 16px;
+    }
+
+
+    .admin-page-header h1 {
+        font-size: 27px;
+    }
+
+
+    .admin-page-header p {
+        font-size: 12px;
+    }
+
+
+    .admin-list-content {
+        padding: 30px 16px 50px;
+    }
+
+
+    .admin-list-header {
+        align-items: flex-start;
+    }
+
+
+    .admin-list-header h2 {
+        font-size: 21px;
+    }
+
+
+    .admin-home-button {
+        padding: 8px 10px;
+
+        font-size: 11px;
+    }
+
+
+    /* 검색 */
+
+    .admin-search-box form {
+        flex-wrap: wrap;
+    }
+
+
+    .admin-search-input {
+        width: 100%;
+
+        flex-basis: 100%;
+    }
+
+
+    .search-button,
+    .reset-button {
+        flex: 1;
+    }
+
+
+    /* 수정 Form */
+
+    .admin-edit-form {
+        grid-template-columns: 1fr;
+    }
+
+
+    .edit-form-group,
+    .edit-form-group:has(textarea) {
+        grid-column: auto;
+    }
+
+
+    .edit-panel {
+        padding: 20px;
+    }
+
+
+    .edit-panel-header {
+        align-items: flex-start;
+    }
+
+
+    .edit-form-actions {
+        grid-column: auto;
+    }
+
+}

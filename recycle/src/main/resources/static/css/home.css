@@ -1,8 +1,9 @@
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
 
-/* =========================
+
+/* =========================================================
    0. 기본 설정
-========================= */
+========================================================= */
 
 * {
     box-sizing: border-box;
@@ -35,76 +36,105 @@ button,
 input {
     font-family: inherit;
 }
-/* =========================
+
+
+/* =========================================================
    1. 상단 네비게이션
-========================= */
+========================================================= */
 
 body > nav {
     height: 64px;
+
     background-color: #16492f;
     color: white;
 }
 
 body > nav > div {
+    position: relative;
+
     max-width: 1120px;
     height: 100%;
+
     margin: 0 auto;
     padding: 0 20px;
 
     display: flex;
     align-items: center;
-    gap: 18px;
 
-    position: relative;
+    gap: 18px;
 }
-/* 헤더 중앙 메뉴 */
+
+
+/* 로고 */
+
+body > nav > div > a:first-child {
+    margin-right: auto;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* 중앙 메뉴 */
+
 .nav-center {
     position: absolute;
+
     left: 50%;
     transform: translateX(-50%);
 
     display: flex;
     align-items: center;
+
     gap: 36px;
 }
 
 .nav-center a {
     font-size: 14px;
     font-weight: 600;
-
-    transition: color 0.2s ease;
 }
 
-.nav-center a:hover {
-    color: #9bdd68;
-}
 
-/* Home을 왼쪽에 두고 나머지 메뉴는 오른쪽으로 */
-body > nav > div > a:first-child {
-    margin-right: auto;
-
-    font-size: 18px;
-    font-weight: 700;
-}
-
+/* 모든 네비 링크 */
 
 body > nav a {
     font-size: 14px;
     font-weight: 600;
 
-    transition: color 0.2s ease;
+    transition:
+            color 0.2s ease,
+            opacity 0.2s ease;
 }
 
 body > nav a:hover {
     color: #9bdd68;
 }
-/* =========================
-   2. 메인 Hero / 검색 영역
-========================= */
 
-/* main 안의 첫 번째 div = 검색 영역 */
+
+/* 현재 메뉴 */
+
+body > nav a.active {
+    color: #9bdd68;
+
+    font-weight: 700;
+}
+
+
+
+/* =========================================================
+   2. 메인 Hero / 검색 영역
+========================================================= */
+
+/*
+   main 첫 번째 div
+   = Hero 검색 영역
+*/
+
 main > div:first-child {
     min-height: 480px;
+
     padding: 80px 20px;
 
     display: flex;
@@ -112,20 +142,29 @@ main > div:first-child {
     align-items: center;
     justify-content: center;
 
-    background: linear-gradient(
-            135deg,
-            #194d32 0%,
-            #347748 100%
-    );
+    background:
+            linear-gradient(
+                    135deg,
+                    #194d32 0%,
+                    #347748 100%
+            );
 
     color: white;
 }
+
+
 /* Hero 상단 배지 */
+
 .hero-badge {
     padding: 7px 14px;
 
-    background-color: rgba(122, 201, 67, 0.15);
-    border: 1px solid rgba(122, 201, 67, 0.45);
+    background-color:
+            rgba(122, 201, 67, 0.15);
+
+    border:
+            1px solid
+            rgba(122, 201, 67, 0.45);
+
     border-radius: 20px;
 
     color: #9bdd68;
@@ -134,7 +173,9 @@ main > div:first-child {
     font-weight: 700;
 }
 
-/* Hero 메인 제목 */
+
+/* Hero 제목 */
+
 .hero-title {
     margin: 24px 0 18px;
 
@@ -142,21 +183,27 @@ main > div:first-child {
 
     font-size: 64px;
     line-height: 1.15;
+
     font-weight: 800;
 
     text-align: center;
 }
 
-/* "함께 시작해요" */
+
+/* 강조 문구 */
+
 .hero-title strong {
     color: #7ac943;
 }
 
+
 /* Hero 설명 */
+
 .hero-description {
     margin: 0;
 
-    color: rgba(255, 255, 255, 0.72);
+    color:
+            rgba(255, 255, 255, 0.72);
 
     font-size: 17px;
     line-height: 1.7;
@@ -164,7 +211,12 @@ main > div:first-child {
     text-align: center;
 }
 
-/* 검색 form */
+
+
+/* =========================================================
+   3. 메인 검색창
+========================================================= */
+
 main > div:first-child form {
     width: 100%;
     max-width: 620px;
@@ -174,6 +226,7 @@ main > div:first-child form {
 
     display: flex;
     align-items: center;
+
     gap: 8px;
 
     background-color: white;
@@ -181,51 +234,65 @@ main > div:first-child form {
     border: 2px solid #b4df80;
     border-radius: 15px;
 
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    box-shadow:
+            0 6px 18px
+            rgba(0, 0, 0, 0.12);
 }
-/* 검색창 돋보기 아이콘 */
+
+
+/* 검색 돋보기 */
+
 main > div:first-child form::before {
     content: "🔍";
 
     margin-left: 8px;
-    font-size: 16px;
 
     display: flex;
     align-items: center;
 
+    font-size: 16px;
+
     opacity: 0.8;
 }
 
-/* 검색 입력창 */
+
+/* 검색 input */
+
 main > div:first-child input {
     flex: 1;
     min-width: 0;
 
     height: 46px;
+
     padding: 0 16px;
+
+    background-color: transparent;
 
     border: none;
     outline: none;
 
-    background: transparent;
+    color: #183c2a;
 
     font-size: 15px;
-    color: #183c2a;
 }
 
 main > div:first-child input::placeholder {
     color: #8b978f;
 }
 
+
 /* 검색 버튼 */
+
 main > div:first-child button {
     height: 46px;
+
     padding: 0 22px;
 
     border: none;
     border-radius: 10px;
 
     background-color: #174d32;
+
     color: white;
 
     font-size: 14px;
@@ -233,15 +300,20 @@ main > div:first-child button {
 
     cursor: pointer;
 
-    transition: background-color 0.2s ease;
+    transition:
+            background-color 0.2s ease,
+            transform 0.2s ease;
 }
 
 main > div:first-child button:hover {
     background-color: #21633f;
 }
-/* =========================
-   3. 자주 찾는 품목
-========================= */
+
+
+
+/* =========================================================
+   4. 자주 찾는 품목
+========================================================= */
 
 .quick-search {
     margin-top: 16px;
@@ -250,27 +322,39 @@ main > div:first-child button:hover {
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
+
     gap: 8px;
 
     font-size: 13px;
 }
 
-/* "자주 찾는 품목" 글자 */
+
+/* 안내 문구 */
+
 .quick-search span {
     margin-right: 4px;
 
-    color: rgba(255, 255, 255, 0.7);
+    color:
+            rgba(255, 255, 255, 0.7);
+
     font-weight: 500;
 }
 
+
 /* 품목 버튼 */
+
 .quick-search a {
     padding: 7px 12px;
 
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    background-color:
+            rgba(255, 255, 255, 0.08);
+
+    border:
+            1px solid
+            rgba(255, 255, 255, 0.25);
+
     border-radius: 20px;
 
-    background-color: rgba(255, 255, 255, 0.08);
     color: white;
 
     font-size: 12px;
@@ -282,28 +366,44 @@ main > div:first-child button:hover {
 }
 
 .quick-search a:hover {
-    background-color: rgba(255, 255, 255, 0.18);
-    border-color: rgba(255, 255, 255, 0.45);
-}
-/* =========================
-   4. 에코맵 / 재활용게임 카드
-========================= */
+    background-color:
+            rgba(255, 255, 255, 0.18);
 
-/* 메인 콘텐츠 영역 가운데 정렬 */
+    border-color:
+            rgba(255, 255, 255, 0.45);
+}
+
+
+
+/* =========================================================
+   5. 메인 콘텐츠 영역
+========================================================= */
+
 main > div:nth-of-type(2) {
     max-width: 1120px;
+
     margin: 0 auto;
+
     padding: 60px 20px 80px;
 }
 
-/* 첫 번째 테이블 = 에코맵 / 게임 */
+
+
+/* =========================================================
+   6. 에코맵 / 재활용게임 카드
+========================================================= */
+
 main > div:nth-of-type(2) > table:first-of-type {
     width: 100%;
+
     border-collapse: separate;
+
     border-spacing: 24px 0;
 }
 
-/* 각 카드 */
+
+/* 카드 */
+
 main > div:nth-of-type(2) > table:first-of-type td {
     width: 50%;
 
@@ -317,27 +417,76 @@ main > div:nth-of-type(2) > table:first-of-type td {
     border-radius: 18px;
 
     overflow: hidden;
+
+    transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
 }
 
+
+main > div:nth-of-type(2) > table:first-of-type td:hover {
+    border-color: #a9cf9f;
+
+    box-shadow:
+            0 8px 24px
+            rgba(31, 70, 45, 0.07);
+
+    transform: translateY(-2px);
+}
+
+
 /* 카드 제목 */
+
 main > div:nth-of-type(2) > table:first-of-type h3 {
     margin: 20px 22px 10px;
 
-    font-size: 22px;
     color: #163d29;
+
+    font-size: 22px;
+    font-weight: 800;
 }
 
-/* 카드 이미지 */
-main > div:nth-of-type(2) > table:first-of-type img {
+
+main > div:nth-of-type(2) > table:first-of-type h3 a {
+    transition: color 0.2s ease;
+}
+
+
+main > div:nth-of-type(2) > table:first-of-type h3 a:hover {
+    color: #4f9439;
+}
+
+
+
+/* =========================================================
+   7. 카드 이미지
+   ★ 이미지 잘리지 않도록 수정
+========================================================= */
+
+.main-feature-image {
     display: block;
 
     width: 100%;
-    height: 280px;
+    height: 360px;
 
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center;
+
+    background-color: #f3f8f0;
 }
 
+/* 이미지 링크 영역 */
+
+main > div:nth-of-type(2) > table:first-of-type td > a {
+    display: block;
+
+    width: 100%;
+}
+
+
 /* 카드 설명 */
+
 main > div:nth-of-type(2) > table:first-of-type p {
     margin: 16px 22px 0;
 
@@ -346,11 +495,13 @@ main > div:nth-of-type(2) > table:first-of-type p {
     font-size: 14px;
     line-height: 1.7;
 }
-/* =========================
-   5. 커뮤니티
-========================= */
 
-/* 커뮤니티 제목 영역 */
+
+
+/* =========================================================
+   8. 커뮤니티 제목 영역
+========================================================= */
+
 main > div:nth-of-type(2) > div {
     width: 100% !important;
 
@@ -360,18 +511,25 @@ main > div:nth-of-type(2) > div {
 
     border: 1px solid #dce8d8;
     border-bottom: none;
+
     border-radius: 18px 18px 0 0;
 }
 
+
 /* 커뮤니티 제목 */
+
 main > div:nth-of-type(2) > div h3 {
     margin: 0;
 
-    font-size: 21px;
     color: #163d29;
+
+    font-size: 21px;
+    font-weight: 800;
 }
 
+
 /* 더보기 */
+
 main > div:nth-of-type(2) > div > a {
     color: #3e7d45;
 
@@ -381,12 +539,17 @@ main > div:nth-of-type(2) > div > a {
     transition: color 0.2s ease;
 }
 
+
 main > div:nth-of-type(2) > div > a:hover {
     color: #65a84b;
 }
 
 
-/* 두 번째 테이블 = 커뮤니티 */
+
+/* =========================================================
+   9. 커뮤니티 테이블
+========================================================= */
+
 main > div:nth-of-type(2) > table:nth-of-type(2) {
     width: 100% !important;
 
@@ -396,6 +559,7 @@ main > div:nth-of-type(2) > table:nth-of-type(2) {
     background-color: white;
 
     border: 1px solid #dce8d8;
+
     border-radius: 0 0 18px 18px;
 
     overflow: hidden;
@@ -403,21 +567,25 @@ main > div:nth-of-type(2) > table:nth-of-type(2) {
 
 
 /* 컬럼 제목 */
+
 main > div:nth-of-type(2) > table:nth-of-type(2) th {
     padding: 13px 20px;
 
     background-color: #f7faf5;
+
     border-bottom: 1px solid #e2ebe0;
 
     color: #78907d;
 
     font-size: 12px;
     font-weight: 600;
+
     text-align: left;
 }
 
 
 /* 게시글 */
+
 main > div:nth-of-type(2) > table:nth-of-type(2) td {
     padding: 15px 20px;
 
@@ -429,74 +597,128 @@ main > div:nth-of-type(2) > table:nth-of-type(2) td {
 }
 
 
-/* 게시글 제목 */
-main > div:nth-of-type(2) > table:nth-of-type(2) td:nth-child(2) a {
+/* 제목 */
+
+main > div:nth-of-type(2) >
+table:nth-of-type(2) >
+tbody >
+tr >
+td:nth-child(2) a {
+
     color: #193e2b;
+
     font-weight: 600;
+
+    transition: color 0.2s ease;
 }
 
 
-/* 행 hover */
-main > div:nth-of-type(2) > table:nth-of-type(2) tbody tr {
+main > div:nth-of-type(2) >
+table:nth-of-type(2) >
+tbody >
+tr >
+td:nth-child(2) a:hover {
+
+    color: #5a9e3f;
+}
+
+
+/* 게시글 행 hover */
+
+main > div:nth-of-type(2) >
+table:nth-of-type(2) >
+tbody tr {
+
     transition: background-color 0.2s ease;
 }
 
-main > div:nth-of-type(2) > table:nth-of-type(2) tbody tr:hover {
+
+main > div:nth-of-type(2) >
+table:nth-of-type(2) >
+tbody tr:hover {
+
     background-color: #fafcf8;
 }
 
 
-/* 마지막 게시글 아래 선 제거 */
-main > div:nth-of-type(2) > table:nth-of-type(2) tbody tr:last-child td {
+/* 마지막 선 제거 */
+
+main > div:nth-of-type(2) >
+table:nth-of-type(2) >
+tbody tr:last-child td {
+
     border-bottom: none;
 }
-/* =========================
-   6. Footer
-========================= */
+
+
+
+/* =========================================================
+   10. Footer
+========================================================= */
 
 .footer {
     margin-top: 80px;
+
     background-color: #16492f;
+
     color: white;
 }
 
-/* 상단 3열 영역 */
+
+/* Footer 상단 */
+
 .footer-container {
     max-width: 1120px;
+
     margin: 0 auto;
+
     padding: 42px 20px 32px;
 
     display: grid;
-    grid-template-columns: 1.4fr 0.8fr 1fr;
+
+    grid-template-columns:
+            1.4fr
+            0.8fr
+            1fr;
+
     gap: 48px;
 }
 
-/* 공통 제목 */
+
+/* Footer 제목 */
+
 .footer h3,
 .footer h4 {
     margin-top: 0;
     margin-bottom: 14px;
 }
 
+
 /* 브랜드 */
+
 .footer-brand h3 {
     font-size: 18px;
 }
 
+
 .footer-brand p {
     margin: 0;
 
-    color: rgba(255, 255, 255, 0.7);
+    color:
+            rgba(255, 255, 255, 0.7);
 
     font-size: 13px;
     line-height: 1.7;
 }
 
+
 /* 서비스 메뉴 */
+
 .footer-menu h4,
 .footer-info h4 {
     font-size: 14px;
 }
+
 
 .footer-menu ul {
     margin: 0;
@@ -505,160 +727,141 @@ main > div:nth-of-type(2) > table:nth-of-type(2) tbody tr:last-child td {
     list-style: none;
 }
 
+
 .footer-menu li {
     margin-bottom: 8px;
 }
 
+
 .footer-menu a {
-    color: rgba(255, 255, 255, 0.7);
+    color:
+            rgba(255, 255, 255, 0.7);
 
     font-size: 13px;
 
     transition: color 0.2s ease;
 }
+
 
 .footer-menu a:hover {
     color: #9bdd68;
 }
 
+
 /* 프로젝트 정보 */
+
 .footer-info p {
     margin: 0 0 8px;
 
-    color: rgba(255, 255, 255, 0.7);
+    color:
+            rgba(255, 255, 255, 0.7);
 
     font-size: 13px;
     line-height: 1.6;
 }
 
-/* footer 하단 */
+
+/* Footer 하단 */
+
 .footer-bottom {
     max-width: 1120px;
+
     margin: 0 auto;
+
     padding: 18px 20px 24px;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     gap: 20px;
 
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-top:
+            1px solid
+            rgba(255, 255, 255, 0.12);
 
-    color: rgba(255, 255, 255, 0.5);
+    color:
+            rgba(255, 255, 255, 0.5);
 
     font-size: 12px;
 }
 
+
 .footer-bottom p {
     margin: 0;
 }
-/* =========================
-   7. Hover 효과
-========================= */
-
-/* 헤더 링크 */
-body > nav a {
-    transition:
-            color 0.2s ease,
-            opacity 0.2s ease;
-}
-
-body > nav a:hover {
-    color: #9bdd68;
-}
 
 
-/* 에코맵 / 게임 카드 */
-main > div:nth-of-type(2) > table:first-of-type td {
-    transition: border-color 0.2s ease;
-}
 
-main > div:nth-of-type(2) > table:first-of-type td:hover {
-    border-color: #a9cf9f;
-}
+/* =========================================================
+   11. 태블릿
+========================================================= */
 
-
-/* 카드 제목 */
-main > div:nth-of-type(2) > table:first-of-type h3 a {
-    transition: color 0.2s ease;
-}
-
-main > div:nth-of-type(2) > table:first-of-type h3 a:hover {
-    color: #4f9439;
-}
-
-
-/* 커뮤니티 게시글 제목 */
-main > div:nth-of-type(2) > table:nth-of-type(2) td:nth-child(2) a {
-    transition: color 0.2s ease;
-}
-
-main > div:nth-of-type(2) > table:nth-of-type(2) td:nth-child(2) a:hover {
-    color: #5a9e3f;
-}
-
-
-/* 검색 버튼 */
-main > div:first-child button {
-    transition: background-color 0.2s ease;
-}
-
-main > div:first-child button:hover {
-    background-color: #21633f;
-}
-/* =========================
-   8. 현재 메뉴 강조
-========================= */
-
-body > nav a.active {
-    color: #9bdd68;
-    font-weight: 700;
-}
-/* =========================
-   9. 반응형
-========================= */
-
-/* -------------------------
-   태블릿
-------------------------- */
 @media (max-width: 900px) {
 
     /* 헤더 */
+
     body > nav > div {
         padding: 0 24px;
     }
 
+
     /* Hero */
+
     main > div:first-child {
         min-height: 440px;
+
         padding: 65px 24px;
     }
+
 
     .hero-title {
         font-size: 50px;
     }
 
+
     .hero-description {
         font-size: 15px;
     }
 
-    /* 메인 콘텐츠 */
+
+    /* 메인 */
+
     main > div:nth-of-type(2) {
         padding: 50px 24px 70px;
     }
 
-    /* 카드 이미지 */
-    main > div:nth-of-type(2) > table:first-of-type img {
-        height: 240px;
+
+    /*
+       이미지도 contain 유지
+       절대 cover로 변경하지 않음
+    */
+
+    main > div:nth-of-type(2) >
+    table:first-of-type img {
+
+        width: 100%;
+        height: 300px;
+
+        object-fit: contain;
+        object-position: center;
     }
 
+
     /* Footer */
+
     .footer-container {
-        grid-template-columns: 1.3fr 0.8fr 1fr;
+        grid-template-columns:
+                1.3fr
+                0.8fr
+                1fr;
+
         gap: 30px;
+
         padding-left: 24px;
         padding-right: 24px;
     }
+
 
     .footer-bottom {
         padding-left: 24px;
@@ -667,45 +870,77 @@ body > nav a.active {
 }
 
 
-/* -------------------------
-   모바일
-------------------------- */
+
+/* =========================================================
+   12. 모바일
+========================================================= */
+
 @media (max-width: 650px) {
 
-    /* ===== 헤더 ===== */
+
+    /* =====================
+       헤더
+    ===================== */
 
     body > nav {
         height: auto;
     }
 
+
     body > nav > div {
         min-height: 60px;
+
         padding: 12px 16px;
 
         flex-wrap: wrap;
+
         gap: 12px;
     }
+
 
     body > nav > div > a:first-child {
         font-size: 16px;
     }
+
 
     body > nav a {
         font-size: 12px;
     }
 
 
-    /* ===== Hero ===== */
+    .nav-center {
+        position: static;
+
+        width: 100%;
+
+        transform: none;
+
+        order: 10;
+
+        justify-content: center;
+
+        gap: 18px;
+    }
+
+
+
+    /* =====================
+       Hero
+    ===================== */
 
     main > div:first-child {
         min-height: auto;
+
         padding: 55px 16px 60px;
     }
 
+
     .hero-badge {
         padding: 6px 11px;
+
         font-size: 11px;
     }
+
 
     .hero-title {
         margin: 20px 0 16px;
@@ -714,16 +949,21 @@ body > nav a.active {
         line-height: 1.15;
     }
 
+
     .hero-description {
         font-size: 14px;
         line-height: 1.6;
     }
 
 
-    /* ===== 검색창 ===== */
+
+    /* =====================
+       검색창
+    ===================== */
 
     main > div:first-child form {
         width: 100%;
+
         margin-top: 26px;
 
         padding: 6px;
@@ -734,136 +974,219 @@ body > nav a.active {
         min-width: 0;
 
         height: 42px;
+
         padding: 0 10px;
 
         font-size: 13px;
     }
 
+
     main > div:first-child button {
         height: 42px;
+
         padding: 0 16px;
 
         font-size: 13px;
     }
 
 
-    /* ===== 자주 찾는 품목 ===== */
+
+    /* =====================
+       자주 찾는 품목
+    ===================== */
 
     .quick-search {
         margin-top: 14px;
+
         gap: 6px;
     }
 
+
     .quick-search span {
         width: 100%;
+
         margin: 0 0 3px;
 
         text-align: center;
     }
 
+
     .quick-search a {
         padding: 6px 10px;
+
         font-size: 11px;
     }
 
 
-    /* ===== 메인 콘텐츠 ===== */
+
+    /* =====================
+       메인 콘텐츠
+    ===================== */
 
     main > div:nth-of-type(2) {
         width: 100%;
+
         padding: 38px 16px 55px;
     }
 
 
-    /* 에코맵 / 게임을 2열 → 1열 */
 
-    main > div:nth-of-type(2) > table:first-of-type {
+    /* =====================
+       에코맵 / 게임 카드
+       2열 → 1열
+    ===================== */
+
+    main > div:nth-of-type(2) >
+    table:first-of-type {
+
         display: block;
 
         border-spacing: 0;
     }
 
-    main > div:nth-of-type(2) > table:first-of-type tbody,
-    main > div:nth-of-type(2) > table:first-of-type tr {
+
+    main > div:nth-of-type(2) >
+    table:first-of-type tbody,
+
+    main > div:nth-of-type(2) >
+    table:first-of-type tr {
+
         display: block;
+
         width: 100%;
     }
 
-    main > div:nth-of-type(2) > table:first-of-type td {
+
+    main > div:nth-of-type(2) >
+    table:first-of-type td {
+
         display: block;
 
         width: 100% !important;
+
         margin-bottom: 20px;
     }
 
-    main > div:nth-of-type(2) > table:first-of-type td:last-child {
+
+    main > div:nth-of-type(2) >
+    table:first-of-type td:last-child {
+
         margin-bottom: 0;
     }
 
-    main > div:nth-of-type(2) > table:first-of-type img {
-        height: 220px;
+
+
+    /* 모바일 이미지 */
+
+    main > div:nth-of-type(2) >
+    table:first-of-type img {
+
+        width: 100%;
+        height: 350px;
+
+        object-fit: contain;
+        object-position: center;
     }
 
 
-    /* ===== 커뮤니티 ===== */
+
+    /* =====================
+       커뮤니티
+    ===================== */
 
     main > div:nth-of-type(2) > div {
         padding: 18px;
     }
 
+
     main > div:nth-of-type(2) > div h3 {
         font-size: 18px;
     }
 
-    main > div:nth-of-type(2) > table:nth-of-type(2) th,
-    main > div:nth-of-type(2) > table:nth-of-type(2) td {
+
+    main > div:nth-of-type(2) >
+    table:nth-of-type(2) th,
+
+    main > div:nth-of-type(2) >
+    table:nth-of-type(2) td {
+
         padding: 12px 10px;
+
         font-size: 11px;
     }
 
+
+
     /*
-       모바일에서는 공간 확보를 위해
-       번호 / 작성자 컬럼 숨김
+       모바일 공간 확보
+       번호 / 작성자 숨김
     */
-    main > div:nth-of-type(2) > table:nth-of-type(2) th:nth-child(1),
-    main > div:nth-of-type(2) > table:nth-of-type(2) td:nth-child(1),
-    main > div:nth-of-type(2) > table:nth-of-type(2) th:nth-child(3),
-    main > div:nth-of-type(2) > table:nth-of-type(2) td:nth-child(3) {
+
+    main > div:nth-of-type(2) >
+    table:nth-of-type(2) th:nth-child(1),
+
+    main > div:nth-of-type(2) >
+    table:nth-of-type(2) td:nth-child(1),
+
+    main > div:nth-of-type(2) >
+    table:nth-of-type(2) th:nth-child(3),
+
+    main > div:nth-of-type(2) >
+    table:nth-of-type(2) td:nth-child(3) {
+
         display: none;
     }
 
-    main > div:nth-of-type(2) > table:nth-of-type(2) col:nth-child(1),
-    main > div:nth-of-type(2) > table:nth-of-type(2) col:nth-child(3) {
+
+    main > div:nth-of-type(2) >
+    table:nth-of-type(2) col:nth-child(1),
+
+    main > div:nth-of-type(2) >
+    table:nth-of-type(2) col:nth-child(3) {
+
         display: none;
     }
 
-    main > div:nth-of-type(2) > table:nth-of-type(2) col:nth-child(2) {
+
+    main > div:nth-of-type(2) >
+    table:nth-of-type(2) col:nth-child(2) {
+
         width: 70% !important;
     }
 
-    main > div:nth-of-type(2) > table:nth-of-type(2) col:nth-child(4) {
+
+    main > div:nth-of-type(2) >
+    table:nth-of-type(2) col:nth-child(4) {
+
         width: 30% !important;
     }
 
 
-    /* ===== Footer ===== */
+
+    /* =====================
+       Footer
+    ===================== */
 
     .footer {
         margin-top: 50px;
     }
 
+
     .footer-container {
         padding: 34px 20px 26px;
 
         grid-template-columns: 1fr;
+
         gap: 30px;
     }
+
 
     .footer-bottom {
         padding: 18px 20px 24px;
 
         flex-direction: column;
         align-items: flex-start;
+
         gap: 8px;
     }
 }

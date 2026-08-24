@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>재활용 품목 관리</title>
+
+    <!-- 관리자 페이지 공통 CSS -->
+    <link rel="stylesheet" th:href="@{/CSS/admin.css}">
+</head>
+
+<body>
+
+
+<!-- =====================================================
+     상단 네비게이션
+===================================================== -->
+<nav>
+    <div>
+
+        <a th:href="@{/}">
+            ♻️ 지구비우기
+        </a>
+
+
+        <div class="nav-center">
+            <a th:href="@{/eco-map}">
+                에코맵
+            </a>
+
+            <a th:href="@{/game}">
+                재활용게임
+            </a>
+
+            <a th:href="@{/boards}">
+                커뮤니티
+            </a>
+        </div>
+
+
+        <!-- 로그인 전 -->
+        <th:block th:unless="${session.checkLogin}">
+
+            <a th:href="@{/login}">
+                로그인
+            </a>
+
+            <a th:href="@{/signup}">
+                회원가입
+            </a>
+
+        </th:block>
+
+
+        <!-- ADMIN 계정에게만 표시 -->
+        <a class="active"
+           th:if="${session.loginMember != null
+               and session.loginMember.role == 'ADMIN'}"
+           th:href="@{/admin}">
+
+            관리자 페이지
+
+        </a>
+
+
+        <!-- 로그인 후 -->
+        <th:block th:if="${session.checkLogin}">
+
+            <a th:href="@{/mypage}">
+                마이페이지
+            </a>
+
+            <a th:href="@{/logout}">
+                로그아웃
+            </a>
+
+            <a th:href="@{/reward}">
+                리워드 상점
+            </a>
+
+        </th:block>
+
+    </div>
+</nav>
+
+
+
+<main class="admin-management-page">
+
+
+    <!-- =====================================================
+         페이지 상단
+    ===================================================== -->
+    <section class="admin-page-header">
+
+        <div class="admin-page-header-inner">
+
+            <span class="admin-page-label">
+                ADMIN · RECYCLE ITEM
+            </span>
+
+            <h1>
+                재활용 품목 관리
+            </h1>
+
+            <p>
+                재활용 품목의 기본 정보와 배출 정보,
+                관련 키워드를 조회하고 수정할 수 있습니다.
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         콘텐츠
+    ===================================================== -->
+    <section class="admin-list-content">
+
+
+        <!-- =================================================
+             상단 제목 + 관리자 홈
+        ================================================== -->
+        <div class="admin-list-header">
+
+            <div>
+
+                <span class="section-label">
+                    RECYCLE DATABASE
+                </span>
+
+                <h2>
+                    재활용 품목 목록
+                </h2>
+
+                <p>
+                    등록된 품목을 검색하고 관리하세요.
+                </p>
+
+            </div>
+
+
+            <a class="admin-home-button"
+               th:href="@{/admin}">
+
+                ← 관리자 홈
+
+            </a>
+
+        </div>
+
+
+
+        <!-- =================================================
+             검색
+        ================================================== -->
+        <div class="admin-search-box">
+
+            <form th:action="@{/admin/recycle-items}"
+                  method="get">
+
+                <div class="admin-search-input">
+
+                    <span class="search-icon">
+                        🔍
+                    </span>
+
+                    <input
+                            type="text"
+                            name="keyword"
+                            th:value="${keyword}"
+                            placeholder="품목명, 카테고리, 관련 키워드 검색"
+                            autocomplete="off">
+
+                </div>
+
+
+                <button class="search-button"
+                        type="submit">
+
+                    검색
+
+                </button>
+
+
+                <a class="reset-button"
+                   th:href="@{/admin/recycle-items}">
+
+                    초기화
+
+                </a>
+
+            </form>
+
+        </div>
+
+
+
+        <!-- =================================================
+             테이블
+        ================================================== -->
+        <div class="admin-table-card">
+
+            <div class="admin-table-wrapper">
+
+                <table class="admin-table recycle-item-table">
+
+                    <colgroup>
+                        <col class="col-id">
+                        <col class="col-name">
+                        <col class="col-category">
+                        <col class="col-keyword">
+                        <col class="col-action">
+                    </colgroup>
+
+
+                    <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>품목명</th>
+                        <th>카테고리</th>
+                        <th>관련 키워드</th>
+                        <th>관리</th>
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                    <th:block th:each="item : ${items}">
+
+
+                        <!-- =====================================
+                             기본 목록 행
+                        ====================================== -->
+                        <tr class="view-row"
+                            th:id="'view-row-' + ${item.itemId}">
+
+
+                            <!-- ID -->
+                            <td class="item-id"
+                                th:text="${item.itemId}">
+                                1
+                            </td>
+
+
+                            <!-- 품목명 -->
+                            <td>
+
+                                <strong class="item-name"
+                                        th:text="${item.itemName}">
+                                    페트병
+                                </strong>
+
+                            </td>
+
+
+                            <!-- 카테고리 -->
+                            <td>
+
+                                <span class="category-tag"
+                                      th:text="${item.categoryName}">
+                                    플라스틱
+                                </span>
+
+                            </td>
+
+
+                            <!-- 관련 키워드 -->
+                            <td>
+
+                                <div class="keyword-text"
+                                     th:text="${item.searchKeyword}">
+                                    페트병, 생수병, 플라스틱병
+                                </div>
+
+                            </td>
+
+
+                            <!-- 관리 버튼 -->
+                            <td>
+
+                                <div class="action-buttons">
+
+                                    <button class="edit-button"
+                                            type="button"
+                                            th:onclick="'openEdit(' + ${item.itemId} + ')'">
+
+                                        수정
+
+                                    </button>
+
+
+                                    <!--
+                                        삭제 기능은 현재 미구현 상태
+                                    -->
+                                    <button class="delete-button"
+                                            type="button">
+
+                                        삭제
+
+                                    </button>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+
+
+                        <!-- =====================================
+                             수정 폼 행
+                        ====================================== -->
+                        <tr class="edit-row"
+                            th:id="'edit-row-' + ${item.itemId}"
+                            style="display: none;">
+
+
+                            <td colspan="5">
+
+
+                                <div class="edit-panel">
+
+
+                                    <!-- 수정 상단 -->
+                                    <div class="edit-panel-header">
+
+                                        <div>
+
+                                            <span>
+                                                ITEM EDIT
+                                            </span>
+
+                                            <h3>
+                                                재활용 품목 수정
+                                            </h3>
+
+                                        </div>
+
+
+                                        <button class="edit-close-button"
+                                                type="button"
+                                                th:onclick="'closeEdit(' + ${item.itemId} + ')'">
+
+                                            ✕ 닫기
+
+                                        </button>
+
+                                    </div>
+
+
+
+                                    <!-- 수정 Form -->
+                                    <form class="admin-edit-form"
+                                          th:action="@{/admin/recycle-items/{id}/update(id=${item.itemId})}"
+                                          method="post">
+
+
+                                        <!-- 현재 페이지 유지 -->
+                                        <input type="hidden"
+                                               name="page"
+                                               th:value="${paging.page}">
+
+
+                                        <!-- 검색어 유지 -->
+                                        <input type="hidden"
+                                               name="keyword"
+                                               th:value="${keyword}">
+
+
+
+                                        <!-- 품목명 -->
+                                        <div class="edit-form-group">
+
+                                            <label>
+                                                품목명
+                                            </label>
+
+                                            <input
+                                                    type="text"
+                                                    name="itemName"
+                                                    th:value="${item.itemName}">
+
+                                        </div>
+
+
+
+                                        <!-- 배출방법 -->
+                                        <div class="edit-form-group">
+
+                                            <label>
+                                                배출방법
+                                            </label>
+
+                                            <textarea
+                                                    name="disposalMethod"
+                                                    rows="4"
+                                                    th:text="${item.disposalMethod}">
+                                            </textarea>
+
+                                        </div>
+
+
+
+                                        <!-- 특징 -->
+                                        <div class="edit-form-group">
+
+                                            <label>
+                                                특징
+                                            </label>
+
+                                            <textarea
+                                                    name="feature"
+                                                    rows="4"
+                                                    th:text="${item.feature}">
+                                            </textarea>
+
+                                        </div>
+
+
+
+                                        <!-- 주의사항 -->
+                                        <div class="edit-form-group">
+
+                                            <label>
+                                                주의사항
+                                            </label>
+
+                                            <textarea
+                                                    name="caution"
+                                                    rows="4"
+                                                    th:text="${item.caution}">
+                                            </textarea>
+
+                                        </div>
+
+
+
+                                        <!-- 관련 키워드 -->
+                                        <div class="edit-form-group">
+
+                                            <label>
+                                                관련 키워드
+                                            </label>
+
+                                            <textarea
+                                                    name="searchKeyword"
+                                                    rows="3"
+                                                    th:text="${item.searchKeyword}">
+                                            </textarea>
+
+                                        </div>
+
+
+
+                                        <!-- 저장 / 취소 -->
+                                        <div class="edit-form-actions">
+
+                                            <button class="save-button"
+                                                    type="submit">
+
+                                                저장
+
+                                            </button>
+
+
+                                            <button class="cancel-button"
+                                                    type="button"
+                                                    th:onclick="'closeEdit(' + ${item.itemId} + ')'">
+
+                                                취소
+
+                                            </button>
+
+                                        </div>
+
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+
+                    </th:block>
+
+
+
+                    <!-- =====================================
+                         검색 결과 없음
+                    ====================================== -->
+                    <tr th:if="${#lists.isEmpty(items)}">
+
+                        <td colspan="5"
+                            class="empty-table">
+
+                            <div class="empty-table-icon">
+                                🔍
+                            </div>
+
+                            <strong>
+                                검색 결과가 없습니다.
+                            </strong>
+
+                            <p>
+                                다른 검색어를 입력해보세요.
+                            </p>
+
+                        </td>
+
+                    </tr>
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             페이징
+        ================================================== -->
+        <div class="admin-pagination"
+             th:if="${paging.totalPages > 0}">
+
+
+            <!-- 이전 -->
+            <a class="page-direction"
+               th:if="${startPage > 1}"
+               th:href="@{/admin/recycle-items(
+                    page=${startPage - 1},
+                    keyword=${keyword}
+               )}">
+
+                ← 이전
+
+            </a>
+
+
+
+            <!-- 페이지 번호 -->
+            <th:block th:each="pageNum :
+                ${#numbers.sequence(startPage, endPage)}">
+
+
+                <!-- 현재 페이지 -->
+                <strong class="current-page"
+                        th:if="${pageNum == paging.page}"
+                        th:text="${pageNum}">
+                    1
+                </strong>
+
+
+                <!-- 다른 페이지 -->
+                <a class="page-number"
+                   th:unless="${pageNum == paging.page}"
+                   th:href="@{/admin/recycle-items(
+                        page=${pageNum},
+                        keyword=${keyword}
+                   )}"
+                   th:text="${pageNum}">
+                    2
+                </a>
+
+
+            </th:block>
+
+
+
+            <!-- 다음 -->
+            <a class="page-direction"
+               th:if="${endPage < paging.totalPages}"
+               th:href="@{/admin/recycle-items(
+                    page=${endPage + 1},
+                    keyword=${keyword}
+               )}">
+
+                다음 →
+
+            </a>
+
+        </div>
+
+
+
+        <!-- 관리자 홈으로 -->
+        <div class="admin-back-area">
+
+            <a th:href="@{/admin}">
+                ← 관리자 페이지로 돌아가기
+            </a>
+
+        </div>
+
+
+    </section>
+
+</main>
+
+
+
+<!-- =====================================================
+     Footer
+===================================================== -->
+<footer th:fragment="footer"
+        class="footer">
+
+
+    <div class="footer-container">
+
+
+        <!-- 왼쪽 -->
+        <div class="footer-brand">
+
+            <h3>
+                ♻️ 지구비우기
+            </h3>
+
+            <p>
+                올바른 분리배출부터 주변 수거시설 확인까지,<br>
+                일상 속 친환경 실천을 돕는 서비스입니다.
+            </p>
+
+        </div>
+
+
+
+        <!-- 가운데 -->
+        <div class="footer-menu">
+
+            <h4>
+                서비스
+            </h4>
+
+            <ul>
+
+                <li>
+                    <a th:href="@{/}">
+                        홈
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/boards}">
+                        커뮤니티
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/reward}">
+                        리워드 상점
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/mypage}">
+                        마이페이지
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+
+
+        <!-- 오른쪽 -->
+        <div class="footer-info">
+
+            <h4>
+                Project
+            </h4>
+
+            <p>
+                생활형 친환경 실천 플랫폼
+            </p>
+
+            <p>
+                Spring Boot · MyBatis · Thymeleaf · MySQL
+            </p>
+
+            <p>
+                공공데이터 기반 재활용 정보 서비스
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 딱갈라. 지구비우기.All rights reserved.
+        </p>
+
+        <p class="footer-notice">
+            본 서비스는 교육 프로젝트 목적으로 제작되었습니다.
+        </p>
+
+    </div>
+
+</footer>
+
+
+
+<!-- =====================================================
+     수정 폼 열기 / 닫기
+===================================================== -->
+<script>
+
+    function openEdit(itemId) {
+
+        const viewRow =
+            document.getElementById(
+                "view-row-" + itemId
+            );
+
+        const editRow =
+            document.getElementById(
+                "edit-row-" + itemId
+            );
+
+
+        viewRow.style.display = "none";
+
+        editRow.style.display = "table-row";
+    }
+
+
+
+    function closeEdit(itemId) {
+
+        const viewRow =
+            document.getElementById(
+                "view-row-" + itemId
+            );
+
+        const editRow =
+            document.getElementById(
+                "edit-row-" + itemId
+            );
+
+
+        editRow.style.display = "none";
+
+        viewRow.style.display = "table-row";
+    }
+
+</script>
+
+
+</body>
+</html>

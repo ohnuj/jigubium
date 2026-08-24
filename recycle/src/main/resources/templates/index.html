@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
-    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/CSS/home.css}">
 </head>
 
 <body>
@@ -21,6 +21,12 @@
             <a th:href="@{/signup}">회원가입</a>
         </th:block>
 
+        <!-- ADMIN 계정에게만 표시 -->
+        <a th:if="${session.loginMember != null
+               and session.loginMember.role == 'ADMIN'}"
+           th:href="@{/admin}">
+            관리자 페이지
+        </a>
         <th:block th:if="${session.checkLogin}">
             <a th:href="@{/mypage}">마이페이지</a>
             <a th:href="@{/logout}">로그아웃</a>
@@ -78,7 +84,9 @@
                         </a>
                     </h3>
                     <a th:href="@{/eco-map}">
-                        <img th:src="@{/images/eco-map.png}" alt="에코맵" width="300">
+                        <img class="main-feature-image"
+                             th:src="@{/images/eco-map.png}"
+                             alt="에코맵">
                     </a>
                     <p>
                         주변 재활용 수거함을 찾아보세요.
@@ -92,7 +100,9 @@
                         </a>
                     </h3>
                     <a th:href="@{/game}">
-                        <img th:src="@{/images/mini-game.png}" alt="미니게임" width="300">
+                        <img class="main-feature-image"
+                             th:src="@{/images/mini-game.png}"
+                             alt="미니게임">
                     </a>
                     <p>
                         Drag & Drop으로 분리배출을 배워보세요.
