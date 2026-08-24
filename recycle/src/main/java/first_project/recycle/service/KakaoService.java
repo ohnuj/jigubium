@@ -111,9 +111,8 @@ public class KakaoService {
                 user.setRole("USER");
                 user.setNewUser(true);
 
-
                 userMapper.insertOAuthUser(user);
-
+                ecoPointHistoryService.earnPoint(user.getMemberId(), 100, "SIGNUP", user.getMemberId());
             }
 
             // 조회 또는 새로 생성된 회원 객체 반환

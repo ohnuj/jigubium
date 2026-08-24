@@ -2,16 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+    <!-- 매핑될 인터페이스의 풀 패키지 경로를 지정 -->
 <mapper namespace="first_project.recycle.repository.MypageMapper">
 
-    <!-- 1. memberId로 단건 조회 -->
+    <!-- 1. member_id(PK)룰 조건으로 해당 회원 정보 전체 컬럼 조회 -->
     <select id="findById" resultType="first_project.recycle.domain.Member">
         SELECT *
         FROM member
         WHERE member_id = #{memberId}
     </select>
 
-    <!-- 2. memberId로 회원정보 수정 -->
+    <!-- 2. 회원 정보 동적 수정 쿼리
+    <set> 태그를 사용하여 닉네임은 무조건 변경하고, 새 비밀번호는 빈 값이 아닐 떄만 수정 항목에 포함시킴 -->
     <update id="updateMember">
         UPDATE member
         <set>
@@ -23,7 +25,7 @@
         WHERE member_id = #{memberId}
     </update>
 
-    <!-- 3. memberId로 삭제 -->
+    <!-- 3. 회원 탈퇴시 member 테이블에서 삭제 -->
     <delete id="deleteById">
         DELETE FROM member
         WHERE member_id = #{memberId}
@@ -36,7 +38,15 @@
         WHERE member_id = #{memberId}
     </select>
 
-    <!-- 5. 에코포인트 변동 내역 목록 -->
+    <!-- 4-1. 특정 회원의 답글 작성 수 조회 -->
+    <select id="commentCountById" resultType="int">
+        SELECT COUNT(*)
+        FROM comment
+        WHERE member_id =#{memberId}
+    </select>
+
+    <!-- 5. 에코포인트 변동 내역 목록
+     변동 내역을 최신순으로 조회-->
     <select id="findPointHistoryById" resultType="first_project.recycle.domain.EcoPointHistory">
         SELECT
             eco_point_history_id AS ecoPointHistoryId,
@@ -53,7 +63,8 @@
         ORDER BY created_at DESC
     </select>
 
-    <!-- 5-1. 에코포인트 총 내역 건수 조회 -->
+    <!-- 5-1. 에코포인트 총 내역 건수 조회
+     페이징 처리를 위해 해당 회원의 포인트 변동 내역 총 개수를 계산-->
     <select id = "countPointHistoryById" resultType="int">
         SELECT COUNT(*)
         FROM eco_point_history

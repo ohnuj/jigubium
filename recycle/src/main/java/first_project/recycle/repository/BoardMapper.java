@@ -21,7 +21,8 @@ public interface BoardMapper {
     int countBoards(
             @Param("keyword") String keyword,
             @Param("searchType") String searchType,
-            @Param("boardType")BoardType boardType
+            @Param("boardType")BoardType boardType,
+            @Param("memberId") Long memberId
             );
 
     // 검색 + 타입 + 페이징 게시글 조회
@@ -30,6 +31,7 @@ public interface BoardMapper {
             @Param("searchType") String searchType,
             @Param("boardType") BoardType boardType,
             @Param("sort") String sort,
+            @Param("memberId") Long memberId,
             @Param("offset") int offset,
             @Param("size") int size
 

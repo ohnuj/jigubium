@@ -16,9 +16,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor
@@ -42,9 +45,29 @@ public class BoardController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String searchType,
-            @RequestParam(required = false)BoardType boardType,
+            @RequestParam(required = false) BoardType boardType,
             @RequestParam(required = false) String sort,
+            @RequestParam(defaultValue = "false") boolean myPosts,
+            HttpSession session,
             Model model) {
+
+        Long memberId = null;
+
+        // 내 글만 보기
+        if (myPosts) {
+
+            User loginUser =
+                    (User) session.getAttribute(
+                            SessionConst.LOGIN_MEMBER
+                    );
+
+            // 로그인하지 않은 사용자가 myPosts=true로 접근한 경우
+            if (loginUser == null) {
+                return "redirect:/login";
+            }
+
+            memberId = loginUser.getMemberId();
+        }
 
         BoardPageResponse result =
                 boardService.getBoards(
@@ -52,22 +75,30 @@ public class BoardController {
                         keyword,
                         searchType,
                         boardType,
-                        sort
+                        sort,
+                        memberId
                 );
 
         // 게시글 목록
-        model.addAttribute("boards", result.getBoards());
+        model.addAttribute(
+                "boards",
+                result.getBoards()
+        );
 
-        Paging paging = result.getPaging();
-
+        Paging paging =
+                result.getPaging();
 
         // 페이징 정보
-        model.addAttribute("paging", paging);
+        model.addAttribute(
+                "paging",
+                paging
+        );
 
         int blockSize = 5;
 
         int startPage =
-                ((paging.getPage() - 1) / blockSize) * blockSize + 1;
+                ((paging.getPage() - 1) / blockSize)
+                        * blockSize + 1;
 
         int endPage =
                 Math.min(
@@ -75,21 +106,47 @@ public class BoardController {
                         paging.getTotalPages()
                 );
 
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
+        model.addAttribute(
+                "startPage",
+                startPage
+        );
 
-        // 검색 후 검색어 유지
-        model.addAttribute("keyword", keyword);
+        model.addAttribute(
+                "endPage",
+                endPage
+        );
 
-        model.addAttribute("searchType", searchType);
+        // 검색 조건 유지
+        model.addAttribute(
+                "keyword",
+                keyword
+        );
 
-        // 검색 후 선택한 게시판 타입 유지
-        model.addAttribute("boardType", boardType);
+        model.addAttribute(
+                "searchType",
+                searchType
+        );
 
-        model.addAttribute("sort", sort);
+        model.addAttribute(
+                "boardType",
+                boardType
+        );
+
+        model.addAttribute(
+                "sort",
+                sort
+        );
+
+        // 내 글 보기 상태 유지
+        model.addAttribute(
+                "myPosts",
+                myPosts
+        );
 
         return "board/list";
     }
+
+
 
     /**
      * 게시글 작성 페이지
@@ -147,7 +204,37 @@ public class BoardController {
             @PathVariable Long boardId,
             @RequestParam(defaultValue = "1") int commentPage,
             Model model,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) BoardType boardType,
+            @RequestParam(required = false) String sort,
+            @RequestParam(defaultValue = "false") boolean myPosts,
             HttpSession session) {
+
+        // 현재 세션에서 이미 조회한 게시글 목록
+        Set<Long> viewedBoards =
+                (Set<Long>) session.getAttribute(
+                        "viewedBoards"
+                );
+
+        // 처음 조회하는 세션이면 Set 생성
+        if (viewedBoards == null) {
+            viewedBoards = new HashSet<>();
+        }
+
+        // 현재 게시글을 아직 조회하지 않았다면 조회수 증가
+        if (!viewedBoards.contains(boardId)) {
+
+            boardService.increaseViewCount(boardId);
+
+            viewedBoards.add(boardId);
+
+            session.setAttribute(
+                    "viewedBoards",
+                    viewedBoards
+            );
+        }
 
         BoardDetailResponse board =
                 boardService.getBoardDetail(boardId);
@@ -157,6 +244,7 @@ public class BoardController {
                 "board",
                 board
         );
+
 
         // 댓글 페이징 조회
         CommentPageResponse commentResult =
@@ -203,6 +291,12 @@ public class BoardController {
                     )
             );
         }
+        model.addAttribute("page", page);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("searchType", searchType);
+        model.addAttribute("boardType", boardType);
+        model.addAttribute("sort", sort);
+        model.addAttribute("myPosts", myPosts);
 
         return "board/detail";
     }
@@ -213,6 +307,15 @@ public class BoardController {
     @GetMapping("/{boardId}/edit")
     public String editForm(
             @PathVariable Long boardId,
+
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String searchType,
+            @RequestParam(name = "boardType", required = false)
+            BoardType listBoardType,
+            @RequestParam(required = false) String sort,
+            @RequestParam(defaultValue = "false") boolean myPosts,
+
             Model model,
             HttpSession session) {
 
@@ -237,6 +340,12 @@ public class BoardController {
 
         model.addAttribute("board",board);
         model.addAttribute("boardTypes", BoardType.values());
+        model.addAttribute("page", page);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("searchType", searchType);
+        model.addAttribute("listBoardType", listBoardType);
+        model.addAttribute("sort", sort);
+        model.addAttribute("myPosts", myPosts);
 
         return "board/edit";
     }
@@ -248,17 +357,22 @@ public class BoardController {
     public String updateBoard(
             @PathVariable Long boardId,
             @ModelAttribute BoardUpdateRequest request,
-            @RequestParam(required = false)
-            List<MultipartFile> images,
-            HttpSession session, Model model) {
+            @RequestParam(required = false) List<MultipartFile> images,
 
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String searchType,
+            @RequestParam(name = "listBoardType", required = false)
+            BoardType listBoardType,
+            @RequestParam(required = false) String sort,
+            @RequestParam(defaultValue = "false") boolean myPosts,
+
+            HttpSession session) {
 
         User loginUser =
-                (User)  session.getAttribute(SessionConst.LOGIN_MEMBER);
-
-        if (loginUser == null) {
-            return "redirect:/login";
-        }
+                (User) session.getAttribute(
+                        SessionConst.LOGIN_MEMBER
+                );
 
         if (loginUser == null) {
             return "redirect:/login";
@@ -278,8 +392,15 @@ public class BoardController {
             );
         }
 
-        return "redirect:/boards/" + boardId;
-
+        return redirectToDetail(
+                boardId,
+                page,
+                keyword,
+                searchType,
+                listBoardType,
+                sort,
+                myPosts
+        );
     }
 
     /**
@@ -288,11 +409,20 @@ public class BoardController {
     @PostMapping("/{boardId}/delete")
     public String deleteBoard(
             @PathVariable Long boardId,
+
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) BoardType boardType,
+            @RequestParam(required = false) String sort,
+            @RequestParam(defaultValue = "false") boolean myPosts,
+
             HttpSession session) {
 
-        // 로그인 연동 전 임시 회원 ID
         User loginUser =
-                (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+                (User) session.getAttribute(
+                        SessionConst.LOGIN_MEMBER
+                );
 
         if (loginUser == null) {
             return "redirect:/login";
@@ -301,7 +431,10 @@ public class BoardController {
         Long memberId = loginUser.getMemberId();
 
         boolean deleted =
-                boardService.deleteBoard(boardId, memberId);
+                boardService.deleteBoard(
+                        boardId,
+                        memberId
+                );
 
         if (!deleted) {
             throw new ForbiddenException(
@@ -309,7 +442,14 @@ public class BoardController {
             );
         }
 
-        return "redirect:/boards";
+        return redirectToList(
+                page,
+                keyword,
+                searchType,
+                boardType,
+                sort,
+                myPosts
+        );
     }
 
     /**
@@ -319,10 +459,20 @@ public class BoardController {
     public String deleteImage(
             @PathVariable Long boardId,
             @PathVariable Long imageId,
+
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) BoardType boardType,
+            @RequestParam(required = false) String sort,
+            @RequestParam(defaultValue = "false") boolean myPosts,
+
             HttpSession session) {
 
         User loginUser =
-                (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+                (User) session.getAttribute(
+                        SessionConst.LOGIN_MEMBER
+                );
 
         if (loginUser == null) {
             return "redirect:/login";
@@ -341,7 +491,85 @@ public class BoardController {
             );
         }
 
-        return "redirect:/boards/" + boardId + "/edit";
+        return redirectToEdit(
+                boardId,
+                page,
+                keyword,
+                searchType,
+                boardType,
+                sort,
+                myPosts
+        );
+    }
+    private String redirectToDetail(
+            Long boardId,
+            int page,
+            String keyword,
+            String searchType,
+            BoardType boardType,
+            String sort,
+            boolean myPosts) {
+
+        String redirectUrl =
+                UriComponentsBuilder
+                        .fromPath("/boards/{boardId}")
+                        .queryParam("page", page)
+                        .queryParam("keyword", keyword)
+                        .queryParam("searchType", searchType)
+                        .queryParam("boardType", boardType)
+                        .queryParam("sort", sort)
+                        .queryParam("myPosts", myPosts)
+                        .buildAndExpand(boardId)
+                        .encode()
+                        .toUriString();
+
+        return "redirect:" + redirectUrl;
+    }
+    private String redirectToEdit(
+            Long boardId,
+            int page,
+            String keyword,
+            String searchType,
+            BoardType boardType,
+            String sort,
+            boolean myPosts) {
+
+        String redirectUrl =
+                UriComponentsBuilder
+                        .fromPath("/boards/{boardId}/edit")
+                        .queryParam("page", page)
+                        .queryParam("keyword", keyword)
+                        .queryParam("searchType", searchType)
+                        .queryParam("boardType", boardType)
+                        .queryParam("sort", sort)
+                        .queryParam("myPosts", myPosts)
+                        .buildAndExpand(boardId)
+                        .encode()
+                        .toUriString();
+
+        return "redirect:" + redirectUrl;
+    }
+    private String redirectToList(
+            int page,
+            String keyword,
+            String searchType,
+            BoardType boardType,
+            String sort,
+            boolean myPosts) {
+
+        String redirectUrl =
+                UriComponentsBuilder
+                        .fromPath("/boards")
+                        .queryParam("page", page)
+                        .queryParam("keyword", keyword)
+                        .queryParam("searchType", searchType)
+                        .queryParam("boardType", boardType)
+                        .queryParam("sort", sort)
+                        .queryParam("myPosts", myPosts)
+                        .encode()
+                        .toUriString();
+
+        return "redirect:" + redirectUrl;
     }
 
 

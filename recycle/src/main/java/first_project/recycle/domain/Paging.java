@@ -17,20 +17,33 @@ public class Paging {
         this.totalCount = totalCount;
 
         // 전체 페이지 수 계산
-        this.totalPages = (int) Math.ceil((double) totalCount / size);
+        this.totalPages =
+                (int) Math.ceil(
+                        (double) totalCount / size
+                );
 
-        // 페이지 번호 보정
+        // 조회 결과가 없는 경우
+        if (totalPages == 0) {
+            this.page = 1;
+            this.offset = 0;
+            return;
+        }
+
+        // 1보다 작은 페이지 방지
         if (page < 1) {
             page = 1;
         }
 
-        if (totalPages > 0 && page > totalPages) {
+        // 마지막 페이지보다 큰 페이지 방지
+        if (page > totalPages) {
             page = totalPages;
         }
+
         this.page = page;
 
         // SQL LIMIT에서 사용할 시작 위치
-        this.offset = (page - 1) * size;
+        this.offset =
+                (this.page - 1) * this.size;
     }
 
 }
