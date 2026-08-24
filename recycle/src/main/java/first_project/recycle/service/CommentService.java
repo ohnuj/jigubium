@@ -7,10 +7,12 @@ import first_project.recycle.dto.CommentCreateRequest;
 import first_project.recycle.dto.CommentPageResponse;
 import first_project.recycle.dto.CommentResponse;
 import first_project.recycle.dto.CommentUpdateRequest;
+import first_project.recycle.exception.NotFoundException;
 import first_project.recycle.repository.CommentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import first_project.recycle.repository.BoardMapper;
 
 import java.util.List;
 
@@ -25,8 +27,8 @@ public class CommentService {
     private static final int COMMENT_PAGE_SIZE = 5;
 
     private final CommentMapper commentMapper;
+    private final BoardMapper boardMapper;
     private final EcoPointHistoryService ecoPointHistoryService;
-
     /**
      * 특정 게시글의 댓글 목록 조회
      */
@@ -42,7 +44,17 @@ public class CommentService {
     public void createComment(
             Long boardId,
             Long memberId,
-            CommentCreateRequest request){
+            CommentCreateRequest request) {
+
+        // 게시글 존재 여부 확인
+        if (boardMapper.findById(boardId) == null) {
+            throw new NotFoundException(
+                    "존재하지 않는 게시글입니다."
+            );
+        }
+
+        // 댓글 내용 검증
+        validateComment(request.getContent());
 
         Comment comment = new Comment();
 
@@ -51,8 +63,16 @@ public class CommentService {
         comment.setContent(request.getContent());
 
         commentMapper.insertComment(comment);
-        ecoPointHistoryService.earnPoint(memberId,10,"COMMENT", comment.getCommentId());
+
+        ecoPointHistoryService.earnPoint(
+                memberId,
+                10,
+                "COMMENT",
+                comment.getCommentId()
+        );
     }
+
+
 
     /**
      * 댓글 수정
@@ -64,6 +84,20 @@ public class CommentService {
             Long commentId,
             Long memberId,
             CommentUpdateRequest request) {
+
+        Comment comment =
+                commentMapper.findById(
+                        boardId,
+                        commentId
+                );
+
+        if (comment == null) {
+            throw new NotFoundException(
+                    "댓글을 찾을 수 없습니다."
+            );
+        }
+
+        validateComment(request.getContent());
 
         int result = commentMapper.updateComment(
                 boardId,
@@ -85,6 +119,18 @@ public class CommentService {
             Long boardId,
             Long commentId,
             Long memberId) {
+
+        Comment comment =
+                commentMapper.findById(
+                        boardId,
+                        commentId
+                );
+
+        if (comment == null) {
+            throw new NotFoundException(
+                    "댓글을 찾을 수 없습니다."
+            );
+        }
 
         int result =
                 commentMapper.deleteComment(
@@ -130,6 +176,21 @@ public class CommentService {
                 comments,
                 paging
         );
+    }
+
+    private void validateComment(String content) {
+
+        if (content == null || content.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "댓글 내용을 입력해주세요."
+            );
+        }
+
+        if (content.length() > 500) {
+            throw new IllegalArgumentException(
+                    "댓글은 500자 이하로 입력해주세요."
+            );
+        }
     }
 
 

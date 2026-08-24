@@ -8,18 +8,36 @@
 <body>
 <nav class="main-nav">
     <div class="nav-inner">
-        <a class="nav-logo" th:href="@{/}">Home</a>
+
+        <a class="nav-logo" th:href="@{/}">
+            ♻️ 지구비우기
+        </a>
+
+        <div class="nav-center">
+            <a th:href="@{/eco-map}">에코맵</a>
+            <a th:href="@{/game}">재활용게임</a>
+            <a class="active" th:href="@{/boards}">커뮤니티</a>
+        </div>
+
         <div class="nav-user">
             <th:block th:unless="${session.checkLogin}">
                 <a th:href="@{/login}">로그인</a>
                 <a th:href="@{/signup}">회원가입</a>
             </th:block>
+
+            <a th:if="${session.loginMember != null
+                    and session.loginMember.role == 'ADMIN'}"
+               th:href="@{/admin}">
+                관리자 페이지
+            </a>
+
             <th:block th:if="${session.checkLogin}">
                 <a th:href="@{/mypage}">마이페이지</a>
                 <a th:href="@{/logout}">로그아웃</a>
                 <a th:href="@{/reward}">리워드 상점</a>
             </th:block>
         </div>
+
     </div>
 </nav>
 
@@ -207,6 +225,7 @@
                   th:action="@{/boards/{boardId}/comments(
             boardId=${board.boardId},
             page=${page},
+            commentPage=${commentPaging.page},
             keyword=${keyword},
             searchType=${searchType},
             boardType=${boardType},
@@ -254,15 +273,16 @@
                     <div class="comment-actions" th:if="${loginUser != null and loginUser.memberId == comment.memberId}">
                         <button type="button" class="mini-btn" th:onclick="'toggleEdit(' + ${comment.commentId} + ')'">수정</button>
                         <form th:action="@{/boards/{boardId}/comments/{commentId}/delete(
-        boardId=${board.boardId},
-        commentId=${comment.commentId},
-        page=${page},
-        keyword=${keyword},
-        searchType=${searchType},
-        boardType=${boardType},
-        sort=${sort},
-        myPosts=${myPosts}
-      )}"
+    boardId=${board.boardId},
+    commentId=${comment.commentId},
+    page=${page},
+    commentPage=${commentPaging.page},
+    keyword=${keyword},
+    searchType=${searchType},
+    boardType=${boardType},
+    sort=${sort},
+    myPosts=${myPosts}
+)}"
                               method="post"
                               onsubmit="return confirm('정말 삭제하시겠습니까?');">
 
@@ -282,6 +302,7 @@
             boardId=${board.boardId},
             commentId=${comment.commentId},
             page=${page},
+            commentPage=${commentPaging.page},
             keyword=${keyword},
             searchType=${searchType},
             boardType=${boardType},

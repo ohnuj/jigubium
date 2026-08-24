@@ -1189,4 +1189,8 @@ tbody tr:last-child td {
 
         gap: 8px;
     }
+
+    .text-center {
+        text-align: center;
+    }
 }

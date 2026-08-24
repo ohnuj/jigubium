@@ -43,7 +43,7 @@
         JOIN member m
             ON c.member_id = m.member_id
         WHERE c.board_id = #{boardId}
-        ORDER BY c.created_at
+        ORDER BY c.created_at, c.comment_id
     </select>
 
     <!-- 댓글 수정 -->
@@ -100,9 +100,26 @@
                 ON c.member_id = m.member_id
             WHERE c.board_id = #{boardId}
 
-            ORDER BY c.created_at
+            ORDER BY c.created_at, c.comment_id
 
             LIMIT #{size}
             OFFSET #{offset}
+    </select>
+
+    <!-- 댓글 단건 조회 -->
+    <select id="findById"
+            resultType="first_project.recycle.domain.Comment">
+
+        SELECT
+            comment_id,
+            board_id,
+            member_id,
+            content,
+            created_at,
+            updated_at
+        FROM comment
+        WHERE board_id = #{boardId}
+          AND comment_id = #{commentId}
+
     </select>
 </mapper>
