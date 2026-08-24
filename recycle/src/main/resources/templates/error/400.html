@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>잘못된 요청</title>
+  <link rel="stylesheet" th:href="@{/css/board.css}">
+</head>
+<body>
+
+<nav class="main-nav">
+  <div class="nav-inner">
+    <a class="nav-logo" th:href="@{/}">Home</a>
+
+    <div class="nav-user">
+      <th:block th:unless="${session.checkLogin}">
+        <a th:href="@{/login}">로그인</a>
+        <a th:href="@{/signup}">회원가입</a>
+      </th:block>
+
+      <th:block th:if="${session.checkLogin}">
+        <a th:href="@{/mypage}">마이페이지</a>
+        <a th:href="@{/logout}">로그아웃</a>
+        <a th:href="@{/reward}">리워드 상점</a>
+      </th:block>
+    </div>
+  </div>
+</nav>
+
+<main class="error-page">
+  <section class="error-container">
+
+    <span class="error-label">ERROR</span>
+
+    <h1 class="error-code">400</h1>
+
+    <h2 class="error-title">
+      잘못된 요청입니다.
+    </h2>
+
+    <p class="error-description"
+       th:text="${message != null ? message : '요청 내용을 다시 확인해주세요.'}">
+      요청 내용을 다시 확인해주세요.
+    </p>
+
+    <div class="error-actions">
+      <a class="btn btn-secondary"
+         href="javascript:history.back()">
+        이전 페이지
+      </a>
+
+      <a class="btn btn-primary"
+         th:href="@{/}">
+        홈으로
+      </a>
+
+      <a class="btn btn-secondary"
+         th:href="@{/boards}">
+        게시판으로
+      </a>
+    </div>
+
+  </section>
+</main>
+
+</body>
+</html>

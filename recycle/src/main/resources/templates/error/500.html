@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>페이지를 찾을 수 없음</title>
+    <title>서버 오류</title>
     <link rel="stylesheet" th:href="@{/css/board.css}">
 </head>
 <body>
@@ -31,15 +31,15 @@
 
         <span class="error-label">ERROR</span>
 
-        <h1 class="error-code">404</h1>
+        <h1 class="error-code">500</h1>
 
         <h2 class="error-title">
-            페이지를 찾을 수 없습니다.
+            서버 오류가 발생했습니다.
         </h2>
 
         <p class="error-description">
-            요청하신 페이지가 존재하지 않거나 삭제되었습니다.<br>
-            주소를 다시 확인해주세요.
+            요청을 처리하는 중 문제가 발생했습니다.<br>
+            잠시 후 다시 시도해주세요.
         </p>
 
         <div class="error-actions">
