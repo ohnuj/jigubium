@@ -6,6 +6,7 @@ import first_project.recycle.domain.ecoLocationdto.seodaemun.SeodaemunMedicineBi
 import first_project.recycle.service.mapservice.dongjakservice.DongjakBatteryBinService;
 import first_project.recycle.service.mapservice.dongjakservice.DongjakClothingBinService;
 import first_project.recycle.service.mapservice.dongjakservice.DongjakMedicineBinService;
+import first_project.recycle.service.mapservice.gangnamservice.GangnamBatteryBinService;
 import first_project.recycle.service.mapservice.gangnamservice.GangnamClothingBinService;
 import first_project.recycle.service.mapservice.seodaemunservice.SeodaemunClothingBinService;
 import first_project.recycle.service.mapservice.wasteelectronicsservice.WasteElectronicsService;
@@ -68,6 +69,8 @@ public class MapControllter {
 
     // 강남구 의류수거함 서비스 객체
     private final GangnamClothingBinService gangnamClothingBinService;
+    // 강남구 폐건전지, 폐형광등 서비스
+    private final GangnamBatteryBinService gangnamBatteryBinService;
 
     //DB 조회용 서비스 객체
     private final EcoLocationService ecoLocationService;
@@ -91,7 +94,8 @@ public class MapControllter {
             DongjakMedicineBinService dongjakMedicineBinService,
             YeongdeungpoClothingBinService yeongdeungpoClothingBinService,
             YeongdeungpoBatteryBinService yeongdeungpoBatteryBinService,
-            GangnamClothingBinService gangnamClothingBinService
+            GangnamClothingBinService gangnamClothingBinService,
+            GangnamBatteryBinService gangnamBatteryBinService
     ) {
         this.jongnoClothingBinService = jongnoClothingBinService;
         this.jongnoBatteryBinService = jongnoBatteryBinService;
@@ -110,6 +114,7 @@ public class MapControllter {
         this.yeongdeungpoClothingBinService = yeongdeungpoClothingBinService;
         this.yeongdeungpoBatteryBinService = yeongdeungpoBatteryBinService;
         this.gangnamClothingBinService = gangnamClothingBinService;
+        this.gangnamBatteryBinService = gangnamBatteryBinService;
     }
 
     //지도 페이지 이동
@@ -217,6 +222,11 @@ public class MapControllter {
     @ResponseBody
     public List<ecoLocation> importGangnamClothingBins(){
         return gangnamClothingBinService.importClothingBins();}
+    // 강남구 폐건전지·폐형광등 CSV DB 저장
+    @GetMapping("/api/gangnam-battery-bins/import")
+    @ResponseBody
+    public List<ecoLocation> importGangnamBatteryBins() {
+        return gangnamBatteryBinService.importBatteryBins();}
 
     // 폐가전 CSV DB 저장
     @GetMapping("/api/waste-electronics/import")
