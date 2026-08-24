@@ -142,6 +142,8 @@ body {
 .bin-large       { background-color: #f8fafc; border-color: #cbd5e1; }
 .bin-electronics { background-color: #f8fafc; border-color: #cbd5e1; }
 .bin-clothes     { background-color: #f8fafc; border-color: #cbd5e1; }
+.bin-medicine    { background-color: #f8fafc; border-color: #cbd5e1; }
+.bin-battery    { background-color: #f8fafc; border-color: #cbd5e1; }
 
 /* 드래그 호버 효과 */
 .bin.dragover {

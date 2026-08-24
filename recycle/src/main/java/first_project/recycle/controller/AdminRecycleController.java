@@ -66,4 +66,19 @@ public class AdminRecycleController {
 
         return "redirect:/admin/recycle-items";
     }
+    @PostMapping("/{itemId}/delete")
+    public String deleteRecycleItem(@PathVariable Long itemId,
+                                    @RequestParam(defaultValue = "1") int page,
+                                    @RequestParam(defaultValue = "") String keyword,
+                                    RedirectAttributes redirectAttributes){
+
+
+        //DB delete
+        recycleService.deleteRecycleItem(itemId);
+
+        redirectAttributes.addAttribute("page",page);
+        redirectAttributes.addAttribute("keyword",keyword);
+
+        return "redirect:/admin/recycle-items";
+    }
 }

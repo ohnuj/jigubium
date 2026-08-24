@@ -69,4 +69,9 @@ public class RecycleService {
     public void updateRecycleItem(RecycleItem recycleItem){
         recycleMapper.updateRecycleItem(recycleItem);
     }
+
+    // 관리자 > 재활용 카테고리 삭제
+    public void deleteRecycleItem(Long itemId){
+        recycleMapper.deleteRecycleItem(itemId);
+    }
 }

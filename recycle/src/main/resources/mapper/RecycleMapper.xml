@@ -220,4 +220,8 @@
         WHERE item_id = #{itemId}
 
     </update>
+
+    <delete id="deleteRecycleItem">
+        DELETE FROM recycle_item WHERE item_id=#{itemId}
+    </delete>
 </mapper>

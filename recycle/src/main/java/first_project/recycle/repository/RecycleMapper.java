@@ -28,4 +28,7 @@ public interface RecycleMapper {
 
     // 관리자용 > 재활용 품목 수정
     int updateRecycleItem(RecycleItem recycleItem);
+
+    // 관리자용 > 재활용 품목 삭제
+    int deleteRecycleItem(@Param("itemId") Long itemId);
 }

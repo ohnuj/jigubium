@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>수거함 위치 관리</title>
+</head>
+
+<body>
+
+<h1>수거함 위치 관리</h1>
+
+
+<!-- 검색 / 종류 필터 -->
+<form th:action="@{/admin/locations}"
+      method="get">
+
+    <!-- 종류 -->
+    <select name="locationType">
+
+        <option value="">전체</option>
+
+        <option th:each="type : ${locationTypes}"
+                th:value="${type}"
+                th:text="${type}"
+                th:selected="${type == locationType}">
+        </option>
+
+    </select>
+
+
+    <!-- 주소 검색 -->
+    <input type="text"
+           name="keyword"
+           th:value="${keyword}"
+           placeholder="도로명주소 검색">
+
+
+    <button type="submit">
+        검색
+    </button>
+
+    <a th:href="@{/admin/locations}">
+        초기화
+    </a>
+
+</form>
+
+
+<br>
+
+
+<!-- 수거함 목록 -->
+<table border="1">
+
+    <thead>
+
+    <tr>
+        <th>ID</th>
+        <th>종류</th>
+        <th>도로명주소</th>
+        <th>관리</th>
+    </tr>
+
+    </thead>
+
+
+    <tbody>
+
+    <tr th:each="location : ${locations}">
+
+        <td th:text="${location.locationId}"></td>
+
+        <td th:text="${location.locationType}"></td>
+
+        <td th:text="${location.roadAddress}"></td>
+
+        <td>
+            <button type="button">
+                수정
+            </button>
+
+            <button type="button">
+                삭제
+            </button>
+        </td>
+
+    </tr>
+
+
+    <!-- 검색 결과 없음 -->
+    <tr th:if="${#lists.isEmpty(locations)}">
+
+        <td colspan="4">
+            검색 결과가 없습니다.
+        </td>
+
+    </tr>
+
+    </tbody>
+
+</table>
+
+
+<br>
+
+
+<!-- 페이징 -->
+<div th:if="${paging.totalPages > 0}">
+
+    <!-- 이전 페이지 블록 -->
+    <a th:if="${startPage > 1}"
+       th:href="@{/admin/locations(
+            page=${startPage - 1},
+            keyword=${keyword},
+            locationType=${locationType}
+       )}">
+        이전
+    </a>
+
+
+    <!-- 페이지 번호 -->
+    <th:block th:each="pageNum :
+            ${#numbers.sequence(startPage, endPage)}">
+
+
+        <!-- 현재 페이지 -->
+        <strong th:if="${pageNum == paging.page}"
+                th:text="${pageNum}">
+        </strong>
+
+
+        <!-- 다른 페이지 -->
+        <a th:unless="${pageNum == paging.page}"
+           th:href="@{/admin/locations(
+                page=${pageNum},
+                keyword=${keyword},
+                locationType=${locationType}
+           )}"
+           th:text="${pageNum}">
+        </a>
+
+    </th:block>
+
+
+    <!-- 다음 페이지 블록 -->
+    <a th:if="${endPage < paging.totalPages}"
+       th:href="@{/admin/locations(
+            page=${endPage + 1},
+            keyword=${keyword},
+            locationType=${locationType}
+       )}">
+        다음
+    </a>
+
+</div>
+
+
+<br>
+
+<a th:href="@{/admin}">
+    관리자 페이지로 돌아가기
+</a>
+
+</body>
+</html>

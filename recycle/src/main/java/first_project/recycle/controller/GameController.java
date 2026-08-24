@@ -51,7 +51,8 @@ public class GameController {
 
     @ResponseBody
     @PostMapping("/game/result")
-    public ResponseEntity<Map<String, Object>> saveResult(@RequestBody Map<String, Object> resultData, HttpSession session) {
+    public ResponseEntity<Map<String, Object>> saveResult(@RequestBody Map<String, Object> resultData,
+                                                          HttpSession session) {
         User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
         if (loginUser == null) {
             return ResponseEntity.status(401).body(Map.of("success", false, "message", "로그인이 필요합니다."));
@@ -59,8 +60,8 @@ public class GameController {
 
         Long memberId = loginUser.getMemberId();
         resultData.put("memberId", memberId);
-        gameService.saveGameResult(resultData);
+        int earnedPoint = gameService.saveGameResult(resultData);
 
-        return ResponseEntity.ok(Map.of("success", true));
+        return ResponseEntity.ok(Map.of("success", true, "earnedPoint", earnedPoint));
     }
 }

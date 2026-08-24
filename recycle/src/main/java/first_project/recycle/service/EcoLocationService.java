@@ -1,5 +1,6 @@
 package first_project.recycle.service;
 
+import first_project.recycle.domain.Paging;
 import first_project.recycle.domain.ecoLocation;
 import first_project.recycle.mapper.EcoLocationMapper;
 import org.springframework.stereotype.Service;
@@ -18,5 +19,30 @@ public class EcoLocationService {
     //타입별로 DB에서 조회하기
     public List<ecoLocation> getLocationsByType(String locationType){
         return ecoLocationMapper.findByLocationType(locationType);
+    }
+
+    // 검색 / 필터 결과 개수
+    public int countEcoLocationForAdmin(String keyword, String locationType){
+        return ecoLocationMapper.countEcoLocationsForAdmin(keyword, locationType);
+    }
+    // 관리자 > 수거함 전체 조회 + 주소검색 + 종류 필터
+    public List<ecoLocation>  findEcoLocationsForAdmin(
+            String keyword, String locationType, Paging paging){
+        return ecoLocationMapper.findEcoLocationsForAdmin(keyword, locationType, paging);
+    }
+
+    // 관리자 > 수거함 종류 목록
+    public List<String> findLocationTypes(){
+        return ecoLocationMapper.findLocationTypes();
+    }
+
+    // 관리자 > ecoLocation 수정
+    public void updateEcoLocation(ecoLocation ecoLocation){
+        ecoLocationMapper.updateEcoLocation(ecoLocation);
+    }
+
+    //관리자 > eco Location 삭제
+    public void deleteEcoLocation(Long itemId){
+        ecoLocationMapper.deleteEcoLocation(itemId);
     }
 }

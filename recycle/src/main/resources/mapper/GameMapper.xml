@@ -56,7 +56,8 @@
           AND played_at &lt; CURDATE() + INTERVAL 1 DAY
     </select>
 
-    <insert id="insertGameHistory">
+    <insert id="insertGameHistory" parameterType="map" useGeneratedKeys="true"
+        keyProperty="gameHistoryId" keyColumn="game_history_id">
         INSERT INTO game_history (member_id, score, total_count, correct_count, played_at)
         VALUES (#{memberId}, #{score}, #{totalCount}, #{correctCount}, NOW())
     </insert>
