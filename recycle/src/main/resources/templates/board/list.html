@@ -3,228 +3,460 @@
 <head>
     <meta charset="UTF-8">
     <title>커뮤니티</title>
+    <link rel="stylesheet" th:href="@{/css/board.css}">
 </head>
 <body>
-<nav>
-    <div>
-        <a th:href="@{/}">Home</a>
-        <th:block th:unless="${session.checkLogin}">
-            <a th:href="@{/login}">로그인</a>
-            <a th:href="@{/signup}">회원가입</a>
-        </th:block>
-
-        <th:block th:if="${session.checkLogin}">
-            <a th:href="@{/mypage}">마이페이지</a>
-            <a th:href="@{/logout}">로그아웃</a>
-            <a th:href="@{/reward}">리워드 상점</a>
-        </th:block>
+<nav class="main-nav">
+    <div class="nav-inner">
+        <a class="nav-logo" th:href="@{/}">Home</a>
+        <div class="nav-user">
+            <th:block th:unless="${session.checkLogin}">
+                <a th:href="@{/login}">로그인</a>
+                <a th:href="@{/signup}">회원가입</a>
+            </th:block>
+            <th:block th:if="${session.checkLogin}">
+                <a th:href="@{/mypage}">마이페이지</a>
+                <a th:href="@{/logout}">로그아웃</a>
+                <a th:href="@{/reward}">리워드 상점</a>
+            </th:block>
+        </div>
     </div>
 </nav>
-<h2>커뮤니티</h2>
 
-<!-- 검색 및 타입 선택-->
-<form th:action="@{/boards}" method="get">
+<main>
+    <section class="board-hero">
+        <div class="board-hero-inner">
+            <span class="hero-badge">COMMUNITY</span>
+            <h1>우리들의 <strong>커뮤니티</strong></h1>
+            <p>자유롭게 이야기를 나누고 유용한 정보를 공유해보세요.</p>
+        </div>
+    </section>
 
-    <input type="hidden"
-            name="sort"
-            th:value="${sort}">
+    <section class="board-container">
+        <div class="board-toolbar">
 
-    <!-- 게시판 타입 -->
-    <select name="boardType">
-        <option value=""
-                th:selected="${boardType == null}">
-            전체
-        </option>
+            <form class="board-search-form"
+                  th:action="@{/boards}"
+                  method="get">
 
-        <option value="FREE"
-                th:selected="${boardType != null and boardType.name() == 'FREE'}">
-            자유
-        </option>
+                <input type="hidden"
+                       name="sort"
+                       th:value="${sort}">
 
-        <option value="INFO"
-                th:selected="${boardType != null and boardType.name() == 'INFO'}">
-            정보
-        </option>
+                <input type="hidden"
+                       name="myPosts"
+                       th:value="${myPosts}">
 
-        <option value="SUGGESTION"
-                th:selected="${boardType != null and boardType.name() == 'SUGGESTION'}">
-            건의
-        </option>
-    </select>
+                <select name="boardType"
+                        aria-label="게시판 타입">
 
-    <!-- 검색 기준 -->
-    <select name="searchType">
+                    <option value=""
+                            th:selected="${boardType == null}">
+                        전체
+                    </option>
 
-        <option value="TITLE"
-                th:selected="${searchType == 'TITLE'}">
-            제목
-        </option>
+                    <option value="FREE"
+                            th:selected="${boardType != null and boardType.name() == 'FREE'}">
+                        자유
+                    </option>
 
-        <option value="CONTENT"
-                th:selected="${searchType == 'CONTENT'}">
-            내용
-        </option>
+                    <option value="INFO"
+                            th:selected="${boardType != null and boardType.name() == 'INFO'}">
+                        정보
+                    </option>
 
-        <option value="WRITER"
-                th:selected="${searchType == 'WRITER'}">
-            작성자
-        </option>
-    </select>
+                    <option value="SUGGESTION"
+                            th:selected="${boardType != null and boardType.name() == 'SUGGESTION'}">
+                        건의
+                    </option>
+                </select>
 
-    <!-- 검색어 -->
-    <input type="text"
-            name="keyword"
-            th:value="${keyword}"
-            placeholder="검색어를 입력하세요">
+                <select name="searchType"
+                        aria-label="검색 기준">
 
-    <button type="submit">검색</button>
+                    <option value="TITLE"
+                            th:selected="${searchType == 'TITLE'}">
+                        제목
+                    </option>
 
-</form>
+                    <option value="CONTENT"
+                            th:selected="${searchType == 'CONTENT'}">
+                        내용
+                    </option>
 
-<br>
+                    <option value="WRITER"
+                            th:selected="${searchType == 'WRITER'}">
+                        작성자
+                    </option>
+                </select>
 
-<!-- 게시글 목록 -->
-<table>
+                <input type="text"
+                       name="keyword"
+                       th:value="${keyword}"
+                       placeholder="검색어를 입력하세요">
 
-    <thead>
-    <tr>
-        <th>번호</th>
-        <th>타입</th>
-        <th>제목</th>
-        <th>닉네임</th>
-        <th>작성일</th>
-        <th>
-            <a th:href="@{/boards(
-            page=1,
-            keyword=${keyword},
-            searchType=${searchType},
-            boardType=${boardType},
-            sort='view'
-        )}">
-                조회수
-                <span th:if="${sort == 'view'}">▼</span>
-            </a>
-        </th>
+                <button class="btn btn-primary"
+                        type="submit">
+                    검색
+                </button>
+            </form>
 
-        <th>
-            <a th:href="@{/boards(
-            page=1,
-            keyword=${keyword},
-            searchType=${searchType},
-            boardType=${boardType},
-            sort='comment'
-        )}">
-                댓글수
-                <span th:if="${sort == 'comment'}">▼</span>
-            </a>
-        </th>
+            <div class="board-toolbar-actions">
 
-        <th>
-            <a th:href="@{/boards(
-            page=1,
-            keyword=${keyword},
-            searchType=${searchType},
-            boardType=${boardType},
-            sort='like'
-        )}">
-                좋아요수
-                <span th:if="${sort == 'like'}">▼</span>
-            </a>
-        </th>
-    </tr>
-
-
-    </thead>
-
-    <tbody>
-
-    <!-- 게시글 목록 출력 -->
-    <tr th:each="board, boardStat : ${boards}">
-
-        <td th:text="${paging.totalCount - ((paging.page - 1) * paging.size) - boardStat.index}">
-            1
-        </td>
-
-        <td>
-            <span th:if="${board.boardType.name() == 'FREE'}">자유</span>
-            <span th:if="${board.boardType.name() == 'INFO'}">정보</span>
-            <span th:if="${board.boardType.name() == 'SUGGESTION'}">건의</span>
-        </td>
-
-        <td>
-            <a th:href="@{/boards/{boardId}(boardId=${board.boardId})}"
-               th:text="${board.title}">
-                게시글 제목
-            </a>
-        </td>
-
-        <td th:text="${board.nickname}">
-            닉네임
-        </td>
-
-        <td>
-            <span th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}">
-                작성일
-            </span>
-
-            <span th:if="${board.modified}">
-                (수정됨)
-            </span>
-        </td>
-
-        <td th:text="${board.viewCount}">
-            0
-        </td>
-
-        <td th:text="${board.commentCount}">
-            0
-        </td>
-
-        <td th:text="${board.likeCount}">
-            0
-        </td>
-    </tr>
-
-    <!-- 게시글이 없는 경우-->
-    <tr th:if="${#lists.isEmpty(boards)}">
-        <td colspan="8">
-            게시글이 없습니다.
-        </td>
-    </tr>
-
-    </tbody>
-
-
-</table>
-
-<!-- 페이징 -->
-<div th:if="${paging.totalPages > 0}">
-
-    <!-- 이전 -->
-    <a th:if="${paging.page > 1}"
-       th:href="@{/boards(
-        page=${paging.page - 1},
+                <!-- 내 글만 보기 -->
+                <a class="btn btn-secondary"
+                   th:if="${session.checkLogin}"
+                   th:href="@{/boards(
+        page=1,
         keyword=${keyword},
         searchType=${searchType},
         boardType=${boardType},
-        sort=${sort}
+        sort=${sort},
+        myPosts=true
    )}">
-        이전
-    </a>
+                    내 글
+                </a>
 
-    <!-- 페이지 번호 -->
-    <span th:each="pageNum :
-        ${#numbers.sequence(startPage, endPage)}">
+                <!-- 최신순 -->
+                <a class="btn btn-secondary"
+                   th:href="@{/boards(
+        page=1,
+        keyword=${keyword},
+        searchType=${searchType},
+        boardType=${boardType},
+        myPosts=${myPosts}
+   )}">
+                    최신순
+                </a>
+
+
+
+            </div>
+        </div>
+
+
+
+        <div class="board-list-header">
+
+            <div class="board-result-info">
+                총
+                <strong th:text="${paging.totalCount}">0</strong>
+                개의 게시글
+            </div>
+
+            <a class="btn btn-primary"
+               th:href="@{/boards/write}">
+                글작성
+            </a>
+
+        </div>
+
+
+        <!-- 현재 검색 / 필터 상태 -->
+        <div class="board-filter-summary"
+             th:if="${boardType != null
+          or (keyword != null and !keyword.isEmpty())
+          or sort != null
+          or myPosts}">
+
+    <span class="filter-summary-label">
+        적용 중
+    </span>
+
+            <span class="filter-chip"
+                  th:if="${myPosts}">
+    내 글
+</span>
+
+            <!-- 게시판 타입 -->
+            <span class="filter-chip"
+                  th:if="${boardType != null}">
+
+        <span th:if="${boardType.name() == 'FREE'}">
+            자유
+        </span>
+
+        <span th:if="${boardType.name() == 'INFO'}">
+            정보
+        </span>
+
+        <span th:if="${boardType.name() == 'SUGGESTION'}">
+            건의
+        </span>
+
+    </span>
+
+            <!-- 검색어 -->
+            <span class="filter-chip"
+                  th:if="${keyword != null and !keyword.isEmpty()}">
+
+        <span th:if="${searchType == 'TITLE'}">
+            제목:
+        </span>
+
+        <span th:if="${searchType == 'CONTENT'}">
+            내용:
+        </span>
+
+        <span th:if="${searchType == 'WRITER'}">
+            작성자:
+        </span>
+
+        <strong th:text="${keyword}">
+            검색어
+        </strong>
+    </span>
+
+            <!-- 조회수 정렬 -->
+            <span class="filter-chip"
+                  th:if="${sort == 'view'}">
+        조회수순
+    </span>
+
+            <!-- 댓글 정렬 -->
+            <span class="filter-chip"
+                  th:if="${sort == 'comment'}">
+        댓글순
+    </span>
+
+            <!-- 좋아요 정렬 -->
+            <span class="filter-chip"
+                  th:if="${sort == 'like'}">
+        좋아요순
+    </span>
+
+            <!-- 전체 조건 초기화 -->
+            <a class="filter-reset"
+               th:href="@{/boards}">
+                전체 초기화
+            </a>
+
+        </div>
+
+
+        <div class="panel board-table-card">
+            <div class="table-scroll">
+                <table class="board-table">
+                    <thead>
+                    <tr>
+                        <th class="number-column">번호</th>
+                        <th class="type-column">타입</th>
+                        <th class="title-column">제목</th>
+                        <th class="writer-column">닉네임</th>
+                        <th class="date-column">작성일</th>
+                        <th class="count-column">
+                            <a class="sort-link" th:classappend="${sort == 'view'} ? ' active' : ''"
+                               th:href="@{/boards(
+    page=1,
+    keyword=${keyword},
+    searchType=${searchType},
+    boardType=${boardType},
+    sort='view',
+    myPosts=${myPosts}
+)}">
+                                조회수 <span th:if="${sort == 'view'}">▼</span>
+                            </a>
+                        </th>
+                        <th class="count-column">
+                            <a class="sort-link" th:classappend="${sort == 'comment'} ? ' active' : ''"
+                               th:href="@{/boards(
+    page=1,
+    keyword=${keyword},
+    searchType=${searchType},
+    boardType=${boardType},
+    sort='comment',
+    myPosts=${myPosts}
+)}">
+                                댓글수 <span th:if="${sort == 'comment'}">▼</span>
+                            </a>
+                        </th>
+                        <th class="count-column">
+                            <a class="sort-link" th:classappend="${sort == 'like'} ? ' active' : ''"
+                               th:href="@{/boards(
+    page=1,
+    keyword=${keyword},
+    searchType=${searchType},
+    boardType=${boardType},
+    sort='like',
+    myPosts=${myPosts}
+)}">
+                                좋아요수 <span th:if="${sort == 'like'}">▼</span>
+                            </a>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="board, boardStat : ${boards}">
+                        <td class="number-cell" th:text="${paging.totalCount - ((paging.page - 1) * paging.size) - boardStat.index}">1</td>
+                        <td>
+
+                            <a class="type-badge free"
+                               th:if="${board.boardType.name() == 'FREE'}"
+                               th:href="@{/boards(
+        page=1,
+        boardType='FREE',
+        keyword=${keyword},
+        searchType=${searchType},
+        sort=${sort},
+        myPosts=${myPosts}
+   )}">
+                                자유
+                            </a>
+
+                            <a class="type-badge info"
+                               th:if="${board.boardType.name() == 'INFO'}"
+                               th:href="@{/boards(
+        page=1,
+        boardType='INFO',
+        keyword=${keyword},
+        searchType=${searchType},
+        sort=${sort},
+        myPosts=${myPosts}
+   )}">
+                                정보
+                            </a>
+
+                            <a class="type-badge suggestion"
+                               th:if="${board.boardType.name() == 'SUGGESTION'}"
+                               th:href="@{/boards(
+        page=1,
+        boardType='SUGGESTION',
+        keyword=${keyword},
+        searchType=${searchType},
+        sort=${sort},
+        myPosts=${myPosts}
+   )}">
+                                건의
+                            </a>
+
+                        </td>
+                        <td class="title-cell">
+                            <a th:href="@{/boards/{boardId}(
+        boardId=${board.boardId},
+        page=${paging.page},
+        keyword=${keyword},
+        searchType=${searchType},
+        boardType=${boardType},
+        sort=${sort},
+        myPosts=${myPosts}
+   )}"
+                               th:text="${board.title}">
+                                게시글 제목
+                            </a>
+                        </td>
+
+
+                        <td class="writer-cell">
+
+                            <a th:href="@{/boards(
+            page=1,
+            searchType='WRITER',
+            keyword=${board.nickname},
+            boardType=${boardType},
+            sort=${sort},
+            myPosts=${myPosts}
+       )}"
+                               th:text="${board.nickname}">
+                                닉네임
+                            </a>
+
+                        </td>
+
+
+                        <td class="date-cell">
+                            <span th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</span>
+                            <span class="modified" th:if="${board.modified}">(수정됨)</span>
+                        </td>
+                        <td class="count-cell" th:text="${board.viewCount}">0</td>
+                        <td class="count-cell" th:text="${board.commentCount}">0</td>
+                        <td class="count-cell" th:text="${board.likeCount}">0</td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(boards)}">
+                        <td class="empty-board" colspan="8">
+
+                            <div class="empty-board-content">
+
+                                <strong th:if="${boardType != null
+                    or (keyword != null and !keyword.isEmpty())
+                    or sort != null
+                    or myPosts}">
+                                    조건에 맞는 게시글이 없습니다.
+                                </strong>
+
+                                <strong th:unless="${boardType != null
+                    or (keyword != null and !keyword.isEmpty())
+                    or sort != null
+                    or myPosts}">
+                                    아직 등록된 게시글이 없습니다.
+                                </strong>
+
+                                <p th:if="${boardType != null
+                    or (keyword != null and !keyword.isEmpty())
+                    or sort != null
+                    or myPosts}">
+                                    검색 조건이나 필터를 변경해보세요.
+                                </p>
+
+                                <a class="btn btn-secondary"
+                                   th:if="${boardType != null
+                    or (keyword != null and !keyword.isEmpty())
+                    or sort != null
+                    or myPosts}"
+                                   th:href="@{/boards}">
+                                    전체보기
+                                </a>
+
+                            </div>
+
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="pagination" th:if="${paging.totalPages > 0}">
+
+            <!-- 처음 -->
+            <a th:if="${paging.page > 1}"
+               th:href="@{/boards(
+            page=1,
+            keyword=${keyword},
+            searchType=${searchType},
+            boardType=${boardType},
+            sort=${sort},
+            myPosts=${myPosts}
+       )}">
+                처음
+            </a>
+
+            <!-- 이전 -->
+            <a th:if="${paging.page > 1}"
+               th:href="@{/boards(
+            page=${paging.page - 1},
+            keyword=${keyword},
+            searchType=${searchType},
+            boardType=${boardType},
+            sort=${sort},
+            myPosts=${myPosts}
+       )}">
+                이전
+            </a>
+
+            <!-- 페이지 번호 -->
+            <span th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
 
         <a th:if="${pageNum != paging.page}"
            th:href="@{/boards(
-        page=${pageNum},
-        keyword=${keyword},
-        searchType=${searchType},
-        boardType=${boardType},
-        sort=${sort}
-   )}"
-                th:text="${pageNum}">
+                page=${pageNum},
+                keyword=${keyword},
+                searchType=${searchType},
+                boardType=${boardType},
+                sort=${sort},
+                myPosts=${myPosts}
+           )}"
+           th:text="${pageNum}">
         </a>
 
         <strong th:if="${pageNum == paging.page}"
@@ -233,24 +465,34 @@
 
     </span>
 
-    <!-- 다음 -->
-    <a th:if="${paging.page < paging.totalPages}"
-       th:href="@{/boards(
-        page=${paging.page + 1},
-        keyword=${keyword},
-        searchType=${searchType},
-        boardType=${boardType},
-        sort=${sort}
-   )}">
-            다음
-    </a>
-</div>
+            <!-- 다음 -->
+            <a th:if="${paging.page < paging.totalPages}"
+               th:href="@{/boards(
+            page=${paging.page + 1},
+            keyword=${keyword},
+            searchType=${searchType},
+            boardType=${boardType},
+            sort=${sort},
+            myPosts=${myPosts}
+       )}">
+                다음
+            </a>
 
+            <!-- 끝 -->
+            <a th:if="${paging.page < paging.totalPages}"
+               th:href="@{/boards(
+            page=${paging.totalPages},
+            keyword=${keyword},
+            searchType=${searchType},
+            boardType=${boardType},
+            sort=${sort},
+            myPosts=${myPosts}
+       )}">
+                끝
+            </a>
 
-<!-- 게시글 작성 -->
-<a th:href="@{/boards/write}">
-    <button type="button">글작성</button>
-</a>
-
+        </div>
+    </section>
+</main>
 </body>
 </html>
