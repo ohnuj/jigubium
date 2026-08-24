@@ -178,7 +178,7 @@ public class MapControllter {
     }
 
     // api 출력을 도메인 구조에 맞게 변환
-    // 종로구 의류수거함
+    // 종로구 의류수거함.
     @GetMapping("/api/clothing-bins")
     @ResponseBody
     public List<ecoLocation> getClothingBins() {
