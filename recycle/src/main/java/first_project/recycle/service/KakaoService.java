@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 public class KakaoService {
 
     private final UserMapper userMapper;
+    private final EcoPointHistoryService ecoPointHistoryService;
 
     // application.properties에 설정된 카카오 REST API 키 주입
     @Value("${kakao.client-id}")
@@ -110,7 +111,9 @@ public class KakaoService {
                 user.setRole("USER");
                 user.setNewUser(true);
 
+
                 userMapper.insertOAuthUser(user);
+
             }
 
             // 조회 또는 새로 생성된 회원 객체 반환

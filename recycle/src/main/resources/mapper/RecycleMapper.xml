@@ -57,4 +57,167 @@
 
     </select>
 
+    <!-- 관리자 - 재활용 품목 전체 조회 -->
+    <!-- 관리자 - 재활용 품목 전체 조회 + 검색 -->
+    <select id="findRecycleItemsForAdmin"
+            resultType="first_project.recycle.dto.RecycleSearchResponse">
+
+        SELECT
+        ri.item_id AS itemId,
+        ri.item_name AS itemName,
+
+        GROUP_CONCAT(
+        DISTINCT rc.category_name
+        ORDER BY rc.category_name
+        SEPARATOR ', '
+        ) AS categoryName,
+
+        ri.disposal_method AS disposalMethod,
+        ri.feature AS feature,
+        ri.caution AS caution,
+        ri.search_keyword AS searchKeyword
+
+        FROM recycle_item ri
+
+        LEFT JOIN recycle_item_category ric
+        ON ri.item_id = ric.item_id
+
+        LEFT JOIN recycle_category rc
+        ON ric.category_id = rc.category_id
+
+        <!-- 검색어가 있을 때만 WHERE 생성 -->
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (
+                ri.item_name LIKE CONCAT('%', #{keyword}, '%')
+
+                OR ri.search_keyword LIKE CONCAT('%', #{keyword}, '%')
+
+                OR EXISTS (
+                SELECT 1
+                FROM recycle_item_category ric2
+                JOIN recycle_category rc2
+                ON ric2.category_id = rc2.category_id
+                WHERE ric2.item_id = ri.item_id
+                AND rc2.category_name LIKE CONCAT('%', #{keyword}, '%')
+                )
+                )
+            </if>
+        </where>
+
+        GROUP BY
+        ri.item_id,
+        ri.item_name,
+        ri.disposal_method,
+        ri.feature,
+        ri.caution,
+        ri.search_keyword
+
+        ORDER BY ri.item_id DESC
+
+    </select>
+
+    <!-- 관리자 - 검색 조건에 해당하는 전체 품목 수 -->
+    <select id="countRecycleItemsForAdmin"
+            resultType="int">
+
+        SELECT COUNT(*)
+        FROM recycle_item ri
+
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (
+                ri.item_name LIKE CONCAT('%', #{keyword}, '%')
+
+                OR ri.search_keyword LIKE CONCAT('%', #{keyword}, '%')
+
+                OR EXISTS (
+                SELECT 1
+                FROM recycle_item_category ric2
+                JOIN recycle_category rc2
+                ON ric2.category_id = rc2.category_id
+                WHERE ric2.item_id = ri.item_id
+                AND rc2.category_name LIKE CONCAT('%', #{keyword}, '%')
+                )
+                )
+            </if>
+        </where>
+
+    </select>
+
+    <!-- 관리자 - 검색 + 페이징 목록 조회 -->
+    <select id="findRecycleItemsForAdminPage"
+            resultType="first_project.recycle.dto.RecycleSearchResponse">
+
+        SELECT
+        ri.item_id AS itemId,
+        ri.item_name AS itemName,
+
+        GROUP_CONCAT(
+        DISTINCT rc.category_name
+        ORDER BY rc.category_name
+        SEPARATOR ', '
+        ) AS categoryName,
+
+        ri.disposal_method AS disposalMethod,
+        ri.feature AS feature,
+        ri.caution AS caution,
+        ri.search_keyword AS searchKeyword
+
+        FROM recycle_item ri
+
+        LEFT JOIN recycle_item_category ric
+        ON ri.item_id = ric.item_id
+
+        LEFT JOIN recycle_category rc
+        ON ric.category_id = rc.category_id
+
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (
+                ri.item_name LIKE CONCAT('%', #{keyword}, '%')
+
+                OR ri.search_keyword LIKE CONCAT('%', #{keyword}, '%')
+
+                OR EXISTS (
+                SELECT 1
+                FROM recycle_item_category ric2
+                JOIN recycle_category rc2
+                ON ric2.category_id = rc2.category_id
+                WHERE ric2.item_id = ri.item_id
+                AND rc2.category_name LIKE CONCAT('%', #{keyword}, '%')
+                )
+                )
+            </if>
+        </where>
+
+        GROUP BY
+        ri.item_id,
+        ri.item_name,
+        ri.disposal_method,
+        ri.feature,
+        ri.caution,
+        ri.search_keyword
+
+        ORDER BY ri.item_id DESC
+
+        LIMIT #{paging.size}
+        OFFSET #{paging.offset}
+
+    </select>
+
+    <!-- 관리자 - 재활용 품목 수정 -->
+    <update id="updateRecycleItem"
+            parameterType="first_project.recycle.domain.RecycleItem">
+
+        UPDATE recycle_item
+        SET
+            item_name = #{itemName},
+            disposal_method = #{disposalMethod},
+            feature = #{feature},
+            caution = #{caution},
+            search_keyword = #{searchKeyword}
+        WHERE item_id = #{itemId}
+
+    </update>
 </mapper>

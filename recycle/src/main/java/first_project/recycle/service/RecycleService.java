@@ -1,5 +1,7 @@
 package first_project.recycle.service;
 
+import first_project.recycle.domain.Paging;
+import first_project.recycle.domain.RecycleItem;
 import first_project.recycle.dto.RecycleApiResponse;
 import first_project.recycle.dto.RecycleSearchResponse;
 import first_project.recycle.repository.RecycleMapper;
@@ -46,5 +48,25 @@ public class RecycleService {
         }
 
         return recycleItems;
+    }
+
+    // 관리자 > 재활용 품목 전체 조회
+    public List<RecycleSearchResponse> findRecycleItemsForAdmin(String keyword){
+        return recycleMapper.findRecycleItemsForAdmin(keyword);
+    }
+
+    // 관리자 > 검색 결과 전체 개수
+    public int countRecycleItemsForAdmin(String keyword){
+        return recycleMapper.countRecycleItemsForAdmin(keyword);
+    }
+
+    // 관리자 > 검색+페이지 목록
+    public List<RecycleSearchResponse> findRecycleItemsForAdminPage(String keyword, Paging paging){
+        return recycleMapper.findRecycleItemsForAdminPage(keyword,paging);
+    }
+
+    // 관리자 > 재활용 품목 수정
+    public void updateRecycleItem(RecycleItem recycleItem){
+        recycleMapper.updateRecycleItem(recycleItem);
     }
 }

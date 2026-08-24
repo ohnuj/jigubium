@@ -7,8 +7,8 @@ import lombok.Getter;
 public class Paging {
     private final int page; // 현재페이지
     private final int size; // 한 페이지 게시글 수
-    private final int totalCount; // 전체 게시글 수
-    private final int totalPages; // 전체 페이지 수
+    private final int totalCount; // 전체 데이터 수
+    private final int totalPages; // 전체 데이터 수
     private final int offset; // DB 조회 시작 위치
 
     public Paging(int page, int size, int totalCount) {
