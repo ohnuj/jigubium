@@ -1,0 +1,175 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background-color: #f5f8f1;
+    color: #183c2a;
+}
+
+.game-wrapper {
+    max-width: 1040px;
+    margin: 40px auto 80px;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.game-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #16492f;
+    margin: 0 0 16px 0;
+}
+
+.score-board {
+    display: inline-block;
+    padding: 10px 24px;
+    background-color: #ffffff;
+    border: 1px solid #dce8d8;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #194d32;
+    margin-bottom: 35px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.score-board .divider {
+    color: #dce8d8;
+    margin: 0 10px;
+}
+
+.score-board strong {
+    color: #3e7d45;
+}
+
+/* 문제 아이템 카드 */
+.item-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 45px;
+    min-height: 60px;
+}
+
+.item-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 24px;
+    background-color: #ffffff;
+    border: 2px solid #84cc16;
+    border-radius: 12px;
+    cursor: grab;
+    font-size: 17px;
+    font-weight: 700;
+    color: #16492f;
+    user-select: none;
+    box-shadow: 0 6px 14px rgba(132, 204, 22, 0.15);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.item-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(132, 204, 22, 0.22);
+}
+
+.item-card:active {
+    cursor: grabbing;
+}
+
+.item-card.dragging {
+    opacity: 0.3;
+    transform: scale(0.95);
+}
+
+/* 수거함 공통 */
+.bins-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+}
+
+.bin {
+    height: 130px;
+    border-radius: 16px;
+    border: 2px dashed #adb5bd;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.bin-icon {
+    font-size: 26px;
+    margin-bottom: 4px;
+}
+
+.bin-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.2;
+}
+
+.bin-sub {
+    font-size: 12px;
+    font-weight: 500;
+    color: #64748b;
+    margin-top: 3px;
+}
+
+/* 수거함별 테마 컬러 */
+.bin-plastic     { background-color: #f8fafc; border-color: #cbd5e1; }
+.bin-paper       { background-color: #f8fafc; border-color: #cbd5e1; }
+.bin-can         { background-color: #f8fafc; border-color: #cbd5e1; }
+.bin-glass       { background-color: #f8fafc; border-color: #cbd5e1; }
+.bin-vinyl       { background-color: #f8fafc; border-color: #cbd5e1; }
+
+.bin-food        { background-color: #f8fafc; border-color: #cbd5e1; }
+.bin-general     { background-color: #f8fafc; border-color: #cbd5e1; }
+.bin-large       { background-color: #f8fafc; border-color: #cbd5e1; }
+.bin-electronics { background-color: #f8fafc; border-color: #cbd5e1; }
+.bin-clothes     { background-color: #f8fafc; border-color: #cbd5e1; }
+
+/* 드래그 호버 효과 */
+.bin.dragover {
+    transform: scale(1.05);
+    border-style: solid;
+    border-width: 2.5px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* 반응형 */
+@media (max-width: 900px) {
+    .bins-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .bins-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .bin {
+        height: 110px;
+    }
+    .bin-icon {
+        font-size: 22px;
+    }
+    .bin-name {
+        font-size: 13px;
+    }
+}

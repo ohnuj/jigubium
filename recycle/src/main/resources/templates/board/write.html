@@ -3,118 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <title>게시글 작성</title>
+    <link rel="stylesheet" th:href="@{/css/board.css}">
 </head>
 <body>
-<nav>
-    <div>
-        <a th:href="@{/}">Home</a>
-
-        <div>
-            <th:block>
+<nav class="main-nav">
+    <div class="nav-inner">
+        <a class="nav-logo" th:href="@{/}">Home</a>
+        <div class="nav-user">
+            <th:block th:unless="${session.checkLogin}">
                 <a th:href="@{/login}">로그인</a>
                 <a th:href="@{/signup}">회원가입</a>
             </th:block>
-
-            <th:block>
+            <th:block th:if="${session.checkLogin}">
                 <a th:href="@{/mypage}">마이페이지</a>
                 <a th:href="@{/logout}">로그아웃</a>
+                <a th:href="@{/reward}">리워드 상점</a>
             </th:block>
         </div>
     </div>
 </nav>
-<h2>게시글 작성</h2>
 
-<form id="writeForm"
-      th:action="@{/boards}"
-      method="post"
-      enctype="multipart/form-data">
+<main>
+    <section class="board-hero">
+        <div class="board-hero-inner">
+            <span class="hero-badge">COMMUNITY</span>
+            <h1>새 글 <strong>작성</strong></h1>
+            <p>커뮤니티에 새로운 이야기를 남겨보세요.</p>
+        </div>
+    </section>
 
-    <!-- 게시판 타입 -->
-    <div>
-        <label for="boardType">게시판 타입</label>
+    <section class="board-container narrow">
+        <form id="writeForm" class="panel form-panel form-grid" th:action="@{/boards}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="boardType">게시판 타입</label>
+                <select id="boardType" name="boardType" required>
+                    <option value="">선택</option>
+                    <option value="FREE">자유</option>
+                    <option value="INFO">정보</option>
+                    <option value="SUGGESTION">건의</option>
+                </select>
+            </div>
 
-        <select id="boardType"
-                name="boardType"
-                required>
+            <div class="form-group">
+                <label for="title">제목</label>
+                <input type="text" id="title" name="title" required>
+            </div>
 
-            <option value="">선택</option>
+            <div class="form-group">
+                <label for="content">내용</label>
+                <textarea id="content" name="content" rows="10" required></textarea>
+            </div>
 
-            <option value="FREE">자유</option>
-            <option value="INFO">정보</option>
-            <option value="SUGGESTION">건의</option>
-        </select>
-    </div>
+            <div class="form-group">
+                <span class="form-group-title">이미지</span>
+                <p class="helper-text">이미지는 최대 5장, 파일당 5MB까지 등록할 수 있습니다.</p>
 
-    <!-- 제목 -->
-    <div>
-        <label for="title">제목</label>
+                <input class="file-input" type="file" id="imageInput" accept="image/*">
+                <input type="file" id="images" name="images" multiple hidden>
+                <div id="imageList" class="image-list"></div>
+            </div>
 
-        <input type="text"
-                id="title"
-                name="title"
-                required>
-    </div>
-
-    <div>
-        <label for="content">내용</label>
-
-        <textarea id="content"
-                  name="content"
-                  rows="10"
-                  required></textarea>
-    </div>
-
-    <!-- 이미지 -->
-    <div>
-        <label for="images">이미지</label>
-
-        <!-- 이미지 업로드 안내 -->
-        <p>
-            이미지는 최대 5장, 파일당 5MB까지 등록할 수 있습니다.
-        </p>
-
-        <!-- 한 장씩 선택 -->
-        <input type="file"
-               id="imageInput"
-               accept="image/*">
-
-        <!-- 실제 서버로 전송할 파일 input -->
-        <input type="file"
-               id="images"
-               name="images"
-               multiple
-               hidden>
-
-        <!-- 선택한 이미지 목록 -->
-        <div id="imageList"></div>
-    </div>
-
-    <button type="submit" id="submitBtn">등록</button>
-
-    <a th:href="@{/boards}"
-       onclick="return confirm('작성 중인 내용이 사라집니다. 취소하시겠습니까?');">
-        취소
-    </a>
-
-
-</form>
+            <div class="form-actions">
+                <a class="btn btn-secondary" th:href="@{/boards}"
+                   onclick="return confirm('작성 중인 내용이 사라집니다. 취소하시겠습니까?');">취소</a>
+                <button class="btn btn-primary" type="submit" id="submitBtn">등록</button>
+            </div>
+        </form>
+    </section>
+</main>
 
 <script>
     const imageInput = document.getElementById("imageInput");
     const images = document.getElementById("images");
     const imageList = document.getElementById("imageList");
-
-    // 선택한 파일을 누적해서 보관
     let selectedFiles = [];
-
     const MAX_IMAGES = 5;
     const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
     imageInput.addEventListener("change", function () {
-
-        if (this.files.length === 0) {
-            return;
-        }
+        if (this.files.length === 0) return;
 
         const file = this.files[0];
 
@@ -130,60 +97,31 @@
             return;
         }
 
-
-        // 이번에 선택한 파일 추가
-        selectedFiles.push(this.files[0]);
-
+        selectedFiles.push(file);
         updateFiles();
-
-        // 같은 파일도 다시 선택할 수 있도록 초기화
         this.value = "";
     });
 
     function updateFiles() {
-
-        // 서버로 전송할 파일 목록 생성
         const dataTransfer = new DataTransfer();
-
-        selectedFiles.forEach(file => {
-            dataTransfer.items.add(file);
-        });
-
+        selectedFiles.forEach(file => dataTransfer.items.add(file));
         images.files = dataTransfer.files;
-
-        // 화면의 파일 목록 다시 출력
         imageList.innerHTML = "";
 
         selectedFiles.forEach((file, index) => {
-
             const div = document.createElement("div");
-
-            // 선택한 이미지의 임시 미리보기 주소
             const previewUrl = URL.createObjectURL(file);
-
             div.innerHTML = `
-             <img src="${previewUrl}"
-                     alt="이미지 미리보기"
-                     width="100">
-
+                <img src="${previewUrl}" alt="이미지 미리보기">
                 <span>${file.name}</span>
-
-                <button type="button"
-                        onclick="removeImage(${index})">
-                    취소
-                </button>
-                `;
-
+                <button type="button" onclick="removeImage(${index})">취소</button>
+            `;
             imageList.appendChild(div);
         });
     }
 
     function removeImage(index) {
-
-        // 해당 이미지 제거
         selectedFiles.splice(index, 1);
-
-        // 서버 전송 파일 목록도 다시 생성
         updateFiles();
     }
 
@@ -191,8 +129,6 @@
     const submitBtn = document.getElementById("submitBtn");
 
     writeForm.addEventListener("submit", function () {
-
-        // 중복 등록 방지
         submitBtn.disabled = true;
         submitBtn.textContent = "등록 중...";
     });
