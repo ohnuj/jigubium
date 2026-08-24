@@ -50,6 +50,7 @@ public class LoginController {
             return "loginForm";
         }
 
+
         // 로그인 성공: 현재 요청의 세션을 가져오거나 없으면 신규 생성
         HttpSession session = request.getSession();
 
