@@ -2,6 +2,7 @@ package first_project.recycle.controller;
 
 
 import first_project.recycle.config.SessionConst;
+import first_project.recycle.domain.BoardType;
 import first_project.recycle.domain.User;
 import first_project.recycle.dto.CommentCreateRequest;
 import first_project.recycle.dto.CommentUpdateRequest;
@@ -10,10 +11,8 @@ import first_project.recycle.service.CommentService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @RequiredArgsConstructor
@@ -29,12 +28,21 @@ public class CommentController {
     public String createComment(
             @PathVariable Long boardId,
             @ModelAttribute CommentCreateRequest request,
+
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) BoardType boardType,
+            @RequestParam(required = false) String sort,
+            @RequestParam(defaultValue = "false") boolean myPosts,
+
             HttpSession session) {
 
         User loginUser =
-                (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+                (User) session.getAttribute(
+                        SessionConst.LOGIN_MEMBER
+                );
 
-        // 비로그인 사용자는 로그인 페이지로 이동
         if (loginUser == null) {
             return "redirect:/login";
         }
@@ -45,7 +53,15 @@ public class CommentController {
                 request
         );
 
-        return "redirect:/boards/" + boardId;
+        return redirectToDetail(
+                boardId,
+                page,
+                keyword,
+                searchType,
+                boardType,
+                sort,
+                myPosts
+        );
     }
 
     /**
@@ -56,21 +72,32 @@ public class CommentController {
             @PathVariable Long boardId,
             @PathVariable Long commentId,
             @ModelAttribute CommentUpdateRequest request,
+
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) BoardType boardType,
+            @RequestParam(required = false) String sort,
+            @RequestParam(defaultValue = "false") boolean myPosts,
+
             HttpSession session) {
 
         User loginUser =
-                (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+                (User) session.getAttribute(
+                        SessionConst.LOGIN_MEMBER
+                );
 
         if (loginUser == null) {
             return "redirect:/login";
         }
 
-        boolean updated = commentService.updateComment(
-                boardId,
-                commentId,
-                loginUser.getMemberId(),
-                request
-        );
+        boolean updated =
+                commentService.updateComment(
+                        boardId,
+                        commentId,
+                        loginUser.getMemberId(),
+                        request
+                );
 
         if (!updated) {
             throw new ForbiddenException(
@@ -78,7 +105,15 @@ public class CommentController {
             );
         }
 
-        return "redirect:/boards/" + boardId;
+        return redirectToDetail(
+                boardId,
+                page,
+                keyword,
+                searchType,
+                boardType,
+                sort,
+                myPosts
+        );
     }
 
     /**
@@ -88,20 +123,31 @@ public class CommentController {
     public String deleteComment(
             @PathVariable Long boardId,
             @PathVariable Long commentId,
+
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) BoardType boardType,
+            @RequestParam(required = false) String sort,
+            @RequestParam(defaultValue = "false") boolean myPosts,
+
             HttpSession session) {
 
         User loginUser =
-                (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+                (User) session.getAttribute(
+                        SessionConst.LOGIN_MEMBER
+                );
 
         if (loginUser == null) {
             return "redirect:/login";
         }
 
-        boolean deleted = commentService.deleteComment(
-                boardId,
-                commentId,
-                loginUser.getMemberId()
-        );
+        boolean deleted =
+                commentService.deleteComment(
+                        boardId,
+                        commentId,
+                        loginUser.getMemberId()
+                );
 
         if (!deleted) {
             throw new ForbiddenException(
@@ -109,7 +155,39 @@ public class CommentController {
             );
         }
 
-        return  "redirect:/boards/" + boardId;
+        return redirectToDetail(
+                boardId,
+                page,
+                keyword,
+                searchType,
+                boardType,
+                sort,
+                myPosts
+        );
+    }
+    private String redirectToDetail(
+            Long boardId,
+            int page,
+            String keyword,
+            String searchType,
+            BoardType boardType,
+            String sort,
+            boolean myPosts) {
+
+        String redirectUrl =
+                UriComponentsBuilder
+                        .fromPath("/boards/{boardId}")
+                        .queryParam("page", page)
+                        .queryParam("keyword", keyword)
+                        .queryParam("searchType", searchType)
+                        .queryParam("boardType", boardType)
+                        .queryParam("sort", sort)
+                        .queryParam("myPosts", myPosts)
+                        .buildAndExpand(boardId)
+                        .encode()
+                        .toUriString();
+
+        return "redirect:" + redirectUrl;
     }
 
 }

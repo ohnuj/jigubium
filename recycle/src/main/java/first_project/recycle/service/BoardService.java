@@ -16,13 +16,17 @@ import first_project.recycle.repository.BoardImageMapper;
 import first_project.recycle.repository.BoardMapper;
 import first_project.recycle.repository.MypageMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BoardService {
@@ -41,33 +45,46 @@ public class BoardService {
         return boardMapper.findRecentBoards();
     }
 
-    // 게시글 목록 + 검색 + 타입 + 페이징
+
+    // 게시글 목록 + 검색 + 타입 + 페이징 + 내 글 보기
     public BoardPageResponse getBoards(
             int page,
             String keyword,
             String searchType,
             BoardType boardType,
-            String sort) {
+            String sort,
+            Long memberId) {
 
         int totalCount =
                 boardMapper.countBoards(
                         keyword,
                         searchType,
-                        boardType
+                        boardType,
+                        memberId
                 );
 
-        Paging paging = new Paging(page, PAGE_SIZE, totalCount);
+        Paging paging =
+                new Paging(
+                        page,
+                        PAGE_SIZE,
+                        totalCount
+                );
 
         List<BoardListResponse> boards =
                 boardMapper.findBoards(
-                keyword,
-                searchType,
-                boardType,
-                sort,
-                paging.getOffset(),
-                paging.getSize()
+                        keyword,
+                        searchType,
+                        boardType,
+                        sort,
+                        memberId,
+                        paging.getOffset(),
+                        paging.getSize()
+                );
+
+        return new BoardPageResponse(
+                boards,
+                paging
         );
-        return new BoardPageResponse(boards, paging);
     }
 
     /** 게시글 저장 후 생성된 boarId를 이용해 첨부 이미지 저장
@@ -97,19 +114,30 @@ public class BoardService {
 
         // 2. 첨부 이미지가 있으면 순서대로 저장
         if (images != null) {
+
             for (int i = 0; i < images.size(); i++) {
-                String imageUrl = fileStorageService.store(images.get(i));
+
+                String imageUrl =
+                        fileStorageService.store(images.get(i));
 
                 if (imageUrl != null) {
-                    BoardImage boardImage = new BoardImage();
+
+                    // 이후 DB 트랜잭션이 롤백되면
+                    // 방금 저장한 실제 파일도 제거
+                    deleteFileAfterRollback(imageUrl);
+
+                    BoardImage boardImage =
+                            new BoardImage();
+
                     boardImage.setBoardId(boardId);
                     boardImage.setImageUrl(imageUrl);
                     boardImage.setSortOrder(i);
 
-                    boardImageMapper.insertBoardImage(boardImage);
+                    boardImageMapper.insertBoardImage(
+                            boardImage
+                    );
                 }
             }
-
         }
         //게시글 작성시 100p 지급
         ecoPointHistoryService.earnPoint(memberId,100,"BOARD",boardId);
@@ -139,7 +167,6 @@ public class BoardService {
         return board;
     }
 
-    @Transactional
     public BoardDetailResponse getBoardDetail(Long boardId) {
 
         BoardDetailResponse board =
@@ -151,12 +178,6 @@ public class BoardService {
             );
         }
 
-        // 조회수 증가
-        boardMapper.increaseViewCount(boardId);
-
-        // 증가된 조회수 다시 조회
-        board = boardMapper.findById(boardId);
-
         // 이미지 조회
         List<BoardImage> images =
                 boardImageMapper.findByBoardId(boardId);
@@ -164,6 +185,10 @@ public class BoardService {
         board.setImages(images);
 
         return board;
+    }
+
+    public void increaseViewCount(Long boardId) {
+        boardMapper.increaseViewCount(boardId);
     }
 
     /**
@@ -217,12 +242,15 @@ public class BoardService {
 
         // 새 이미지 추가
         if (images != null) {
+
             for (int i = 0; i < images.size(); i++) {
 
                 String imageUrl =
                         fileStorageService.store(images.get(i));
 
                 if (imageUrl != null) {
+
+                    deleteFileAfterRollback(imageUrl);
 
                     BoardImage boardImage =
                             new BoardImage();
@@ -290,11 +318,13 @@ public class BoardService {
             return false;
         }
 
-        // 서버에 저장된 실제 이미지 파일 삭제
+        // DB 트랜잭션 커밋 후 실제 이미지 파일 삭제
         for (BoardImage image : images) {
-            fileStorageService.delete(image.getImageUrl());
-        }
 
+            deleteFileAfterCommit(
+                    image.getImageUrl()
+            );
+        }
         return true;
     }
 
@@ -333,8 +363,11 @@ public class BoardService {
             return false;
         }
 
-        // 실제 파일 삭제
-        fileStorageService.delete(image.getImageUrl());
+        // DB 트랜잭션이 정상 커밋된 뒤
+        // 실제 이미지 파일 삭제
+        deleteFileAfterCommit(
+                image.getImageUrl()
+        );
 
         return true;
     }
@@ -349,6 +382,68 @@ public class BoardService {
 
     public BoardListResponse getNextBoard(Long boardId) {
         return boardMapper.findNextBoard(boardId);
+    }
+
+    /**
+     * 새로 저장한 파일은 DB 트랜잭션이 롤백되면 삭제
+     */
+    private void deleteFileAfterRollback(String imageUrl) {
+
+        if (imageUrl == null) {
+            return;
+        }
+
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+
+                    @Override
+                    public void afterCompletion(int status) {
+
+                        if (status == STATUS_ROLLED_BACK) {
+
+                            boolean deleted =
+                                    fileStorageService.delete(imageUrl);
+
+                            if (!deleted) {
+                                log.warn(
+                                        "트랜잭션 롤백 후 이미지 파일 삭제 실패: {}",
+                                        imageUrl
+                                );
+                            }
+                        }
+                    }
+                }
+        );
+    }
+
+
+    /**
+     * DB 삭제가 정상 커밋된 후 실제 파일 삭제
+     */
+    private void deleteFileAfterCommit(String imageUrl) {
+
+        if (imageUrl == null) {
+            return;
+        }
+
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+
+                    @Override
+                    public void afterCommit() {
+
+                        boolean deleted =
+                                fileStorageService.delete(imageUrl);
+
+                        if (!deleted) {
+                            log.warn(
+                                    "DB 삭제 후 이미지 파일 삭제 실패: {}",
+                                    imageUrl
+                            );
+                        }
+                    }
+                }
+        );
     }
 
 
