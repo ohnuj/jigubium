@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마이페이지 - 나의 활동</title>
-    <link rel="stylesheet" th:href="@{/css/mypage.css(v=12)}">
+    <!-- 다른 마이페이지 화면과 동일한 기본 CSS 링크 -->
+    <link rel="stylesheet" th:href="@{/css/mypage.css}">
+    <link rel="stylesheet" href="/css/mypage.css">
 </head>
 <body>
 
@@ -122,42 +124,19 @@
                             <span th:if="${history.pointType == 'USE'}" style="color: #dc3545;">사용</span>
                         </td>
 
-                        <!-- 활동 내용 (댓글 작성 및 상세 활동 분기 처리) -->
+                        <!-- 활동 내용 -->
                         <td style="padding: 11px 12px; font-size: 12px; color: #536359; font-weight: 400; border-bottom: 1px solid #edf2eb;">
-                            <!-- 1. 댓글 작성 적립 -->
-                            <span th:if="${history.referenceType == 'COMMENT' or history.referenceType == 'REPLY'}">
-                          커뮤니티 댓글 작성
-                            </span>
-
-                            <!-- 2. 게시글 작성 / 분리배출 인증 -->
-                            <span th:if="${history.referenceType == 'BOARD' or history.referenceType == 'RECYCLE' or history.referenceType == 'POST'}">
-                          커뮤니티 게시글 작성
-                            </span>
-
-                            <!-- 3. 회원가입 축하 적립 -->
-                            <span th:if="${history.referenceType == 'JOIN' or history.referenceType == 'SIGNUP' or history.referenceType == 'WELCOME' or history.referenceType == 'MEMBER'}">
-                          회원가입 축하 적립
-                          </span>
-
-                            <!-- 4. 에코 퀴즈 / 게임 -->
-                            <span th:if="${history.referenceType == 'QUIZ' or history.referenceType == 'GAME'}">
-                          에코 퀴즈 및 게임 참여
-                           </span>
-
-                            <!-- 5. 리워드 상점 사용 -->
-                            <span th:if="${history.referenceType == 'SHOP' or history.referenceType == 'REWARD'}">
-                          에코 리워드 상품 교환
-                            </span>
-
-                            <!-- 6. 기타/기본값 -->
-                            <span th:if="${history.referenceType == null or (history.referenceType != 'COMMENT' and history.referenceType != 'REPLY' and history.referenceType != 'BOARD' and history.referenceType != 'RECYCLE' and history.referenceType != 'POST' and history.referenceType != 'JOIN' and history.referenceType != 'SIGNUP' and history.referenceType != 'WELCOME' and history.referenceType != 'MEMBER' and history.referenceType != 'QUIZ' and history.referenceType != 'GAME' and history.referenceType != 'SHOP' and history.referenceType != 'REWARD')}">
-                          포인트 적립/사용
-                          </span>
+                            <span th:if="${history.referenceType == 'COMMENT' or history.referenceType == 'REPLY'}">커뮤니티 댓글 작성</span>
+                            <span th:if="${history.referenceType == 'BOARD' or history.referenceType == 'RECYCLE' or history.referenceType == 'POST'}">커뮤니티 게시글 작성</span>
+                            <span th:if="${history.referenceType == 'JOIN' or history.referenceType == 'SIGNUP' or history.referenceType == 'WELCOME' or history.referenceType == 'MEMBER'}">회원가입 축하 적립</span>
+                            <span th:if="${history.referenceType == 'GAME' or history.referenceType == 'QUIZ'}">미니게임 참여보상</span>
+                            <span th:if="${history.referenceType == 'SHOP' or history.referenceType == 'REWARD'}">에코 리워드 상품 교환</span>
+                            <span th:if="${history.referenceType == null or (history.referenceType != 'COMMENT' and history.referenceType != 'REPLY' and history.referenceType != 'BOARD' and history.referenceType != 'RECYCLE' and history.referenceType != 'POST' and history.referenceType != 'JOIN' and history.referenceType != 'SIGNUP' and history.referenceType != 'WELCOME' and history.referenceType != 'MEMBER' and history.referenceType != 'QUIZ' and history.referenceType != 'GAME' and history.referenceType != 'SHOP' and history.referenceType != 'REWARD')}">포인트 적립/사용</span>
                         </td>
 
                         <td style="text-align: right; padding: 11px 12px; font-size: 12px; font-weight: 400; border-bottom: 1px solid #edf2eb;">
-                                <span th:if="${history.pointType == 'EARN'}" style="color: #28a745;"
-                                      th:text="'+' + ${#numbers.formatInteger(history.pointAmount, 0, 'COMMA')} + ' P'">+50 P</span>
+                            <span th:if="${history.pointType == 'EARN'}" style="color: #28a745;"
+                                  th:text="'+' + ${#numbers.formatInteger(history.pointAmount, 0, 'COMMA')} + ' P'">+50 P</span>
                             <span th:if="${history.pointType == 'USE'}" style="color: #dc3545;"
                                   th:text="'-' + ${#numbers.formatInteger(history.pointAmount, 0, 'COMMA')} + ' P'">-1,000 P</span>
                         </td>
@@ -189,7 +168,7 @@
     </main>
 </div>
 
-<!-- Home 파일의 공통 푸터 조각 include -->
+<!-- 푸터 조각 include -->
 <footer th:replace="~{index :: footer}"></footer>
 
 </body>
