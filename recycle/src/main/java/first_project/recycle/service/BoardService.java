@@ -1,6 +1,5 @@
 package first_project.recycle.service;
 
-
 import first_project.recycle.domain.Board;
 import first_project.recycle.domain.BoardImage;
 import first_project.recycle.domain.BoardType;
@@ -270,7 +269,6 @@ public class BoardService {
         return true;
     }
 
-
     /**
      * 게시글 삭제
      * 작성자 본인의 글만 삭제하며 이미지 파일도 함께 정리한다
@@ -372,7 +370,7 @@ public class BoardService {
         return true;
     }
 
-    // 마이파이지 활동 조회 - 작성한 총 게시글 수
+    // 마이페이지 활동 조회 - 작성한 총 게시글 수
     public int getBoardCount(Long memberId) {
         return mypageMapper.countBoardsById(memberId);
     }
@@ -445,7 +443,6 @@ public class BoardService {
                 }
         );
     }
-
 
 
 
