@@ -8,18 +8,36 @@
 <body>
 <nav class="main-nav">
     <div class="nav-inner">
-        <a class="nav-logo" th:href="@{/}">Home</a>
+
+        <a class="nav-logo" th:href="@{/}">
+            ♻️ 지구비우기
+        </a>
+
+        <div class="nav-center">
+            <a th:href="@{/eco-map}">에코맵</a>
+            <a th:href="@{/game}">재활용게임</a>
+            <a class="active" th:href="@{/boards}">커뮤니티</a>
+        </div>
+
         <div class="nav-user">
             <th:block th:unless="${session.checkLogin}">
                 <a th:href="@{/login}">로그인</a>
                 <a th:href="@{/signup}">회원가입</a>
             </th:block>
+
+            <a th:if="${session.loginMember != null
+                    and session.loginMember.role == 'ADMIN'}"
+               th:href="@{/admin}">
+                관리자 페이지
+            </a>
+
             <th:block th:if="${session.checkLogin}">
                 <a th:href="@{/mypage}">마이페이지</a>
                 <a th:href="@{/logout}">로그아웃</a>
                 <a th:href="@{/reward}">리워드 상점</a>
             </th:block>
         </div>
+
     </div>
 </nav>
 
@@ -73,6 +91,11 @@
 
                 <select name="searchType"
                         aria-label="검색 기준">
+
+                    <option value=""
+                            th:selected="${searchType == null or searchType == ''}">
+                        전체
+                    </option>
 
                     <option value="TITLE"
                             th:selected="${searchType == 'TITLE'}">
@@ -189,6 +212,10 @@
             <!-- 검색어 -->
             <span class="filter-chip"
                   th:if="${keyword != null and !keyword.isEmpty()}">
+
+                <span th:if="${searchType == null or searchType == ''}">
+        전체:
+    </span>
 
         <span th:if="${searchType == 'TITLE'}">
             제목:
@@ -343,6 +370,12 @@
                                th:text="${board.title}">
                                 게시글 제목
                             </a>
+
+                            <span class="image-indicator"
+                                  th:if="${board.hasImage}"
+                                  title="이미지 첨부">
+    🖼
+</span>
                         </td>
 
 

@@ -150,17 +150,16 @@
             <tr>
                 <th>번호</th>
                 <th>제목</th>
-                <th>작성자</th>
-                <th>작성일</th>
+                <th class="text-center">작성자</th>
+                <th class="text-center">작성일</th>
             </tr>
             </thead>
 
             <!-- 최신 게시글 -->
             <tbody>
-            <tr th:each="board : ${recentBoards}">
+            <tr th:each="board, stat : ${recentBoards}">
 
-                <!-- 번호 -->
-                <td th:text="${board.boardId}">
+                <td th:text="${totalBoardCount - stat.index}">
                     1
                 </td>
 
@@ -176,21 +175,16 @@
                     </a>
                 </td>
 
-                <!-- 작성자 닉네임 -->
-                <td style="
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        "
+                <!-- 작성자 -->
+                <td class="text-center"
                     th:text="${board.nickname}">
                     홍길동
                 </td>
 
                 <!-- 작성일 -->
-                <td style="text-align: center;"
+                <td class="text-center"
                     th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd')}">
-                    2026-08-19
+                    2026-08-24
                 </td>
 
             </tr>

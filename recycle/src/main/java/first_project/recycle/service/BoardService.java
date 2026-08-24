@@ -38,6 +38,7 @@ public class BoardService {
     private final CommentService commentService;
     private final EcoPointHistoryService ecoPointHistoryService;
     private final MypageMapper mypageMapper;
+    private static final int MAX_IMAGE_COUNT = 5;
 
     // 메인페이지 최신 게시글 조회
     public List<BoardListResponse> getRecentBoards() {
@@ -93,11 +94,33 @@ public class BoardService {
 
     @Transactional
     public Long write(
-                      Long memberId,
-                      BoardCreateRequest request,
-                      List<MultipartFile> images){
+            Long memberId,
+            BoardCreateRequest request,
+            List<MultipartFile> images) {
 
-        //게시글 정보 생성
+        validateBoardRequest(
+                request.getTitle(),
+                request.getContent()
+        );
+
+        // 이미지 최대 5장 검사
+        if (images != null) {
+
+            long imageCount =
+                    images.stream()
+                            .filter(image ->
+                                    image != null
+                                            && !image.isEmpty())
+                            .count();
+
+            if (imageCount > MAX_IMAGE_COUNT) {
+                throw new IllegalArgumentException(
+                        "이미지는 최대 5장까지 업로드할 수 있습니다."
+                );
+            }
+        }
+
+        // 게시글 정보 생성
         Board board = new Board();
 
         board.setMemberId(memberId);
@@ -105,13 +128,12 @@ public class BoardService {
         board.setTitle(request.getTitle());
         board.setContent(request.getContent());
 
-        // 게시글 저장 자동 생성 boarID 가져오기
-        // useGeneratedkeys로 생성된 boardId
+        // 게시글 저장
         boardMapper.insertBoard(board);
 
         Long boardId = board.getBoardId();
 
-        // 2. 첨부 이미지가 있으면 순서대로 저장
+        // 첨부 이미지 저장
         if (images != null) {
 
             for (int i = 0; i < images.size(); i++) {
@@ -121,8 +143,6 @@ public class BoardService {
 
                 if (imageUrl != null) {
 
-                    // 이후 DB 트랜잭션이 롤백되면
-                    // 방금 저장한 실제 파일도 제거
                     deleteFileAfterRollback(imageUrl);
 
                     BoardImage boardImage =
@@ -138,8 +158,15 @@ public class BoardService {
                 }
             }
         }
-        //게시글 작성시 100p 지급
-        ecoPointHistoryService.earnPoint(memberId,100,"BOARD",boardId);
+
+        // 게시글 작성 시 100p 지급
+        ecoPointHistoryService.earnPoint(
+                memberId,
+                100,
+                "BOARD",
+                boardId
+        );
+
         return boardId;
     }
 
@@ -221,6 +248,37 @@ public class BoardService {
             );
         }
 
+        validateBoardRequest(
+                request.getTitle(),
+                request.getContent()
+        );
+
+        // 현재 저장된 이미지
+        List<BoardImage> currentImages =
+                boardImageMapper.findByBoardId(boardId);
+
+// 새 이미지 개수
+        long newImageCount = 0;
+
+        if (images != null) {
+            newImageCount =
+                    images.stream()
+                            .filter(image ->
+                                    image != null
+                                            && !image.isEmpty())
+                            .count();
+        }
+
+// 기존 이미지 + 새 이미지 최대 5장 검사
+        if (currentImages.size() + newImageCount
+                > MAX_IMAGE_COUNT) {
+
+            throw new IllegalArgumentException(
+                    "이미지는 최대 5장까지 업로드할 수 있습니다."
+            );
+        }
+
+// 검증이 끝난 후 게시글 수정
         int result = boardMapper.updateBoard(
                 boardId,
                 memberId,
@@ -238,6 +296,8 @@ public class BoardService {
 
         int startOrder =
                 maxSortOrder == null ? 0 : maxSortOrder + 1;
+
+
 
         // 새 이미지 추가
         if (images != null) {
@@ -441,6 +501,37 @@ public class BoardService {
                         }
                     }
                 }
+        );
+    }
+    private void validateBoardRequest(
+            String title,
+            String content) {
+
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "제목을 입력해주세요."
+            );
+        }
+
+        if (content == null || content.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "내용을 입력해주세요."
+            );
+        }
+
+        if (title.length() > 255) {
+            throw new IllegalArgumentException(
+                    "제목은 255자 이하로 입력해주세요."
+            );
+        }
+    }
+
+    public int getTotalBoardCount() {
+        return boardMapper.countBoards(
+                null,
+                null,
+                null,
+                null
         );
     }
 
