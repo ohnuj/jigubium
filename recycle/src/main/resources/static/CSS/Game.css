@@ -143,6 +143,8 @@ body {
 .bin-large       { background: #f8fafc; border-color: #e0e7ee; }
 .bin-electronics { background: #f8fafc; border-color: #e0e7ee; }
 .bin-clothes     { background: #f8fafc; border-color: #e0e7ee; }
+.bin-medicine    { background: #f8fafc; border-color: #e0e7ee; }
+.bin-battery     { background: #f8fafc; border-color: #e0e7ee; }
 
 .bin.dragover {
     transform: scale(1.07);

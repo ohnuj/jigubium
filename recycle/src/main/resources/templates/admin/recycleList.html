@@ -86,7 +86,6 @@
 </nav>
 
 
-
 <main class="admin-management-page">
 
 
@@ -113,7 +112,6 @@
         </div>
 
     </section>
-
 
 
     <!-- =====================================================
@@ -152,7 +150,6 @@
             </a>
 
         </div>
-
 
 
         <!-- =================================================
@@ -197,7 +194,6 @@
             </form>
 
         </div>
-
 
 
         <!-- =================================================
@@ -299,21 +295,35 @@
 
 
                                     <!--
-                                        삭제 기능은 현재 미구현 상태
+                                        삭제 기능
                                     -->
-                                    <button class="delete-button"
-                                            type="button">
+                                    <!-- 삭제 -->
+                                    <form th:action="@{/admin/recycle-items/{id}/delete(id=${item.itemId})}"
+                                          method="post"
+                                          style="display:inline;"
+                                          onsubmit="return confirm('정말 삭제하시겠습니까?');">
 
-                                        삭제
+                                        <!-- 삭제 후 현재 페이지 유지 -->
+                                        <input type="hidden"
+                                               name="page"
+                                               th:value="${paging.page}">
 
-                                    </button>
+                                        <!-- 삭제 후 검색어 유지 -->
+                                        <input type="hidden"
+                                               name="keyword"
+                                               th:value="${keyword}">
+
+                                        <button type="submit">
+                                            삭제
+                                        </button>
+
+                                    </form>
 
                                 </div>
 
                             </td>
 
                         </tr>
-
 
 
                         <!-- =====================================
@@ -357,7 +367,6 @@
                                     </div>
 
 
-
                                     <!-- 수정 Form -->
                                     <form class="admin-edit-form"
                                           th:action="@{/admin/recycle-items/{id}/update(id=${item.itemId})}"
@@ -376,7 +385,6 @@
                                                th:value="${keyword}">
 
 
-
                                         <!-- 품목명 -->
                                         <div class="edit-form-group">
 
@@ -390,7 +398,6 @@
                                                     th:value="${item.itemName}">
 
                                         </div>
-
 
 
                                         <!-- 배출방법 -->
@@ -409,7 +416,6 @@
                                         </div>
 
 
-
                                         <!-- 특징 -->
                                         <div class="edit-form-group">
 
@@ -424,7 +430,6 @@
                                             </textarea>
 
                                         </div>
-
 
 
                                         <!-- 주의사항 -->
@@ -443,7 +448,6 @@
                                         </div>
 
 
-
                                         <!-- 관련 키워드 -->
                                         <div class="edit-form-group">
 
@@ -458,7 +462,6 @@
                                             </textarea>
 
                                         </div>
-
 
 
                                         <!-- 저장 / 취소 -->
@@ -495,7 +498,6 @@
                     </th:block>
 
 
-
                     <!-- =====================================
                          검색 결과 없음
                     ====================================== -->
@@ -530,7 +532,6 @@
         </div>
 
 
-
         <!-- =================================================
              페이징
         ================================================== -->
@@ -549,7 +550,6 @@
                 ← 이전
 
             </a>
-
 
 
             <!-- 페이지 번호 -->
@@ -580,7 +580,6 @@
             </th:block>
 
 
-
             <!-- 다음 -->
             <a class="page-direction"
                th:if="${endPage < paging.totalPages}"
@@ -596,7 +595,6 @@
         </div>
 
 
-
         <!-- 관리자 홈으로 -->
         <div class="admin-back-area">
 
@@ -610,7 +608,6 @@
     </section>
 
 </main>
-
 
 
 <!-- =====================================================
@@ -636,7 +633,6 @@
             </p>
 
         </div>
-
 
 
         <!-- 가운데 -->
@@ -677,7 +673,6 @@
         </div>
 
 
-
         <!-- 오른쪽 -->
         <div class="footer-info">
 
@@ -702,7 +697,6 @@
     </div>
 
 
-
     <div class="footer-bottom">
 
         <p>
@@ -716,7 +710,6 @@
     </div>
 
 </footer>
-
 
 
 <!-- =====================================================
@@ -741,7 +734,6 @@
 
         editRow.style.display = "table-row";
     }
-
 
 
     function closeEdit(itemId) {

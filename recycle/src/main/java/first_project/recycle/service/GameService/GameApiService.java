@@ -15,10 +15,10 @@ import java.util.*;
 @Service
 public class GameApiService {
 
-    @Value("${recycle.api.service-key}")
+    @Value("${game.api.service-key}")
     private String serviceKey;
 
-    @Value("${recycle.api.url}")
+    @Value("${game.api.url}")
     private String apiUrl;
 
     private static final List<String> KEYWORDS = List.of(

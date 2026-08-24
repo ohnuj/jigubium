@@ -1,0 +1,52 @@
+package first_project.recycle.controller;
+
+import first_project.recycle.domain.Paging;
+import first_project.recycle.service.EcoLocationService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller
+@RequestMapping("/admin/locations")
+@RequiredArgsConstructor
+public class AdminEcoLocationController {
+    private final EcoLocationService ecoLocationService;
+
+    @GetMapping
+    public String locationsList(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(defaultValue = "") String locationType,
+            Model model){
+
+        int totalCount = ecoLocationService.countEcoLocationForAdmin(keyword, locationType);
+
+        Paging paging = new Paging(page, 20, totalCount);
+
+        model.addAttribute("locations",
+                ecoLocationService.findEcoLocationsForAdmin(keyword, locationType, paging));
+
+        model.addAttribute("locationTypes",ecoLocationService.findLocationTypes());
+
+        model.addAttribute("paging",paging);
+
+        int blockSize = 5;
+        int startPage = ((paging.getPage() - 1) / blockSize) * blockSize + 1;
+
+        int endPage = Math.min(startPage + blockSize - 1,paging.getTotalPages());
+
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("locationType", locationType);
+        return "admin/ecoLocationList";
+    }
+
+//    @PostMapping("/{locationId}/update")
+//    public String updateEcoLocation()
+}

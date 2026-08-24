@@ -51,4 +51,68 @@
         WHERE location_type = #{locationType}
     </select>
 
+    <select id="findEcoLocationsForAdmin" resultType="first_project.recycle.domain.ecoLocation">
+        SELECT
+            location_id AS locationId,
+            location_type AS locationType,
+            road_address AS roadAddress
+        FROM eco_location
+        <where>
+            <if test="keyword != null and keyword != ''">
+                road_address LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+
+            <if test="locationType != null and locationType != ''">
+                AND location_type = #{locationType}
+            </if>
+        </where>
+        ORDER BY location_id DESC
+
+        LIMIT #{paging.size}
+        OFFSET #{paging.offset}
+    </select>
+
+    <select id="findLocationTypes"
+            resultType="string">
+
+        SELECT DISTINCT location_type
+         FROM eco_location
+          WHERE location_type IS NOT NULL
+          AND location_type != ''
+          ORDER BY location_type
+
+    </select>
+
+    <!-- 관리자 - 검색 + 종류 필터 결과 전체 개수 -->
+    <select id="countEcoLocationsForAdmin"
+            resultType="int">
+
+        SELECT COUNT(*)
+        FROM eco_location
+
+        <where>
+
+            <if test="keyword != null and keyword != ''">
+                road_address LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+
+            <if test="locationType != null and locationType != ''">
+                AND location_type = #{locationType}
+            </if>
+
+        </where>
+
+    </select>
+
+    <!--eco location 수정-->
+    <update id="updateEcoLocation" parameterType="first_project.recycle.domain.ecoLocation">
+        UPDATE eco_location
+        SET location_type = #{locationType},
+             road_address = #{roadAddress}
+        WHERE location_id = #{locationId}
+    </update>
+    <!--eco location 삭제-->
+    <delete id="deleteEcoLocation">
+        DELETE FROM eco_location WHERE location_id=#{locationId}
+    </delete>
 </mapper>
