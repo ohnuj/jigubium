@@ -59,6 +59,10 @@
             AND b.board_type = #{boardType}
         </if>
 
+            <if test="memberId != null">
+                AND b.member_id = #{memberId}
+            </if>
+
 
         <if test="keyword != null and keyword != ''">
 
@@ -111,13 +115,15 @@
             LEFT JOIN board_like bl
                 ON b.board_id = bl.board_id
 
-            <where>
+        <where>
 
-
-            <if test="boardType != null">
-                AND  b.board_type = #{boardType}
+            <if test="memberId != null">
+                AND b.member_id = #{memberId}
             </if>
 
+            <if test="boardType != null">
+                AND b.board_type = #{boardType}
+            </if>
 
             <if test="keyword != null and keyword != ''">
                <choose>
