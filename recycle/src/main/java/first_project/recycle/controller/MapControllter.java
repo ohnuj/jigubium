@@ -1,6 +1,7 @@
 package first_project.recycle.controller;
 
 import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.ecoLocationdto.yangcheon.YangcheonBatteryBinResponse;
 import first_project.recycle.service.mapservice.dongjakservice.DongjakBatteryBinService;
 import first_project.recycle.service.mapservice.dongjakservice.DongjakClothingBinService;
 import first_project.recycle.service.mapservice.dongjakservice.DongjakMedicineBinService;
@@ -15,6 +16,7 @@ import first_project.recycle.service.mapservice.wasteelectronicsservice.WasteEle
 import first_project.recycle.service.EcoLocationService;
 import first_project.recycle.service.mapservice.jongnoservice.JongnoBatteryBinService;
 import first_project.recycle.service.mapservice.jongnoservice.JongnoClothingBinService;
+import first_project.recycle.service.mapservice.yangcheonservice.YangcheonBatteryBinService;
 import first_project.recycle.service.mapservice.yeongdeungposervice.YeongdeungpoBatteryBinService;
 import first_project.recycle.service.mapservice.yeongdeungposervice.YeongdeungpoClothingBinService;
 import first_project.recycle.service.mapservice.yongsanservice.YongsanClothingBinService;
@@ -85,6 +87,9 @@ public class MapControllter {
     // 중랑구 폐건전지, 폐형광등 API 서비스 객체
     private final JungnangBatteryBinService jungnangBatteryBinService;
 
+    // 양천구 폐건전지, 폐형광등 API 서비스 객체
+    private final YangcheonBatteryBinService yangcheonBatteryBinService;
+
     //DB 조회용 서비스 객체
     private final EcoLocationService ecoLocationService;
 
@@ -112,7 +117,8 @@ public class MapControllter {
             SeongbukClothingBinService seongbukClothingBinService,
             SeongbukBatteryBinService seongbukBatteryBinService,
             JungnangBatteryBinService jungnangBatteryBinService,
-            JungnangClothingBinService jungnangClothingBinService
+            JungnangClothingBinService jungnangClothingBinService,
+            YangcheonBatteryBinService yangcheonBatteryBinService
     ) {
         this.jongnoClothingBinService = jongnoClothingBinService;
         this.jongnoBatteryBinService = jongnoBatteryBinService;
@@ -136,6 +142,7 @@ public class MapControllter {
         this.seongbukBatteryBinService = seongbukBatteryBinService;
         this.jungnangBatteryBinService = jungnangBatteryBinService;
         this.jungnangClothingBinService = jungnangClothingBinService;
+        this.yangcheonBatteryBinService = yangcheonBatteryBinService;
     }
 
     //지도 페이지 이동
@@ -275,13 +282,18 @@ public class MapControllter {
     public List<ecoLocation> importJungnangClothingBins(){
         return jungnangClothingBinService.importClothingBins();
     }
-
-    // 중랑구 폐건전지, 페형광등 api 호출 및 db에 저장
+    // 중랑구 폐건전지, 폐형광등 api 호출 및 db에 저장
     @PostMapping("/api/jungnang-battery-bins/import")
     @ResponseBody
     public List<ecoLocation> importJungnangBatteryBins(){
         return jungnangBatteryBinService.getBatteryBins();
     }
+
+    // 양천구 폐건전지, 폐형광등 api 호출 및 DB에 저장
+    @PostMapping("/api/yangcheon-battery-bins/import")
+    @ResponseBody
+    public List<ecoLocation> importYangcheonBatteryBins() { return yangcheonBatteryBinService.getBatteryBins();}
+
 
     // 폐가전 CSV DB 저장
     @PostMapping("/api/waste-electronics/import")
