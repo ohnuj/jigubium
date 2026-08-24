@@ -1,4 +1,4 @@
-package first_project.recycle.domain.ecoLocationdto;
+package first_project.recycle.domain;
 
 import lombok.Data;
 
