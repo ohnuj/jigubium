@@ -1,5 +1,4 @@
-package first_project.recycle.service.mapservice.gangnamservice;
-
+package first_project.recycle.service.mapservice.guroservice;
 import first_project.recycle.domain.ecoLocation;
 import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
@@ -14,13 +13,14 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-// csv에 좌표가 없기때문에 카카오 api로 변화해 가져와야 함
+// CSV에 좌표가 없어 카카오 주소 검색을 사용
 @Service
-public class GangnamBatteryBinService {
+public class GuroClothingBinService {
+
     private final KakaoAddressService kakaoAddressService;
     private final EcoLocationMapper ecoLocationMapper;
 
-    public GangnamBatteryBinService(
+    public GuroClothingBinService(
             KakaoAddressService kakaoAddressService,
             EcoLocationMapper ecoLocationMapper
     ) {
@@ -28,20 +28,26 @@ public class GangnamBatteryBinService {
         this.ecoLocationMapper = ecoLocationMapper;
     }
 
-    // CSV 데이터를 변환하고 DB에 저장
-    public List<ecoLocation> importBatteryBins() {
+    /**
+     * 1. 구로구 의류수거함 CSV 불러오기
+     * 2. 생략된 주소에 서울특별시 구로구 추가
+     * 3. 카카오 주소 검색으로 좌표 변환
+     * 4. 중복되지 않은 정상 데이터만 DB에 저장
+     */
+    public List<ecoLocation> importClothingBins() {
 
         List<ecoLocation> locations = new ArrayList<>();
 
+        // 1. resources/data의 CSV 파일을 CP949로 읽기
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(
                         new ClassPathResource(
-                                "data/gangnam-battery-bin.csv"
+                                "data/guro-clothing-bin.csv"
                         ).getInputStream(),
                         Charset.forName("CP949")
                 )
         )) {
-            // 컬럼명 건너뛰기
+            // 첫 번째 컬럼명 행 건너뛰기
             reader.readLine();
 
             String line;
@@ -50,41 +56,37 @@ public class GangnamBatteryBinService {
 
                 List<String> data = parseCsvLine(line);
 
-                if (data.size() < 6) {
+                if (data.size() < 4) {
                     continue;
                 }
 
-                String adminDong = data.get(0).trim();
-                String originalAddress = data.get(1).trim();
+                String adminDong = data.get(1).trim();
+                String originalAddress = data.get(2).trim();
 
-
+                // 주소가 없으면 좌표 검색이 불가능하므로 제외
                 if (originalAddress.isEmpty()) {
                     continue;
                 }
 
+                // 2. 생략된 지역명을 주소 앞에 추가
+                String roadAddress =
+                        normalizeAddress(originalAddress);
+
                 ecoLocation location = new ecoLocation();
 
-                location.setLocationName(originalAddress);
-
-                location.setLocationType(
-                        "폐건전지·폐형광등 수거함"
-                );
+                location.setLocationName("의류수거함");
+                location.setLocationType("의류수거함");
 
                 location.setAdminDong(
                         adminDong.isEmpty() ? null : adminDong
                 );
 
-                // DB에는 상세주소가 포함된 원본 주소 저장
-                location.setRoadAddress(originalAddress);
+                location.setRoadAddress(roadAddress);
 
-                // 카카오 검색에는 정리한 주소 사용
-                String searchAddress =
-                        cleanAddress(originalAddress);
-
+                // 3. 주소를 카카오 API로 검색
                 KakaoAddressResponse kakaoResponse =
-                        kakaoAddressService.searchAddress(
-                                searchAddress
-                        );
+                        kakaoAddressService
+                                .searchAddress(roadAddress);
 
                 if (hasSearchResult(kakaoResponse)) {
 
@@ -112,7 +114,7 @@ public class GangnamBatteryBinService {
 
                 locations.add(location);
 
-                // 같은 주소와 장소 유형인지 확인
+                // 4. 같은 주소와 장소 유형이 있는지 확인
                 int count =
                         ecoLocationMapper
                                 .countByRoadAddressAndLocationType(
@@ -132,44 +134,45 @@ public class GangnamBatteryBinService {
         return locations;
     }
 
+    // 카카오 검색에 사용할 전체 주소 생성
+    private String normalizeAddress(String address) {
 
-
-    // 상세주소와 괄호를 제거해 카카오 검색용 주소 생성
-    private String cleanAddress(String address) {
-
-        String cleanedAddress = address.trim();
-
-        int commaIndex = cleanedAddress.indexOf(",");
-
-        if (commaIndex >= 0) {
-            cleanedAddress =
-                    cleanedAddress.substring(0, commaIndex);
-        }
-
-        cleanedAddress =
-                cleanedAddress
-                        .replaceAll(
-                                "\\s*\\([^)]*\\)\\s*$",
-                                ""
-                        )
+        String normalizedAddress =
+                address
+                        .replace('\u00A0', ' ')
+                        .replaceAll("\\s+", " ")
                         .trim();
 
-        // 도로명과 건물번호 사이에 공백이 없는 주소 보정
-        cleanedAddress =
-                cleanedAddress.replaceFirst(
-                        "(?<=[로길])(\\d+(?:-\\d+)?)$",
-                        " $1"
-                );
+        if (normalizedAddress.startsWith("서울특별시")) {
+            return normalizedAddress;
+        }
 
-        return cleanedAddress;
+        if (normalizedAddress.startsWith("서울시")) {
+            return normalizedAddress.replaceFirst(
+                    "^서울시\\s*",
+                    "서울특별시 "
+            );
+        }
+
+        if (normalizedAddress.startsWith("서울 ")) {
+            return normalizedAddress.replaceFirst(
+                    "^서울\\s+",
+                    "서울특별시 "
+            );
+        }
+
+        if (normalizedAddress.startsWith("구로구")) {
+            return "서울특별시 " + normalizedAddress;
+        }
+
+        return "서울특별시 구로구 " + normalizedAddress;
     }
 
-    // 큰따옴표 안의 쉼표는 하나의 값으로 처리
+    // 큰따옴표 안의 쉼표를 하나의 컬럼으로 처리
     private List<String> parseCsvLine(String line) {
 
         List<String> values = new ArrayList<>();
         StringBuilder currentValue = new StringBuilder();
-
         boolean insideQuotes = false;
 
         for (int i = 0; i < line.length(); i++) {
