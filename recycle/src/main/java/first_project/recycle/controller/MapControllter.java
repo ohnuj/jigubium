@@ -6,6 +6,8 @@ import first_project.recycle.service.mapservice.dongjakservice.DongjakClothingBi
 import first_project.recycle.service.mapservice.dongjakservice.DongjakMedicineBinService;
 import first_project.recycle.service.mapservice.gangnamservice.GangnamBatteryBinService;
 import first_project.recycle.service.mapservice.gangnamservice.GangnamClothingBinService;
+import first_project.recycle.service.mapservice.jungnangservice.JungnangBatteryBinService;
+import first_project.recycle.service.mapservice.jungnangservice.JungnangClothingBinService;
 import first_project.recycle.service.mapservice.seodaemunservice.SeodaemunClothingBinService;
 import first_project.recycle.service.mapservice.seongbukservice.SeongbukBatteryBinService;
 import first_project.recycle.service.mapservice.seongbukservice.SeongbukClothingBinService;
@@ -78,6 +80,11 @@ public class MapControllter {
     // 성북구 폐건전지,폐형광등 서비스
     private final SeongbukBatteryBinService seongbukBatteryBinService;
 
+    // 중랑구 의류수거함 서비스 객체
+    private final JungnangClothingBinService jungnangClothingBinService;
+    // 중랑구 폐건전지, 폐형광등 API 서비스 객체
+    private final JungnangBatteryBinService jungnangBatteryBinService;
+
     //DB 조회용 서비스 객체
     private final EcoLocationService ecoLocationService;
 
@@ -103,7 +110,9 @@ public class MapControllter {
             GangnamClothingBinService gangnamClothingBinService,
             GangnamBatteryBinService gangnamBatteryBinService,
             SeongbukClothingBinService seongbukClothingBinService,
-            SeongbukBatteryBinService seongbukBatteryBinService
+            SeongbukBatteryBinService seongbukBatteryBinService,
+            JungnangBatteryBinService jungnangBatteryBinService,
+            JungnangClothingBinService jungnangClothingBinService
     ) {
         this.jongnoClothingBinService = jongnoClothingBinService;
         this.jongnoBatteryBinService = jongnoBatteryBinService;
@@ -125,6 +134,8 @@ public class MapControllter {
         this.gangnamBatteryBinService = gangnamBatteryBinService;
         this.seongbukClothingBinService = seongbukClothingBinService;
         this.seongbukBatteryBinService = seongbukBatteryBinService;
+        this.jungnangBatteryBinService = jungnangBatteryBinService;
+        this.jungnangClothingBinService = jungnangClothingBinService;
     }
 
     //지도 페이지 이동
@@ -256,6 +267,20 @@ public class MapControllter {
     @ResponseBody
     public List<ecoLocation> importSeongbukBatteryBins() {
         return seongbukBatteryBinService.getBatteryBins();
+    }
+
+    // 중랑구 의류수거함 CSV 호출 및 DB에 저장
+    @PostMapping("/api/jungnang-clothing-bins/import")
+    @ResponseBody
+    public List<ecoLocation> importJungnangClothingBins(){
+        return jungnangClothingBinService.importClothingBins();
+    }
+
+    // 중랑구 폐건전지, 페형광등 api 호출 및 db에 저장
+    @PostMapping("/api/jungnang-battery-bins/import")
+    @ResponseBody
+    public List<ecoLocation> importJungnangBatteryBins(){
+        return jungnangBatteryBinService.getBatteryBins();
     }
 
     // 폐가전 CSV DB 저장

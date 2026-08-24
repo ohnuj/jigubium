@@ -179,9 +179,7 @@ JavaScript fetch
 </footer>
 
 
-<!--카카오맵 api 인증키 넣기-->
 
-<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=...&libraries=clusterer,services"></script>
 
 <!--카카오맵 api 인증키 넣기-->
 
@@ -201,10 +199,43 @@ JavaScript fetch
     var options = {
         // 지도 시작 중심 좌표(현재 광화문임)
         center: new kakao.maps.LatLng(37.5728, 126.9769),
-        level: 3 // 지도 확대 레벨
+        level: 4 // 지도 확대 레벨
     };
     // 카카오 지도 생성자 container와 options 사용하기
     var map = new kakao.maps.Map(container, options);
+    // =========================
+    // 서울 지도 범위 제한
+    // =========================
+
+    // 서울의 대략적인 남서쪽과 북동쪽 경계
+    const seoulBounds = new kakao.maps.LatLngBounds(
+        new kakao.maps.LatLng(37.413, 126.734),
+        new kakao.maps.LatLng(37.715, 127.269)
+    );
+
+
+
+    // 서울보다 지나치게 넓게 축소되지 않도록 제한
+    map.setMaxLevel(9);
+
+    // 마지막으로 서울 범위 안에 있었던 중심 좌표
+    let lastValidCenter = map.getCenter();
+
+    // 지도 중심이 서울 밖으로 이동하면 이전 위치로 복귀
+    kakao.maps.event.addListener(
+        map,
+        "center_changed",
+        function () {
+            const currentCenter = map.getCenter();
+
+            if (seoulBounds.contain(currentCenter)) {
+                lastValidCenter = currentCenter;
+                return;
+            }
+
+            map.setCenter(lastValidCenter);
+        }
+    );
 
     // 사용자 현재 위치 객체
     let currentUserPosition = null;
