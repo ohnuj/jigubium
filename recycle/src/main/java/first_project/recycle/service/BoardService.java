@@ -45,13 +45,100 @@ public class BoardService {
         return boardMapper.findRecentBoards();
     }
 
-    // 최신 공지사항 3개
+    // 관리자용 최신 공지사항 3개
     public List<BoardListResponse> getRecentNotices(){
         return boardMapper.findRecentNotices();
     }
 
-    // 전체 공지사항
+    // 관리자용 전체 공지사항
+    public List<BoardListResponse> getAllNotices(){
+        return boardMapper.findAllNotices();
+    }
 
+    // 관리자용 공지사항 상세조회
+    public BoardDetailResponse getNotice(Long boardId){
+        BoardDetailResponse notice = getBoardDetail(boardId);
+
+        if (notice.getBoardType() != BoardType.NOTICE) {
+            throw new NotFoundException("존재하지 않는 공지사항입니다.");
+        }
+        return notice;
+    }
+
+    // 관리자용 공지사항 작성
+    @Transactional
+    public Long writeNotice(Long memberId,BoardCreateRequest request){
+        validateBoardRequest(request.getTitle(), request.getContent());
+
+        Board board = new Board();
+
+        board.setMemberId(memberId);
+
+        // 서버에서 boardType NOTICE로 지정
+        board.setBoardType(BoardType.NOTICE);
+
+        board.setTitle(request.getTitle());
+        board.setContent(request.getContent());
+
+        boardMapper.insertBoard(board);
+        return board.getBoardId();
+    }
+    // 관리자용 공지사항 수정
+    @Transactional
+    public boolean updateNotice(
+            Long boardId,
+            BoardUpdateRequest request) {
+        // 공지사항 조회
+        BoardDetailResponse board = boardMapper.findById(boardId);
+
+        if (board == null) {
+            throw new NotFoundException("존재하지 않는 공지사항입니다.");
+        }
+
+        // 공지사항이 아닌 글 차단
+        if (board.getBoardType() != BoardType.NOTICE) {
+            throw new ForbiddenException("공지사항만 수정 가능합니다.");
+        }
+
+        validateBoardRequest(request.getTitle(), request.getContent());
+
+        int result = boardMapper.updateNotice(boardId, request.getTitle(), request.getContent());
+        return result > 0;
+        }
+
+    // 관리자용 공지사항 삭제
+    @Transactional
+    public boolean deleteNotice(Long boardId) {
+
+        // 공지사항 조회
+        BoardDetailResponse board = boardMapper.findById(boardId);
+
+        if (board == null) {
+            throw new NotFoundException("존재하지 않는 공지사항입니다.");
+        }
+
+        // 공지사항이 아닌 글 차단
+        if (board.getBoardType() != BoardType.NOTICE) {
+            throw new ForbiddenException("공지사항만 삭제 가능합니다.");
+        }
+
+        // 이미지 첨부 시 조회
+        List<BoardImage> images = boardImageMapper.findByBoardId(boardId);
+        // 연결 댓글 삭제
+        commentService.deleteByBoardId(boardId);
+        // 이미지 DB데이터 삭제
+        boardImageMapper.deleteByBoardId(boardId);
+        // 공지사항 삭제
+        int result = boardMapper.deleteNotice(boardId);
+        if(result == 0){
+            return false;
+        }
+        //트랜잭션 정상 커밋 후 실제 파일 삭제
+        for (BoardImage image : images) {
+            deleteFileAfterCommit(image.getImageUrl());
+        }
+        return true;
+    }
 
     // 게시글 목록 + 검색 + 타입 + 페이징 + 내 글 보기
     public BoardPageResponse getBoards(
@@ -109,6 +196,13 @@ public class BoardService {
                 request.getTitle(),
                 request.getContent()
         );
+
+        // 일반 사용자는 NOTICE 작성 금지
+        if (request.getBoardType() == BoardType.NOTICE) {
+            throw new ForbiddenException(
+                    "공지사항은 관리자만 작성할 수 있습니다."
+            );
+        }
 
         // 이미지 최대 5장 검사
         if (images != null) {
@@ -441,12 +535,24 @@ public class BoardService {
     public int getBoardCount(Long memberId) {
         return mypageMapper.countBoardsById(memberId);
     }
-    public BoardListResponse getPreviousBoard(Long boardId) {
-        return boardMapper.findPreviousBoard(boardId);
+    public BoardListResponse getPreviousBoard(
+            Long boardId,
+            BoardType boardType) {
+
+        return boardMapper.findPreviousBoard(
+                boardId,
+                boardType
+        );
     }
 
-    public BoardListResponse getNextBoard(Long boardId) {
-        return boardMapper.findNextBoard(boardId);
+    public BoardListResponse getNextBoard(
+            Long boardId,
+            BoardType boardType) {
+
+        return boardMapper.findNextBoard(
+                boardId,
+                boardType
+        );
     }
 
     /**
