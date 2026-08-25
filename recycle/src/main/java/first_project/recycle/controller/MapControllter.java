@@ -7,8 +7,11 @@ import first_project.recycle.service.mapservice.dongjakservice.DongjakClothingBi
 import first_project.recycle.service.mapservice.dongjakservice.DongjakMedicineBinService;
 import first_project.recycle.service.mapservice.gangnamservice.GangnamBatteryBinService;
 import first_project.recycle.service.mapservice.gangnamservice.GangnamClothingBinService;
+import first_project.recycle.service.mapservice.guroservice.GuroClothingBinService;
 import first_project.recycle.service.mapservice.jungnangservice.JungnangBatteryBinService;
 import first_project.recycle.service.mapservice.jungnangservice.JungnangClothingBinService;
+import first_project.recycle.service.mapservice.maposervice.MapoBatteryBinService;
+import first_project.recycle.service.mapservice.maposervice.MapoMedicineBinService;
 import first_project.recycle.service.mapservice.seodaemunservice.SeodaemunClothingBinService;
 import first_project.recycle.service.mapservice.seongbukservice.SeongbukBatteryBinService;
 import first_project.recycle.service.mapservice.seongbukservice.SeongbukClothingBinService;
@@ -106,6 +109,15 @@ public class MapControllter {
     // 송파구 폐의약품 수거장소 서비스 객체
     private final SongpaMedicineBinService songpaMedicineBinService;
 
+    // 구로구 의류수거함 서비스 객체
+    private final GuroClothingBinService guroClothingBinService;
+
+    // 마포구 폐건전지,폐형광등 서비스 객체
+    private final MapoBatteryBinService mapoBatteryBinService;
+    // 마포구 폐의약품 수거장소 서비스 객체
+    private final MapoMedicineBinService mapoMedicineBinService;
+
+
     //DB 조회용 서비스 객체
     private final EcoLocationService ecoLocationService;
 
@@ -139,7 +151,10 @@ public class MapControllter {
             YangcheonMedicineBinService yangcheonMedicineBinService,
             SongpaClothingBinService songpaClothingBinService,
             SongpaBatteryBinService songpaBatteryBinService,
-            SongpaMedicineBinService songpaMedicineBinService
+            SongpaMedicineBinService songpaMedicineBinService,
+            GuroClothingBinService guroClothingBinService,
+            MapoBatteryBinService mapoBatteryBinService,
+            MapoMedicineBinService mapoMedicineBinService
     ) {
         this.jongnoClothingBinService = jongnoClothingBinService;
         this.jongnoBatteryBinService = jongnoBatteryBinService;
@@ -169,6 +184,9 @@ public class MapControllter {
         this.songpaClothingBinService = songpaClothingBinService;
         this.songpaBatteryBinService = songpaBatteryBinService;
         this.songpaMedicineBinService = songpaMedicineBinService;
+        this.guroClothingBinService = guroClothingBinService;
+        this.mapoBatteryBinService = mapoBatteryBinService;
+        this.mapoMedicineBinService = mapoMedicineBinService;
     }
 
     //지도 페이지 이동
@@ -343,10 +361,30 @@ public class MapControllter {
     public List<ecoLocation> importSongpaBatteryBins(){
         return songpaBatteryBinService.importBatteryBins();
     }// 송파구 폐의약품 수거함 api 호출 및 DB에 저장
-    @GetMapping("/api/songpa-medicine-bins/import")
+    @PostMapping("/api/songpa-medicine-bins/import")
     @ResponseBody
     public List<ecoLocation> importSongpaMedicineBins(){
         return songpaMedicineBinService.getMedicineBins();
+    }
+
+    // 구로구 의류수거함 CSV 호출 및 DB 저장
+    @PostMapping("/api/guro-clothing-bins/import")
+    @ResponseBody
+    public List<ecoLocation> importGuroClothingBins() {
+        return guroClothingBinService.importClothingBins();
+    }
+
+    // 마포구 폐건전지, 폐형광등 CSV 호출 및 DB 저장
+    @PostMapping("/api/mapo-battery-bins/import")
+    @ResponseBody
+    public List<ecoLocation> importMapoBatteryBins(){
+        return mapoBatteryBinService.importBatteryBins();
+    }
+    // 마포구 폐의약품 CSV 호출 및 DB 저장
+    @PostMapping("/api/mapo-medicine-bins/import")
+    @ResponseBody
+    public List<ecoLocation> importMapoMedicineBins(){
+        return mapoMedicineBinService.importMedicineBins();
     }
 
 
