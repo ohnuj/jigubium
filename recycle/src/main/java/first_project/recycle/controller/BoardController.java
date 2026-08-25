@@ -79,6 +79,22 @@ public class BoardController {
                         memberId
                 );
 
+// 전체 게시판을 보고 있을 때만
+// 최신 공지 3개를 상단에 고정
+        if (boardType == null
+                && (keyword == null || keyword.isBlank())
+                && sort == null
+                && !myPosts) {
+
+            List<BoardListResponse> notices =
+                    boardService.getRecentNotices();
+
+            model.addAttribute(
+                    "notices",
+                    notices
+            );
+        }
+
         // 게시글 목록
         model.addAttribute(
                 "boards",
@@ -163,7 +179,7 @@ public class BoardController {
             return "redirect:/login";
         }
         // 작성 페이지에서 게시판 타입 선택에 사용
-        model.addAttribute("boardTypes", BoardType.values());
+        model.addAttribute("boardTypes", List.of(BoardType.FREE,BoardType.INFO,BoardType.SUGGESTION));
 
         return "board/write";
     }
@@ -250,21 +266,22 @@ public class BoardController {
                 board
         );
 
+        if (board.getBoardType() != BoardType.NOTICE) {
+            // 댓글 페이징 조회
+            CommentPageResponse commentResult =
+                    commentService.getCommentPage(
+                            boardId,
+                            commentPage
+                    );
 
-        // 댓글 페이징 조회
-        CommentPageResponse commentResult =
-                commentService.getCommentPage(
-                        boardId,
-                        commentPage
-                );
-
-        // 해당 게시글의 댓글 목록
-        model.addAttribute(
-                "comments",
-                commentResult.getComments()
-        );
-        model.addAttribute("commentPaging",
-                            commentResult.getPaging());
+            // 해당 게시글의 댓글 목록
+            model.addAttribute(
+                    "comments",
+                    commentResult.getComments()
+            );
+            model.addAttribute("commentPaging",
+                    commentResult.getPaging());
+        }
 
         // 로그인 사용자
         User loginUser =
@@ -274,12 +291,18 @@ public class BoardController {
 
         model.addAttribute(
                 "previousBoard",
-                boardService.getPreviousBoard(boardId)
+                boardService.getPreviousBoard(
+                        boardId,
+                        board.getBoardType()
+                )
         );
 
         model.addAttribute(
                 "nextBoard",
-                boardService.getNextBoard(boardId)
+                boardService.getNextBoard(
+                        boardId,
+                        board.getBoardType()
+                )
         );
 
         // 좋아요 수
@@ -344,7 +367,11 @@ public class BoardController {
         }
 
         model.addAttribute("board",board);
-        model.addAttribute("boardTypes", BoardType.values());
+        model.addAttribute("boardTypes", List.of(
+                BoardType.FREE,
+                BoardType.INFO,
+                BoardType.SUGGESTION
+        ));
         model.addAttribute("page", page);
         model.addAttribute("keyword", keyword);
         model.addAttribute("searchType", searchType);

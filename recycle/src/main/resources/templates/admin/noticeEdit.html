@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>공지사항 수정</title>
+
+  <link rel="stylesheet" th:href="@{/CSS/admin.css(v=3)}">
+  <link rel="stylesheet" th:href="@{/CSS/common.css(v=3)}">
+</head>
+
+<body>
+
+<!-- =====================================================
+     NAV
+===================================================== -->
+<th:block th:replace="~{fragments/common :: nav}">
+</th:block>
+
+
+<main>
+
+  <!-- =====================================================
+       PAGE HEADER
+  ===================================================== -->
+  <section class="admin-page-header">
+
+    <div class="admin-page-header-inner">
+
+            <span class="admin-page-label">
+                NOTICE MANAGEMENT
+            </span>
+
+      <h1>
+        공지사항 수정
+      </h1>
+
+      <p>
+        등록된 공지사항의 제목과 내용을 수정할 수 있습니다.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       CONTENT
+  ===================================================== -->
+  <section class="admin-list-content">
+
+
+    <!-- 상단 -->
+    <div class="admin-list-header">
+
+      <div>
+
+                <span class="section-label">
+                    EDIT NOTICE
+                </span>
+
+        <h2>
+          공지사항 수정
+        </h2>
+
+        <p>
+          수정할 내용을 확인한 뒤 저장해주세요.
+        </p>
+
+      </div>
+
+
+      <a th:href="@{/admin}"
+         class="admin-home-button">
+        ← 관리자 페이지
+      </a>
+
+    </div>
+
+
+    <!-- =================================================
+         수정 카드
+    ================================================== -->
+    <div class="notice-edit-card">
+
+      <div class="notice-edit-card-header">
+
+        <div>
+
+                    <span class="notice-badge-small">
+                        공지
+                    </span>
+
+          <h3 th:text="${notice.title}">
+            공지사항 제목
+          </h3>
+
+          <p>
+            작성자 관리자
+            <span class="notice-meta-divider">·</span>
+
+            <span th:text="${#temporals.format(
+                                notice.createdAt,
+                                'yyyy-MM-dd HH:mm'
+                        )}">
+                            2026-08-25 15:15
+                        </span>
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- 수정 FORM -->
+      <form th:action="@{/admin/notices/{boardId}/edit(
+                        boardId=${notice.boardId}
+                    )}"
+            method="post"
+            class="notice-edit-form">
+
+
+        <!-- 제목 -->
+        <div class="notice-form-group">
+
+          <label for="noticeTitle">
+            제목
+          </label>
+
+          <input type="text"
+                 id="noticeTitle"
+                 name="title"
+                 th:value="${notice.title}"
+                 maxlength="255"
+                 required>
+
+        </div>
+
+
+        <!-- 내용 -->
+        <div class="notice-form-group">
+
+          <label for="noticeContent">
+            내용
+          </label>
+
+          <textarea id="noticeContent"
+                    name="content"
+                    rows="12"
+                    required
+                    th:text="${notice.content}"></textarea>
+
+        </div>
+
+
+        <!-- 버튼 -->
+        <div class="notice-edit-actions">
+
+          <a th:href="@{/admin}"
+             class="cancel-button">
+            취소
+          </a>
+
+          <button type="submit"
+                  class="save-button">
+            수정 저장
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+
+    <!-- 안내 -->
+    <div class="admin-notice">
+
+      <div class="notice-icon">
+        💡
+      </div>
+
+      <div>
+
+        <strong>
+          공지사항 수정 안내
+        </strong>
+
+        <p>
+          수정된 공지사항은 메인 화면과 커뮤니티에 즉시 반영됩니다.
+          공지사항의 게시판 타입은 NOTICE로 유지됩니다.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="admin-back-area">
+
+      <a th:href="@{/admin}">
+        ← 공지사항 관리로 돌아가기
+      </a>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+<th:block th:replace="~{fragments/common :: footer}">
+</th:block>
+
+</body>
+
+</html>

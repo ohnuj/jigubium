@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
-    <link rel="stylesheet" th:href="@{/CSS/home.css}">
+    <link rel="stylesheet" th:href="@{/CSS/home.css(v=2)}">
     <link rel="stylesheet" th:href="@{/CSS/common.css}">
 </head>
 
@@ -108,49 +108,148 @@
 
 
         <!-- 커뮤니티 -->
-        <table style="
-    width: 800px;
-    table-layout: fixed;
-    border-collapse: collapse;
-">
+        <table class="home-community-table">
 
-            <!-- 컬럼 너비 고정 -->
             <colgroup>
-                <col style="width: 10%;">
-                <col style="width: 50%;">
-                <col style="width: 25%;">
-                <col style="width: 15%;">
+                <col class="home-col-number">
+                <col class="home-col-type">
+                <col class="home-col-title">
+                <col class="home-col-writer">
+                <col class="home-col-date">
+                <col class="home-col-count">
+                <col class="home-col-count">
+                <col class="home-col-count">
             </colgroup>
+
 
             <!-- 컬럼명 -->
             <thead>
             <tr>
                 <th>번호</th>
+                <th>타입</th>
                 <th>제목</th>
                 <th class="text-center">작성자</th>
                 <th class="text-center">작성일</th>
+                <th class="text-center">조회수</th>
+                <th class="text-center">댓글수</th>
+                <th class="text-center">좋아요수</th>
             </tr>
             </thead>
 
-            <!-- 최신 게시글 -->
+
             <tbody>
+
+            <!-- =========================================
+                 최신 공지사항 3개
+            ========================================== -->
+            <tr th:each="notice : ${notices}"
+                class="home-notice-row">
+
+                <!-- 번호 -->
+                <td class="text-center home-notice-number">
+                    공지
+                </td>
+
+
+                <!-- 타입 -->
+                <td class="text-center">
+
+            <span class="home-type-badge notice">
+                공지
+            </span>
+
+                </td>
+
+
+                <!-- 제목 -->
+                <td class="home-community-title">
+
+                    <a th:href="@{/boards/{boardId}(boardId=${notice.boardId})}"
+                       th:text="${notice.title}">
+                        공지사항 제목
+                    </a>
+
+                </td>
+
+
+                <!-- 작성자 -->
+                <td class="text-center home-notice-writer">
+                    관리자
+                </td>
+
+
+                <!-- 작성일 -->
+                <td class="text-center"
+                    th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd')}">
+                    2026-08-25
+                </td>
+
+
+                <!-- 조회수 -->
+                <td class="text-center"
+                    th:text="${notice.viewCount}">
+                    0
+                </td>
+
+
+                <!-- 댓글수 -->
+                <td class="text-center home-notice-comment">
+                    -
+                </td>
+
+
+                <!-- 좋아요수 -->
+                <td class="text-center"
+                    th:text="${notice.likeCount}">
+                    0
+                </td>
+
+            </tr>
+
+
+            <!-- =========================================
+                 최신 일반 게시글 5개
+            ========================================== -->
             <tr th:each="board, stat : ${recentBoards}">
 
-                <td th:text="${totalBoardCount - stat.index}">
+                <!-- 번호 -->
+                <td class="text-center"
+                    th:text="${totalBoardCount - stat.index}">
                     1
                 </td>
 
+
+                <!-- 타입 -->
+                <td class="text-center">
+
+            <span class="home-type-badge free"
+                  th:if="${board.boardType.name() == 'FREE'}">
+                자유
+            </span>
+
+                    <span class="home-type-badge info"
+                          th:if="${board.boardType.name() == 'INFO'}">
+                정보
+            </span>
+
+                    <span class="home-type-badge suggestion"
+                          th:if="${board.boardType.name() == 'SUGGESTION'}">
+                건의
+            </span>
+
+                </td>
+
+
                 <!-- 제목 -->
-                <td style="
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        ">
-                    <a th:href="@{/boards/{id}(id=${board.boardId})}"
+                <td class="home-community-title">
+
+                    <a th:href="@{/boards/{boardId}(boardId=${board.boardId})}"
                        th:text="${board.title}">
                         게시글 제목
                     </a>
+
                 </td>
+
 
                 <!-- 작성자 -->
                 <td class="text-center"
@@ -158,15 +257,35 @@
                     홍길동
                 </td>
 
+
                 <!-- 작성일 -->
                 <td class="text-center"
                     th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd')}">
                     2026-08-24
                 </td>
 
+
+                <!-- 조회수 -->
+                <td class="text-center"
+                    th:text="${board.viewCount}">
+                    0
+                </td>
+
+
+                <!-- 댓글수 -->
+                <td class="text-center"
+                    th:text="${board.commentCount}">
+                    0
+                </td>
+
+
+                <!-- 좋아요수 -->
+                <td class="text-center"
+                    th:text="${board.likeCount}">
+                    0
+                </td>
             </tr>
             </tbody>
-
         </table>
     </div>
 </main>

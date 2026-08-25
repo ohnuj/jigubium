@@ -58,9 +58,17 @@ public interface BoardMapper {
     //조회수 증가
     int increaseViewCount(Long boarId);
 
-    BoardListResponse findPreviousBoard(Long boardId);
+    BoardListResponse findPreviousBoard(
+            @Param("boardId") Long boardId,
+            @Param("boardType") BoardType boardType
+    );
 
-    BoardListResponse findNextBoard(Long boardId);
+    BoardListResponse findNextBoard(
+            @Param("boardId") Long boardId,
+            @Param("boardType") BoardType boardType
+    );
+
+
 
     // 관리자용 공지글 (최신 3개)
     List<BoardListResponse> findRecentNotices();
@@ -68,4 +76,9 @@ public interface BoardMapper {
     // 관리자용 공지글 전체
     List<BoardListResponse> findAllNotices();
 
+    //관리자 공지사항 수정/삭제
+    int updateNotice(@Param("boardId")Long boardId,
+                     @Param("title") String title,
+                     @Param("content") String content);
+    int deleteNotice(@Param("boardId") Long boardId);
 }

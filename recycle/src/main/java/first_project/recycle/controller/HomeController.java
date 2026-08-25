@@ -16,6 +16,7 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model) {
 
+        model.addAttribute("notices",boardService.getRecentNotices());
         model.addAttribute(
                 "recentBoards",
                 boardService.getRecentBoards()

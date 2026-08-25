@@ -552,8 +552,8 @@ nav .active {
 
 
 /* 상단 종류 select */
-.location-search-box
-.admin-filter-select
+.location-search-box,
+.admin-filter-select,
 select[name="locationType"] {
 
     display: block;
@@ -589,8 +589,8 @@ select[name="locationType"] {
 }
 
 
-.location-search-box
-.admin-filter-select
+.location-search-box,
+.admin-filter-select,
 select[name="locationType"]:hover {
 
     background-color: #ffffff;
@@ -598,8 +598,8 @@ select[name="locationType"]:hover {
 }
 
 
-.location-search-box
-.admin-filter-select
+.location-search-box,
+.admin-filter-select,
 select[name="locationType"]:focus {
 
     background-color: #ffffff;
@@ -615,7 +615,7 @@ select[name="locationType"]:focus {
    수정폼 select
 ========================================================= */
 
-.admin-edit-form
+.admin-edit-form,
 select[name="locationType"] {
 
     display: block;
@@ -648,7 +648,7 @@ select[name="locationType"] {
 }
 
 
-.admin-edit-form
+.admin-edit-form,
 select[name="locationType"]:focus {
 
     border-color: #79a971;
@@ -1260,8 +1260,460 @@ select[name="locationType"]:focus {
 
     font-size: 11px;
 }
+/* =========================================================
+   NOTICE MANAGEMENT
+========================================================= */
+
+.admin-notice-management {
+    margin-bottom: 48px;
+}
+
+.notice-management-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+
+    gap: 22px;
+}
 
 
+/* 공통 카드 */
+.notice-write-card,
+.notice-list-card {
+    padding: 28px;
+
+    border: 1px solid #dce7d7;
+    border-radius: 18px;
+
+    background: #ffffff;
+
+    box-shadow:
+            0 8px 24px rgba(35, 72, 44, 0.05);
+}
+
+
+.notice-card-header {
+    margin-bottom: 24px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+
+.notice-card-label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #4c8b49;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 0.07em;
+}
+
+
+.notice-card-header h3 {
+    margin: 0;
+
+    color: #173f2a;
+
+    font-size: 20px;
+    letter-spacing: -0.03em;
+}
+
+
+.notice-card-icon {
+    width: 46px;
+    height: 46px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: #fff2ee;
+
+    font-size: 21px;
+}
+
+
+/* =========================================================
+   NOTICE WRITE FORM
+========================================================= */
+
+.notice-write-form {
+    display: grid;
+
+    gap: 18px;
+}
+
+
+.notice-form-group {
+    display: grid;
+
+    gap: 8px;
+}
+
+
+.notice-form-group label {
+    color: #425649;
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+.notice-form-group input,
+.notice-form-group textarea {
+    width: 100%;
+
+    padding: 12px 14px;
+
+    border: 1px solid #d6dfd2;
+    border-radius: 10px;
+
+    background: #fafcf8;
+
+    color: #34443a;
+
+    font-size: 13px;
+    line-height: 1.65;
+
+    outline: none;
+
+    transition:
+            border-color 0.2s,
+            box-shadow 0.2s,
+            background 0.2s;
+}
+
+
+.notice-form-group input {
+    height: 46px;
+}
+
+
+.notice-form-group textarea {
+    min-height: 190px;
+
+    resize: vertical;
+}
+
+
+.notice-form-group input:focus,
+.notice-form-group textarea:focus {
+    border-color: #79a971;
+
+    background: #ffffff;
+
+    box-shadow:
+            0 0 0 3px rgba(121, 169, 113, 0.1);
+}
+
+
+.notice-form-group input::placeholder,
+.notice-form-group textarea::placeholder {
+    color: #9aa59c;
+}
+
+
+.notice-form-actions {
+    display: flex;
+
+    justify-content: flex-end;
+}
+
+
+.notice-submit-button {
+    min-width: 110px;
+
+    padding: 11px 18px;
+
+    border: 1px solid #185436;
+    border-radius: 9px;
+
+    background: #185436;
+
+    color: #ffffff;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+            background 0.2s,
+            transform 0.15s;
+}
+
+
+.notice-submit-button:hover {
+    background: #123f29;
+}
+
+
+.notice-submit-button:active {
+    transform: translateY(1px);
+}
+
+
+/* =========================================================
+   NOTICE LIST
+========================================================= */
+
+.notice-count {
+    padding: 6px 10px;
+
+    border: 1px solid #d8e4d3;
+    border-radius: 999px;
+
+    background: #f4f8f1;
+
+    color: #617665;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+
+.notice-admin-list {
+    border-top: 1px solid #e2e9de;
+}
+
+
+.notice-admin-item {
+    padding: 18px 2px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border-bottom: 1px solid #e8ede5;
+}
+
+
+.notice-admin-item:last-child {
+    border-bottom: none;
+}
+
+
+.notice-admin-main {
+    flex: 1;
+
+    min-width: 0;
+}
+
+
+.notice-title-row {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    min-width: 0;
+}
+
+
+.notice-badge-small {
+    flex-shrink: 0;
+
+    padding: 5px 9px;
+
+    border: 1px solid #efc6ba;
+    border-radius: 999px;
+
+    background: #fff2ee;
+
+    color: #b5523c;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.notice-admin-title {
+    min-width: 0;
+
+    overflow: hidden;
+
+    color: #264332;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+.notice-admin-title:hover {
+    color: #4e894d;
+}
+
+
+.notice-admin-meta {
+    margin-top: 8px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    color: #89958c;
+
+    font-size: 11px;
+}
+
+
+.notice-meta-divider {
+    color: #c1cac0;
+}
+
+
+.notice-admin-actions {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+}
+
+
+/* =========================================================
+   NOTICE EMPTY
+========================================================= */
+
+.notice-empty {
+    padding: 54px 20px;
+
+    text-align: center;
+}
+
+
+.notice-empty-icon {
+    margin-bottom: 10px;
+
+    font-size: 25px;
+}
+
+
+.notice-empty strong {
+    display: block;
+
+    color: #465a4b;
+
+    font-size: 13px;
+}
+
+
+.notice-empty p {
+    margin: 7px 0 0;
+
+    color: #919c94;
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+
+/* 데이터 관리와 간격 */
+.data-management-header {
+    margin-top: 0;
+}
+
+/* =========================================================
+   NOTICE EDIT
+========================================================= */
+
+.notice-edit-card {
+    max-width: 900px;
+
+    margin: 0 auto;
+
+    padding: 32px;
+
+    border: 1px solid #dce7d7;
+    border-radius: 18px;
+
+    background: #ffffff;
+
+    box-shadow:
+            0 8px 24px rgba(35, 72, 44, 0.05);
+}
+
+
+.notice-edit-card-header {
+    margin-bottom: 28px;
+    padding-bottom: 22px;
+
+    border-bottom: 1px solid #e2e9de;
+}
+
+
+.notice-edit-card-header h3 {
+    margin: 14px 0 8px;
+
+    color: #173f2a;
+
+    font-size: 23px;
+    line-height: 1.4;
+
+    letter-spacing: -0.03em;
+}
+
+
+.notice-edit-card-header p {
+    margin: 0;
+
+    color: #89958c;
+
+    font-size: 12px;
+}
+
+
+.notice-edit-form {
+    display: grid;
+
+    gap: 22px;
+}
+
+
+.notice-edit-form .notice-form-group textarea {
+    min-height: 300px;
+}
+
+
+.notice-edit-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 9px;
+
+    margin-top: 4px;
+}
+
+
+.notice-edit-actions .cancel-button,
+.notice-edit-actions .save-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 90px;
+}
 /* =========================================================
    RESPONSIVE
 ========================================================= */
@@ -1275,7 +1727,9 @@ select[name="locationType"]:focus {
     .admin-card-grid {
         grid-template-columns: 1fr;
     }
-
+    .notice-management-grid {
+        grid-template-columns: 1fr;
+    }
     .location-search-box form {
         flex-wrap: wrap;
     }
@@ -1315,6 +1769,22 @@ select[name="locationType"]:focus {
 
     .nav-right a:not(.active) {
         display: none;
+    }
+
+    .notice-write-card,
+    .notice-list-card {
+        padding: 22px 18px;
+    }
+
+    .notice-admin-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .notice-admin-actions {
+        width: 100%;
+
+        justify-content: flex-end;
     }
 
     .admin-hero-inner,
