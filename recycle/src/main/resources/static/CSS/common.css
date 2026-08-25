@@ -1,0 +1,455 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+
+/* ==================================================
+   COMMON
+================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+
+body {
+    font-family:
+            Pretendard,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif;
+}
+
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+
+/* ==================================================
+   NAV
+================================================== */
+
+.main-nav {
+
+    height: 64px;
+
+    background-color: #16492f;
+
+    color: #ffffff;
+
+}
+
+
+.nav-inner {
+
+    position: relative;
+
+    max-width: 1120px;
+    height: 100%;
+
+    margin: 0 auto;
+    padding: 0 20px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 18px;
+
+}
+
+
+
+/* 로고 */
+
+.main-nav .nav-logo {
+
+    margin-right: auto;
+
+    color: #ffffff;
+
+    font-size: 21px;
+    font-weight: 900;
+
+    white-space: nowrap;
+
+}
+
+
+
+/* 중앙 메뉴 */
+
+.main-nav .nav-center {
+
+    position: absolute;
+
+    left: 50%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 36px;
+
+    transform: translateX(-50%);
+
+}
+
+
+.main-nav .nav-center a {
+
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition:
+            color 0.2s ease;
+
+}
+
+
+.main-nav .nav-center a:hover {
+
+    color: #9bdd68;
+
+}
+
+
+
+/* 오른쪽 */
+
+.nav-user {
+
+    display: flex;
+    align-items: center;
+
+    gap: 18px;
+
+}
+
+
+.nav-user a {
+
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition:
+            color 0.2s ease;
+
+}
+
+
+.nav-user a:hover {
+
+    color: #9bdd68;
+
+}
+
+
+
+/* ==================================================
+   FOOTER
+================================================== */
+
+.footer {
+
+    width: 100%;
+
+    margin-top: auto;
+
+    background-color: #123d29;
+
+    color: #ffffff;
+
+}
+
+
+.footer-container {
+
+    width: 100%;
+    max-width: 1120px;
+
+    margin: 0 auto;
+
+    padding: 45px 20px 38px;
+
+    display: grid;
+
+    grid-template-columns:
+            2fr 1fr 1.5fr;
+
+    gap: 65px;
+
+}
+
+
+
+/* 브랜드 */
+
+.footer-logo {
+
+    display: inline-block;
+
+    margin-bottom: 14px;
+
+    color: #ffffff;
+
+    font-size: 21px;
+    font-weight: 900;
+
+}
+
+
+.footer-brand p {
+
+    margin: 0;
+
+    color:
+            rgba(255, 255, 255, 0.62);
+
+    font-size: 13px;
+
+    line-height: 1.8;
+
+}
+
+
+
+/* 메뉴 */
+
+.footer-menu {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+}
+
+
+.footer-menu h4,
+.footer-info h4 {
+
+    margin: 0 0 15px;
+
+    color: #b6e66c;
+
+    font-size: 13px;
+    font-weight: 800;
+
+}
+
+
+.footer-menu a {
+
+    margin-bottom: 9px;
+
+    color:
+            rgba(255, 255, 255, 0.68);
+
+    font-size: 13px;
+
+}
+
+
+.footer-menu a:hover {
+
+    color: #ffffff;
+
+}
+
+
+
+/* 프로젝트 */
+
+.footer-info p {
+
+    margin: 0 0 8px;
+
+    color:
+            rgba(255, 255, 255, 0.62);
+
+    font-size: 12px;
+
+    line-height: 1.6;
+
+}
+
+
+
+/* footer 하단 */
+
+.footer-bottom {
+
+    width: 100%;
+    max-width: 1120px;
+
+    margin: 0 auto;
+
+    padding: 18px 20px 24px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border-top:
+            1px solid
+            rgba(255, 255, 255, 0.10);
+
+    color:
+            rgba(255, 255, 255, 0.42);
+
+    font-size: 11px;
+
+}
+
+
+
+/* ==================================================
+   반응형
+================================================== */
+
+@media (max-width: 900px) {
+
+    .nav-inner {
+
+        padding: 0 24px;
+
+    }
+
+
+    .main-nav .nav-center {
+
+        gap: 22px;
+
+    }
+
+
+    .nav-user {
+
+        gap: 12px;
+
+    }
+
+
+    .footer-container {
+
+        grid-template-columns:
+                1fr 1fr;
+
+        gap: 35px;
+
+    }
+
+
+    .footer-brand {
+
+        grid-column:
+                span 2;
+
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .main-nav {
+
+        height: auto;
+
+    }
+
+
+    .nav-inner {
+
+        min-height: 60px;
+
+        padding: 12px 16px;
+
+        flex-wrap: wrap;
+
+        gap: 12px;
+
+    }
+
+
+    .main-nav .nav-center {
+
+        position: static;
+
+        order: 3;
+
+        width: 100%;
+
+        transform: none;
+
+        justify-content: center;
+
+    }
+
+
+    .main-nav .nav-logo {
+
+        font-size: 18px;
+
+    }
+
+
+    .nav-user {
+
+        margin-left: auto;
+
+        flex-wrap: wrap;
+
+        gap: 10px;
+
+    }
+
+
+    .main-nav .nav-center a,
+    .nav-user a {
+
+        font-size: 12px;
+
+    }
+
+
+    .footer-container {
+
+        grid-template-columns: 1fr;
+
+        gap: 28px;
+
+    }
+
+
+    .footer-brand {
+
+        grid-column: auto;
+
+    }
+
+
+    .footer-bottom {
+
+        flex-direction: column;
+
+        gap: 7px;
+
+    }
+
+}

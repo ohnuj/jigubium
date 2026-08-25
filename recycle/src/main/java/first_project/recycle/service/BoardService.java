@@ -45,6 +45,13 @@ public class BoardService {
         return boardMapper.findRecentBoards();
     }
 
+    // 최신 공지사항 3개
+    public List<BoardListResponse> getRecentNotices(){
+        return boardMapper.findRecentNotices();
+    }
+
+    // 전체 공지사항
+
 
     // 게시글 목록 + 검색 + 타입 + 페이징 + 내 글 보기
     public BoardPageResponse getBoards(
