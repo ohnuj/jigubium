@@ -7,8 +7,8 @@
 
     <title>관리자 페이지</title>
 
-    <link rel="stylesheet" th:href="@{/CSS/admin.css}">
-    <link rel="stylesheet" th:href="@{/CSS/common.css}">
+    <link rel="stylesheet" th:href="@{/CSS/admin.css(v=2)}">
+    <link rel="stylesheet" th:href="@{/CSS/common.css(v=2)}">
 </head>
 
 <body>
@@ -53,14 +53,236 @@
     <section class="admin-content">
 
 
-        <!-- 상단 제목 -->
-        <div class="admin-section-header">
+        <!-- =====================================================
+        공지사항 관리
+   ===================================================== -->
+        <section class="admin-notice-management">
+
+            <div class="admin-section-header">
+
+                <div>
+
+            <span class="section-label">
+                NOTICE MANAGEMENT
+            </span>
+
+                    <h2>
+                        공지사항 관리
+                    </h2>
+
+                    <p>
+                        서비스에 표시할 공지사항을 작성하고 관리할 수 있습니다.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="notice-management-grid">
+
+                <!-- =================================================
+                     공지사항 작성
+                ================================================== -->
+                <div class="notice-write-card">
+
+                    <div class="notice-card-header">
+
+                        <div>
+                    <span class="notice-card-label">
+                        NEW NOTICE
+                    </span>
+
+                            <h3>
+                                공지사항 작성
+                            </h3>
+                        </div>
+
+                        <div class="notice-card-icon">
+                            📢
+                        </div>
+
+                    </div>
+
+
+                    <form th:action="@{/admin/notices}"
+                          method="post"
+                          class="notice-write-form">
+
+                        <div class="notice-form-group">
+
+                            <label for="noticeTitle">
+                                제목
+                            </label>
+
+                            <input type="text"
+                                   id="noticeTitle"
+                                   name="title"
+                                   maxlength="255"
+                                   placeholder="공지사항 제목을 입력하세요."
+                                   required>
+
+                        </div>
+
+
+                        <div class="notice-form-group">
+
+                            <label for="noticeContent">
+                                내용
+                            </label>
+
+                            <textarea id="noticeContent"
+                                      name="content"
+                                      rows="8"
+                                      placeholder="공지사항 내용을 입력하세요."
+                                      required></textarea>
+
+                        </div>
+
+
+                        <div class="notice-form-actions">
+
+                            <button type="submit"
+                                    class="notice-submit-button">
+                                공지 등록
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- =================================================
+                     등록된 공지사항
+                ================================================== -->
+                <div class="notice-list-card">
+
+                    <div class="notice-card-header">
+
+                        <div>
+                    <span class="notice-card-label">
+                        NOTICE LIST
+                    </span>
+
+                            <h3>
+                                등록된 공지사항
+                            </h3>
+                        </div>
+
+                        <span class="notice-count"
+                              th:text="|총 ${#lists.size(notices)}개|">
+                    총 0개
+                </span>
+
+                    </div>
+
+
+                    <div class="notice-admin-list">
+
+                        <!-- 공지가 없을 때 -->
+                        <div class="notice-empty"
+                             th:if="${#lists.isEmpty(notices)}">
+
+                            <div class="notice-empty-icon">
+                                📭
+                            </div>
+
+                            <strong>
+                                등록된 공지사항이 없습니다.
+                            </strong>
+
+                            <p>
+                                왼쪽 작성란에서 새로운 공지사항을 등록해보세요.
+                            </p>
+
+                        </div>
+
+
+                        <!-- 공지가 있을 때 -->
+                        <div class="notice-admin-item"
+                             th:each="notice : ${notices}">
+
+                            <div class="notice-admin-main">
+
+                                <div class="notice-title-row">
+
+                            <span class="notice-badge-small">
+                                공지
+                            </span>
+
+                                    <a th:href="@{/boards/{boardId}(boardId=${notice.boardId})}"
+                                       th:text="${notice.title}"
+                                       class="notice-admin-title">
+                                        공지사항 제목
+                                    </a>
+
+                                </div>
+
+
+                                <div class="notice-admin-meta">
+
+                            <span>
+                                관리자
+                            </span>
+
+                                    <span class="notice-meta-divider">
+                                ·
+                            </span>
+
+                                    <span th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}">
+                                2026-08-25 14:30
+                            </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="notice-admin-actions">
+
+                                <a th:href="@{/admin/notices/{boardId}/edit(boardId=${notice.boardId})}"
+                                   class="edit-button">
+                                    수정
+                                </a>
+
+
+                                <form th:action="@{/admin/notices/{boardId}/delete(boardId=${notice.boardId})}"
+                                      method="post"
+                                      class="inline-delete-form"
+                                      onsubmit="return confirm('이 공지사항을 삭제하시겠습니까?');">
+
+                                    <button type="submit"
+                                            class="delete-button">
+                                        삭제
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             데이터 관리
+        ===================================================== -->
+        <div class="admin-section-header data-management-header">
 
             <div>
 
-                <span class="section-label">
-                    MANAGEMENT
-                </span>
+        <span class="section-label">
+            MANAGEMENT
+        </span>
 
                 <h2>
                     데이터 관리

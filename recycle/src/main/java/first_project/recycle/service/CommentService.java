@@ -1,12 +1,11 @@
 package first_project.recycle.service;
 
 
+import first_project.recycle.domain.BoardType;
 import first_project.recycle.domain.Comment;
 import first_project.recycle.domain.Paging;
-import first_project.recycle.dto.CommentCreateRequest;
-import first_project.recycle.dto.CommentPageResponse;
-import first_project.recycle.dto.CommentResponse;
-import first_project.recycle.dto.CommentUpdateRequest;
+import first_project.recycle.dto.*;
+import first_project.recycle.exception.ForbiddenException;
 import first_project.recycle.exception.NotFoundException;
 import first_project.recycle.repository.CommentMapper;
 import lombok.RequiredArgsConstructor;
@@ -47,9 +46,19 @@ public class CommentService {
             CommentCreateRequest request) {
 
         // 게시글 존재 여부 확인
-        if (boardMapper.findById(boardId) == null) {
+        BoardDetailResponse board =
+                boardMapper.findById(boardId);
+
+        if (board == null) {
             throw new NotFoundException(
                     "존재하지 않는 게시글입니다."
+            );
+        }
+
+// 공지사항 댓글 작성 차단
+        if (board.getBoardType() == BoardType.NOTICE) {
+            throw new ForbiddenException(
+                    "공지사항에는 댓글을 작성할 수 없습니다."
             );
         }
 

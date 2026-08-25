@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>커뮤니티</title>
-    <link rel="stylesheet" th:href="@{/css/board.css(v=2)}">
+    <link rel="stylesheet" th:href="@{/css/board.css(v=3)}">
     <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
@@ -35,11 +35,16 @@
                        th:value="${myPosts}">
 
                 <select name="boardType"
-                        aria-label="게시판 타입">
+                        aria-label="게시판 타입"
+                        onchange="this.form.submit()">
 
                     <option value=""
                             th:selected="${boardType == null}">
                         전체
+                    </option>
+                    <option value="NOTICE"
+                            th:selected="${boardType != null and boardType.name() == 'NOTICE'}">
+                        공지
                     </option>
 
                     <option value="FREE"
@@ -56,6 +61,7 @@
                             th:selected="${boardType != null and boardType.name() == 'SUGGESTION'}">
                         건의
                     </option>
+
                 </select>
 
                 <select name="searchType"
@@ -163,6 +169,9 @@
             <!-- 게시판 타입 -->
             <span class="filter-chip"
                   th:if="${boardType != null}">
+        <span th:if="${boardType.name() == 'NOTICE'}">
+    공지
+</span>
 
         <span th:if="${boardType.name() == 'FREE'}">
             자유
@@ -282,6 +291,91 @@
                     </tr>
                     </thead>
                     <tbody>
+
+                    <!-- =====================================================
+                         상단 고정 공지사항
+                    ===================================================== -->
+                    <tr th:if="${notices != null}"
+                        th:each="notice : ${notices}"
+                        class="notice-row">
+
+                        <!-- 번호 -->
+                        <td class="number-cell notice-number">
+                            공지
+                        </td>
+
+
+                        <!-- 타입 -->
+                        <td>
+        <span class="type-badge notice">
+            공지
+        </span>
+                        </td>
+
+
+                        <!-- 제목 -->
+                        <td class="title-cell notice-title-cell">
+
+                            <a th:href="@{/boards/{boardId}(
+                boardId=${notice.boardId},
+                page=${paging.page},
+                keyword=${keyword},
+                searchType=${searchType},
+                boardType=${boardType},
+                sort=${sort},
+                myPosts=${myPosts}
+           )}"
+                               th:text="${notice.title}">
+                                공지사항 제목
+                            </a>
+
+                        </td>
+
+
+                        <!-- 작성자 -->
+                        <td class="writer-cell notice-writer">
+                            관리자
+                        </td>
+
+
+                        <!-- 작성일 -->
+                        <td class="date-cell">
+
+        <span th:text="${#temporals.format(
+                notice.createdAt,
+                'yyyy-MM-dd HH:mm'
+        )}">
+            작성일
+        </span>
+
+                        </td>
+
+
+                        <!-- 조회수 -->
+                        <td class="count-cell"
+                            th:text="${notice.viewCount}">
+                            0
+                        </td>
+
+
+                        <!-- 댓글수 : 공지는 댓글 없음 -->
+                        <td class="count-cell notice-comment-count">
+                            -
+                        </td>
+
+
+                        <!-- 좋아요수 : 실제 값 -->
+                        <td class="count-cell"
+                            th:text="${notice.likeCount}">
+                            0
+                        </td>
+
+                    </tr>
+
+
+                    <!-- =====================================================
+                         일반 게시글
+                    ===================================================== -->
                     <tr th:each="board, boardStat : ${boards}">
                         <td class="number-cell" th:text="${paging.totalCount - ((paging.page - 1) * paging.size) - boardStat.index}">1</td>
                         <td>

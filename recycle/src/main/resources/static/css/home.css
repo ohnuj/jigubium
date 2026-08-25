@@ -38,99 +38,15 @@ input {
 }
 
 
-/* =========================================================
-   1. 상단 네비게이션
-========================================================= */
-
-body > nav {
-    height: 64px;
-
-    background-color: #16492f;
-    color: white;
+/* HTML에 남아있는 br 여백 제거 */
+main > br {
+    display: none;
 }
-
-body > nav > div {
-    position: relative;
-
-    max-width: 1120px;
-    height: 100%;
-
-    margin: 0 auto;
-    padding: 0 20px;
-
-    display: flex;
-    align-items: center;
-
-    gap: 18px;
-}
-
-
-/* 로고 */
-
-body > nav > div > a:first-child {
-    margin-right: auto;
-
-    font-size: 18px;
-    font-weight: 700;
-
-    white-space: nowrap;
-}
-
-
-/* 중앙 메뉴 */
-
-.nav-center {
-    position: absolute;
-
-    left: 50%;
-    transform: translateX(-50%);
-
-    display: flex;
-    align-items: center;
-
-    gap: 36px;
-}
-
-.nav-center a {
-    font-size: 14px;
-    font-weight: 600;
-}
-
-
-/* 모든 네비 링크 */
-
-body > nav a {
-    font-size: 14px;
-    font-weight: 600;
-
-    transition:
-            color 0.2s ease,
-            opacity 0.2s ease;
-}
-
-body > nav a:hover {
-    color: #9bdd68;
-}
-
-
-/* 현재 메뉴 */
-
-body > nav a.active {
-    color: #9bdd68;
-
-    font-weight: 700;
-}
-
 
 
 /* =========================================================
-   2. 메인 Hero / 검색 영역
+   1. 메인 Hero / 검색 영역
 ========================================================= */
-
-/*
-   main 첫 번째 div
-   = Hero 검색 영역
-*/
 
 main > div:first-child {
     min-height: 480px;
@@ -212,9 +128,8 @@ main > div:first-child {
 }
 
 
-
 /* =========================================================
-   3. 메인 검색창
+   2. 메인 검색창
 ========================================================= */
 
 main > div:first-child form {
@@ -276,6 +191,7 @@ main > div:first-child input {
     font-size: 15px;
 }
 
+
 main > div:first-child input::placeholder {
     color: #8b978f;
 }
@@ -305,14 +221,14 @@ main > div:first-child button {
             transform 0.2s ease;
 }
 
+
 main > div:first-child button:hover {
     background-color: #21633f;
 }
 
 
-
 /* =========================================================
-   4. 자주 찾는 품목
+   3. 자주 찾는 품목
 ========================================================= */
 
 .quick-search {
@@ -365,6 +281,7 @@ main > div:first-child button:hover {
             border-color 0.2s ease;
 }
 
+
 .quick-search a:hover {
     background-color:
             rgba(255, 255, 255, 0.18);
@@ -374,9 +291,8 @@ main > div:first-child button:hover {
 }
 
 
-
 /* =========================================================
-   5. 메인 콘텐츠 영역
+   4. 메인 콘텐츠 영역
 ========================================================= */
 
 main > div:nth-of-type(2) {
@@ -388,9 +304,8 @@ main > div:nth-of-type(2) {
 }
 
 
-
 /* =========================================================
-   6. 에코맵 / 재활용게임 카드
+   5. 에코맵 / 재활용게임 카드
 ========================================================= */
 
 main > div:nth-of-type(2) > table:first-of-type {
@@ -458,10 +373,8 @@ main > div:nth-of-type(2) > table:first-of-type h3 a:hover {
 }
 
 
-
 /* =========================================================
-   7. 카드 이미지
-   ★ 이미지 잘리지 않도록 수정
+   6. 카드 이미지
 ========================================================= */
 
 .main-feature-image {
@@ -475,6 +388,7 @@ main > div:nth-of-type(2) > table:first-of-type h3 a:hover {
 
     background-color: #f3f8f0;
 }
+
 
 /* 이미지 링크 영역 */
 
@@ -497,15 +411,18 @@ main > div:nth-of-type(2) > table:first-of-type p {
 }
 
 
-
 /* =========================================================
-   8. 커뮤니티 제목 영역
+   7. 커뮤니티 제목 영역
 ========================================================= */
 
 main > div:nth-of-type(2) > div {
     width: 100% !important;
 
     padding: 20px 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
     background-color: white;
 
@@ -528,6 +445,16 @@ main > div:nth-of-type(2) > div h3 {
 }
 
 
+main > div:nth-of-type(2) > div h3 a {
+    transition: color 0.2s ease;
+}
+
+
+main > div:nth-of-type(2) > div h3 a:hover {
+    color: #4f9439;
+}
+
+
 /* 더보기 */
 
 main > div:nth-of-type(2) > div > a {
@@ -545,16 +472,17 @@ main > div:nth-of-type(2) > div > a:hover {
 }
 
 
-
 /* =========================================================
-   9. 커뮤니티 테이블
+   8. 커뮤니티 테이블
 ========================================================= */
 
-main > div:nth-of-type(2) > table:nth-of-type(2) {
+.home-community-table {
     width: 100% !important;
 
     border-collapse: separate !important;
     border-spacing: 0;
+
+    table-layout: fixed;
 
     background-color: white;
 
@@ -566,245 +494,296 @@ main > div:nth-of-type(2) > table:nth-of-type(2) {
 }
 
 
-/* 컬럼 제목 */
+/* =========================================================
+   9. 커뮤니티 컬럼 너비
+========================================================= */
 
-main > div:nth-of-type(2) > table:nth-of-type(2) th {
-    padding: 13px 20px;
+.home-col-number {
+    width: 68px;
+}
 
-    background-color: #f7faf5;
 
-    border-bottom: 1px solid #e2ebe0;
+.home-col-type {
+    width: 78px;
+}
 
-    color: #78907d;
+
+.home-col-title {
+    width: auto;
+}
+
+
+.home-col-writer {
+    width: 110px;
+}
+
+
+.home-col-date {
+    width: 110px;
+}
+
+
+.home-col-count {
+    width: 74px;
+}
+
+
+/* =========================================================
+   10. 테이블 헤더
+========================================================= */
+
+.home-community-table th {
+    height: 48px;
+
+    padding: 0 10px;
+
+    background-color: #f3f8f0;
+
+    border-bottom: 1px solid #dce8d8;
+
+    color: #657b6b;
 
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
+
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+
+/* 제목 헤더 */
+
+.home-community-table th:nth-child(3) {
+    padding-left: 18px;
 
     text-align: left;
 }
 
 
-/* 게시글 */
+/* =========================================================
+   11. 게시글 행
+========================================================= */
 
-main > div:nth-of-type(2) > table:nth-of-type(2) td {
-    padding: 15px 20px;
+.home-community-table td {
+    height: 58px;
+
+    padding: 10px;
 
     border-bottom: 1px solid #edf2eb;
 
-    color: #536359;
+    color: #586b5d;
 
     font-size: 13px;
+
+    vertical-align: middle;
 }
 
 
-/* 제목 */
-
-main > div:nth-of-type(2) >
-table:nth-of-type(2) >
-tbody >
-tr >
-td:nth-child(2) a {
-
-    color: #193e2b;
-
-    font-weight: 600;
-
-    transition: color 0.2s ease;
+.home-community-table tbody tr {
+    transition:
+            background-color 0.18s ease;
 }
 
 
-main > div:nth-of-type(2) >
-table:nth-of-type(2) >
-tbody >
-tr >
-td:nth-child(2) a:hover {
-
-    color: #5a9e3f;
+.home-community-table tbody tr:hover {
+    background-color: #f8fbf6;
 }
 
 
-/* 게시글 행 hover */
-
-main > div:nth-of-type(2) >
-table:nth-of-type(2) >
-tbody tr {
-
-    transition: background-color 0.2s ease;
-}
-
-
-main > div:nth-of-type(2) >
-table:nth-of-type(2) >
-tbody tr:hover {
-
-    background-color: #fafcf8;
-}
-
-
-/* 마지막 선 제거 */
-
-main > div:nth-of-type(2) >
-table:nth-of-type(2) >
-tbody tr:last-child td {
-
+.home-community-table tbody tr:last-child td {
     border-bottom: none;
 }
 
 
-
 /* =========================================================
-   10. Footer
+   12. 제목
 ========================================================= */
 
-.footer {
-    margin-top: 80px;
+.home-community-title {
+    min-width: 0;
 
-    background-color: #16492f;
+    padding-left: 18px !important;
+    padding-right: 18px !important;
 
-    color: white;
+    text-align: left;
 }
 
 
-/* Footer 상단 */
+.home-community-title a {
+    display: block;
 
-.footer-container {
-    max-width: 1120px;
+    width: 100%;
 
-    margin: 0 auto;
+    overflow: hidden;
 
-    padding: 42px 20px 32px;
+    color: #244b34;
 
-    display: grid;
+    font-weight: 700;
 
-    grid-template-columns:
-            1.4fr
-            0.8fr
-            1fr;
-
-    gap: 48px;
-}
-
-
-/* Footer 제목 */
-
-.footer h3,
-.footer h4 {
-    margin-top: 0;
-    margin-bottom: 14px;
-}
-
-
-/* 브랜드 */
-
-.footer-brand h3 {
-    font-size: 18px;
-}
-
-
-.footer-brand p {
-    margin: 0;
-
-    color:
-            rgba(255, 255, 255, 0.7);
-
-    font-size: 13px;
-    line-height: 1.7;
-}
-
-
-/* 서비스 메뉴 */
-
-.footer-menu h4,
-.footer-info h4 {
-    font-size: 14px;
-}
-
-
-.footer-menu ul {
-    margin: 0;
-    padding: 0;
-
-    list-style: none;
-}
-
-
-.footer-menu li {
-    margin-bottom: 8px;
-}
-
-
-.footer-menu a {
-    color:
-            rgba(255, 255, 255, 0.7);
-
-    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
     transition: color 0.2s ease;
 }
 
 
-.footer-menu a:hover {
-    color: #9bdd68;
+.home-community-title a:hover {
+    color: #4f913d;
 }
-
-
-/* 프로젝트 정보 */
-
-.footer-info p {
-    margin: 0 0 8px;
-
-    color:
-            rgba(255, 255, 255, 0.7);
-
-    font-size: 13px;
-    line-height: 1.6;
-}
-
-
-/* Footer 하단 */
-
-.footer-bottom {
-    max-width: 1120px;
-
-    margin: 0 auto;
-
-    padding: 18px 20px 24px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 20px;
-
-    border-top:
-            1px solid
-            rgba(255, 255, 255, 0.12);
-
-    color:
-            rgba(255, 255, 255, 0.5);
-
-    font-size: 12px;
-}
-
-
-.footer-bottom p {
-    margin: 0;
-}
-
 
 
 /* =========================================================
-   11. 태블릿
+   13. 게시판 타입 뱃지
+========================================================= */
+
+.home-type-badge {
+    min-width: 44px;
+
+    padding: 5px 9px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* 자유 */
+
+.home-type-badge.free {
+    background-color: #edf7e8;
+
+    border: 1px solid #c8e2bf;
+
+    color: #49813b;
+}
+
+
+/* 정보 */
+
+.home-type-badge.info {
+    background-color: #eef6f1;
+
+    border: 1px solid #c9ded0;
+
+    color: #357054;
+}
+
+
+/* 건의 */
+
+.home-type-badge.suggestion {
+    background-color: #fff8e8;
+
+    border: 1px solid #ead9a9;
+
+    color: #8a7131;
+}
+
+
+/* 공지 */
+
+.home-type-badge.notice {
+    background-color: #fff0ec;
+
+    border: 1px solid #efc8bc;
+
+    color: #b6533d;
+}
+
+
+/* =========================================================
+   14. 공지사항 행
+========================================================= */
+
+.home-community-table tbody tr.home-notice-row {
+    background-color: #fff7f4;
+}
+
+
+.home-community-table tbody tr.home-notice-row:hover {
+    background-color: #ffede7;
+}
+
+
+/* 공지 번호 */
+
+.home-notice-number {
+    color: #b6533d !important;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+/* 공지 제목 */
+
+.home-notice-row .home-community-title a {
+    color: #71392d;
+
+    font-weight: 800;
+}
+
+
+.home-notice-row .home-community-title a:hover {
+    color: #b6533d;
+}
+
+
+/* 공지 작성자 */
+
+.home-notice-writer {
+    color: #75584f !important;
+
+    font-weight: 700;
+}
+
+
+/* 공지 댓글 */
+
+.home-notice-comment {
+    color: #a0918b !important;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   15. 날짜 / 숫자
+========================================================= */
+
+.home-community-table td:nth-child(1),
+.home-community-table td:nth-child(5),
+.home-community-table td:nth-child(6),
+.home-community-table td:nth-child(7),
+.home-community-table td:nth-child(8) {
+    color: #7b8a80;
+
+    font-size: 12px;
+
+    font-variant-numeric: tabular-nums;
+}
+
+
+/* 가운데 정렬 */
+
+.text-center {
+    text-align: center !important;
+}
+
+
+/* =========================================================
+   16. 태블릿
 ========================================================= */
 
 @media (max-width: 900px) {
-
-    /* 헤더 */
-
-    body > nav > div {
-        padding: 0 24px;
-    }
-
 
     /* Hero */
 
@@ -832,10 +811,7 @@ tbody tr:last-child td {
     }
 
 
-    /*
-       이미지도 contain 유지
-       절대 cover로 변경하지 않음
-    */
+    /* 에코맵 / 게임 이미지 */
 
     main > div:nth-of-type(2) >
     table:first-of-type img {
@@ -848,81 +824,56 @@ tbody tr:last-child td {
     }
 
 
-    /* Footer */
+    /* =========================
+       커뮤니티 테이블
+    ========================= */
 
-    .footer-container {
-        grid-template-columns:
-                1.3fr
-                0.8fr
-                1fr;
-
-        gap: 30px;
-
-        padding-left: 24px;
-        padding-right: 24px;
+    .home-col-number {
+        width: 58px;
     }
 
 
-    .footer-bottom {
-        padding-left: 24px;
-        padding-right: 24px;
+    .home-col-type {
+        width: 68px;
+    }
+
+
+    .home-col-writer {
+        width: 90px;
+    }
+
+
+    .home-col-date {
+        width: 95px;
+    }
+
+
+    .home-col-count {
+        width: 60px;
+    }
+
+
+    .home-community-table th,
+    .home-community-table td {
+        padding-left: 7px;
+        padding-right: 7px;
+
+        font-size: 11px;
+    }
+
+
+    .home-community-title {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
     }
 }
 
 
-
 /* =========================================================
-   12. 모바일
+   17. 모바일
 ========================================================= */
 
 @media (max-width: 650px) {
-
-
-    /* =====================
-       헤더
-    ===================== */
-
-    body > nav {
-        height: auto;
-    }
-
-
-    body > nav > div {
-        min-height: 60px;
-
-        padding: 12px 16px;
-
-        flex-wrap: wrap;
-
-        gap: 12px;
-    }
-
-
-    body > nav > div > a:first-child {
-        font-size: 16px;
-    }
-
-
-    body > nav a {
-        font-size: 12px;
-    }
-
-
-    .nav-center {
-        position: static;
-
-        width: 100%;
-
-        transform: none;
-
-        order: 10;
-
-        justify-content: center;
-
-        gap: 18px;
-    }
-
-
 
     /* =====================
        Hero
@@ -954,7 +905,6 @@ tbody tr:last-child td {
         font-size: 14px;
         line-height: 1.6;
     }
-
 
 
     /* =====================
@@ -990,7 +940,6 @@ tbody tr:last-child td {
     }
 
 
-
     /* =====================
        자주 찾는 품목
     ===================== */
@@ -1018,7 +967,6 @@ tbody tr:last-child td {
     }
 
 
-
     /* =====================
        메인 콘텐츠
     ===================== */
@@ -1030,10 +978,9 @@ tbody tr:last-child td {
     }
 
 
-
     /* =====================
-       에코맵 / 게임 카드
-       2열 → 1열
+       에코맵 / 게임
+       2열 -> 1열
     ===================== */
 
     main > div:nth-of-type(2) >
@@ -1075,7 +1022,6 @@ tbody tr:last-child td {
     }
 
 
-
     /* 모바일 이미지 */
 
     main > div:nth-of-type(2) >
@@ -1089,13 +1035,12 @@ tbody tr:last-child td {
     }
 
 
-
     /* =====================
-       커뮤니티
+       커뮤니티 제목
     ===================== */
 
     main > div:nth-of-type(2) > div {
-        padding: 18px;
+        padding: 17px 16px;
     }
 
 
@@ -1104,93 +1049,120 @@ tbody tr:last-child td {
     }
 
 
-    main > div:nth-of-type(2) >
-    table:nth-of-type(2) th,
+    main > div:nth-of-type(2) > div > a {
+        font-size: 12px;
+    }
 
-    main > div:nth-of-type(2) >
-    table:nth-of-type(2) td {
 
-        padding: 12px 10px;
+    /* =====================
+       커뮤니티 테이블
+    ===================== */
+
+    .home-community-table {
+        table-layout: fixed;
+    }
+
+
+    .home-community-table th,
+    .home-community-table td {
+        height: 52px;
+
+        padding: 9px 6px;
 
         font-size: 11px;
     }
 
 
-
     /*
-       모바일 공간 확보
-       번호 / 작성자 숨김
+       모바일에서는
+       타입 / 제목 / 작성일만 표시
     */
 
-    main > div:nth-of-type(2) >
-    table:nth-of-type(2) th:nth-child(1),
 
-    main > div:nth-of-type(2) >
-    table:nth-of-type(2) td:nth-child(1),
+    /* 번호 숨김 */
 
-    main > div:nth-of-type(2) >
-    table:nth-of-type(2) th:nth-child(3),
-
-    main > div:nth-of-type(2) >
-    table:nth-of-type(2) td:nth-child(3) {
-
+    .home-community-table th:nth-child(1),
+    .home-community-table td:nth-child(1) {
         display: none;
     }
 
 
-    main > div:nth-of-type(2) >
-    table:nth-of-type(2) col:nth-child(1),
+    /* 작성자 숨김 */
 
-    main > div:nth-of-type(2) >
-    table:nth-of-type(2) col:nth-child(3) {
-
+    .home-community-table th:nth-child(4),
+    .home-community-table td:nth-child(4) {
         display: none;
     }
 
 
-    main > div:nth-of-type(2) >
-    table:nth-of-type(2) col:nth-child(2) {
+    /* 조회수 숨김 */
 
-        width: 70% !important;
+    .home-community-table th:nth-child(6),
+    .home-community-table td:nth-child(6) {
+        display: none;
     }
 
 
-    main > div:nth-of-type(2) >
-    table:nth-of-type(2) col:nth-child(4) {
+    /* 댓글수 숨김 */
 
-        width: 30% !important;
+    .home-community-table th:nth-child(7),
+    .home-community-table td:nth-child(7) {
+        display: none;
     }
 
 
+    /* 좋아요수 숨김 */
 
-    /* =====================
-       Footer
-    ===================== */
-
-    .footer {
-        margin-top: 50px;
+    .home-community-table th:nth-child(8),
+    .home-community-table td:nth-child(8) {
+        display: none;
     }
 
 
-    .footer-container {
-        padding: 34px 20px 26px;
+    /* 타입 */
 
-        grid-template-columns: 1fr;
-
-        gap: 30px;
+    .home-community-table th:nth-child(2),
+    .home-community-table td:nth-child(2) {
+        width: 64px;
     }
 
 
-    .footer-bottom {
-        padding: 18px 20px 24px;
+    /* 제목 */
 
-        flex-direction: column;
-        align-items: flex-start;
-
-        gap: 8px;
+    .home-community-table th:nth-child(3),
+    .home-community-table td:nth-child(3) {
+        width: auto;
     }
 
-    .text-center {
-        text-align: center;
+
+    /* 작성일 */
+
+    .home-community-table th:nth-child(5),
+    .home-community-table td:nth-child(5) {
+        width: 88px;
+    }
+
+
+    /* 제목 */
+
+    .home-community-title {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+
+    .home-community-title a {
+        font-size: 12px;
+    }
+
+
+    /* 타입 뱃지 */
+
+    .home-type-badge {
+        min-width: 39px;
+
+        padding: 4px 7px;
+
+        font-size: 10px;
     }
 }

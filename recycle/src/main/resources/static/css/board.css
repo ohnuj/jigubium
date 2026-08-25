@@ -288,6 +288,58 @@ button { cursor: pointer; }
 .type-badge.free { background-color: #edf7e8; border: 1px solid #c8e2bf; color: #49813b; }
 .type-badge.info { background-color: #eef6f1; border: 1px solid #c9ded0; color: #357054; }
 .type-badge.suggestion { background-color: #fff8e8; border: 1px solid #ead9a9; color: #8a7131; }
+/* 공지 타입 */
+.type-badge.notice {
+    background-color: #fff0ec;
+    border: 1px solid #efc8bc;
+    color: #b6533d;
+}
+
+
+/* 공지사항 행 */
+.board-table tbody tr.notice-row {
+    background-color: #fff7f4;
+}
+
+
+/* 공지 행 hover */
+.board-table tbody tr.notice-row:hover {
+    background-color: #ffede7;
+}
+
+
+/* 공지 번호 */
+.notice-number {
+    color: #b6533d !important;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+/* 공지 제목 */
+.notice-title-cell a {
+    color: #71392d;
+    font-weight: 800;
+}
+
+
+.notice-title-cell a:hover {
+    color: #b6533d;
+}
+
+
+/* 공지 작성자 */
+.notice-writer {
+    color: #75584f !important;
+    font-weight: 700;
+}
+
+
+/* 공지 댓글 '-' */
+.notice-comment-count {
+    color: #a0918b !important;
+    font-weight: 700;
+}
 .writer-cell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .writer-cell a {
     color: #586c5e;
