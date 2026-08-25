@@ -4,27 +4,12 @@
     <meta charset="UTF-8">
     <title>접근 권한 없음</title>
     <link rel="stylesheet" th:href="@{/css/board.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
 
-<nav class="main-nav">
-    <div class="nav-inner">
-        <a class="nav-logo" th:href="@{/}">Home</a>
-
-        <div class="nav-user">
-            <th:block th:unless="${session.checkLogin}">
-                <a th:href="@{/login}">로그인</a>
-                <a th:href="@{/signup}">회원가입</a>
-            </th:block>
-
-            <th:block th:if="${session.checkLogin}">
-                <a th:href="@{/mypage}">마이페이지</a>
-                <a th:href="@{/logout}">로그아웃</a>
-                <a th:href="@{/reward}">리워드 상점</a>
-            </th:block>
-        </div>
-    </div>
-</nav>
+<th:block th:replace="~{fragments/common :: nav}">
+</th:block>
 
 <main class="error-page">
     <section class="error-container">
@@ -61,6 +46,7 @@
 
     </section>
 </main>
-
+<th:block th:replace="~{fragments/common :: footer}">
+</th:block>
 </body>
 </html>

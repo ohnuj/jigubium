@@ -1,14 +1,13 @@
 package first_project.recycle.controller;
 
 import first_project.recycle.domain.Paging;
+import first_project.recycle.domain.ecoLocation;
 import first_project.recycle.service.EcoLocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/locations")
@@ -47,6 +46,36 @@ public class AdminEcoLocationController {
         return "admin/ecoLocationList";
     }
 
-//    @PostMapping("/{locationId}/update")
-//    public String updateEcoLocation()
+    @PostMapping("/{locationId}/update")
+    public String updateEcoLocation(@PathVariable Long locationId,
+                                    ecoLocation ecoLocation,
+                                    @RequestParam(defaultValue = "1") int page,
+                                    @RequestParam(defaultValue = "") String keyword,
+                                    @RequestParam(defaultValue = "") String locationType,
+                                    RedirectAttributes redirectAttributes){
+        ecoLocation.setLocationId(locationId);
+
+        ecoLocationService.updateEcoLocation(ecoLocation);
+
+        redirectAttributes.addAttribute("page",page);
+        redirectAttributes.addAttribute("keyword",keyword);
+        redirectAttributes.addAttribute("locationType",locationType);
+
+        return "redirect:/admin/locations";
+    }
+
+    @PostMapping("/{locationId}/delete")
+    public String deleteEcoLocation(@PathVariable Long locationId,
+                                    @RequestParam(defaultValue = "1") int page,
+                                    @RequestParam(defaultValue = "") String keyword,
+                                    @RequestParam(defaultValue = "") String locationType,
+                                    RedirectAttributes redirectAttributes){
+        ecoLocationService.deleteEcoLocation(locationId);
+
+        redirectAttributes.addAttribute("page",page);
+        redirectAttributes.addAttribute("keyword",keyword);
+        redirectAttributes.addAttribute("locationType",locationType);
+
+        return "redirect:/admin/locations";
+    }
 }

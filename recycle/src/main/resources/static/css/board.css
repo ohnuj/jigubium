@@ -36,11 +36,11 @@ button { cursor: pointer; }
 
 /* 로고 */
 
-.nav-logo {
+.main-nav .nav-logo {
     margin-right: auto;
 
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 900;
 
     white-space: nowrap;
 }

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+
+<!-- ==================================================
+     공통 NAV
+================================================== -->
+<nav class="main-nav"
+     th:fragment="nav">
+
+    <div class="nav-inner">
+
+        <!-- 로고 -->
+        <a class="nav-logo"
+           th:href="@{/}">
+            ♻️ 지구비우기
+        </a>
+
+
+        <!-- 중앙 메뉴 -->
+        <div class="nav-center">
+
+            <a th:href="@{/eco-map}">
+                에코맵
+            </a>
+
+            <a th:href="@{/game}">
+                재활용게임
+            </a>
+
+            <a th:href="@{/boards}">
+                커뮤니티
+            </a>
+
+        </div>
+
+
+        <!-- 오른쪽 메뉴 -->
+        <div class="nav-user">
+
+
+            <!-- 로그인 상태 -->
+            <th:block th:if="${session.checkLogin}">
+
+                <a th:href="@{/mypage}">
+                    마이페이지
+                </a>
+
+                <a th:href="@{/logout}">
+                    로그아웃
+                </a>
+
+                <a th:href="@{/reward}">
+                    리워드 상점
+                </a>
+
+            </th:block>
+
+
+            <!-- 비로그인 상태 -->
+            <th:block th:unless="${session.checkLogin}">
+
+                <a th:href="@{/login}">
+                    로그인
+                </a>
+
+                <a th:href="@{/signup}">
+                    회원가입
+                </a>
+
+            </th:block>
+
+
+            <!-- 관리자 -->
+            <a th:if="${session.loginMember != null
+                    and session.loginMember.role == 'ADMIN'}"
+               th:href="@{/admin}">
+                관리자
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+
+<!-- ==================================================
+     공통 FOOTER
+================================================== -->
+<footer class="footer"
+        th:fragment="footer">
+
+    <div class="footer-container">
+
+
+        <!-- 브랜드 -->
+        <div class="footer-brand">
+
+            <a th:href="@{/}"
+               class="footer-logo">
+                ♻️ 지구비우기
+            </a>
+
+            <p>
+                올바른 분리배출부터 주변 수거시설 확인까지,<br>
+                일상 속 친환경 실천을 돕는 서비스입니다.
+            </p>
+
+        </div>
+
+
+        <!-- 서비스 -->
+        <div class="footer-menu">
+
+            <h4>Service</h4>
+
+            <a th:href="@{/}">
+                홈
+            </a>
+
+            <a th:href="@{/eco-map}">
+                에코맵
+            </a>
+
+            <a th:href="@{/game}">
+                재활용게임
+            </a>
+
+            <a th:href="@{/boards}">
+                커뮤니티
+            </a>
+
+        </div>
+
+
+        <!-- 프로젝트 -->
+        <div class="footer-info">
+
+            <h4>Project</h4>
+
+            <p>
+                생활형 친환경 실천 플랫폼
+            </p>
+
+            <p>
+                Spring · MyBatis · Thymeleaf · MySQL
+            </p>
+
+            <p>
+                공공데이터 기반 재활용 정보 서비스
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <span>
+            © 2026 딱갈라. 지구비우기. All rights reserved.
+        </span>
+
+        <span>
+            본 서비스는 교육 프로젝트 목적으로 제작되었습니다.
+        </span>
+
+    </div>
+
+</footer>
+
+
+</body>
+</html>

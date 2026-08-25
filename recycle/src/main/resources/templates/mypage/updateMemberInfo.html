@@ -5,34 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마이페이지 - 회원정보 수정</title>
     <link rel="stylesheet" th:href="@{/css/mypage.css(v=12)}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
 
 <!-- 상단 네비게이션 바 -->
-<nav>
-    <div class="nav-inner">
-        <div class="nav-left">
-            <a th:href="@{/}">♻️ 지구비우기</a>
-        </div>
-        <div class="nav-center">
-            <a th:href="@{/eco-map}">에코맵</a>
-            <a th:href="@{/game}">재활용게임</a>
-            <a th:href="@{/boards}">커뮤니티</a>
-        </div>
-        <div class="nav-right">
-            <th:block th:unless="${session.checkLogin}">
-                <a th:href="@{/login}">로그인</a>
-                <a th:href="@{/signup}">회원가입</a>
-            </th:block>
-
-            <th:block th:if="${session.checkLogin}">
-                <a th:href="@{/mypage}" class="active">마이페이지</a>
-                <a th:href="@{/logout}">로그아웃</a>
-                <a th:href="@{/reward}">리워드 상점</a>
-            </th:block>
-        </div>
-    </div>
-</nav>
+<th:block th:replace="~{fragments/common :: nav}">
+</th:block>
 
 <div class="mypage-container">
     <!-- 좌측 사이드바 (2번 탭 활성화) -->
@@ -92,7 +71,8 @@
 </div>
 
 <!-- 공통 푸터 -->
-<footer th:replace="~{index :: footer}"></footer>
+<th:block th:replace="~{fragments/common :: footer}">
+</th:block>
 
 </body>
 </html>

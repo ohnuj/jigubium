@@ -3,43 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>게시글 수정</title>
-    <link rel="stylesheet" th:href="@{/css/board.css}">
+    <link rel="stylesheet" th:href="@{/css/board.css(v=2)}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
-<nav class="main-nav">
-    <div class="nav-inner">
-
-        <a class="nav-logo" th:href="@{/}">
-            ♻️ 지구비우기
-        </a>
-
-        <div class="nav-center">
-            <a th:href="@{/eco-map}">에코맵</a>
-            <a th:href="@{/game}">재활용게임</a>
-            <a class="active" th:href="@{/boards}">커뮤니티</a>
-        </div>
-
-        <div class="nav-user">
-            <th:block th:unless="${session.checkLogin}">
-                <a th:href="@{/login}">로그인</a>
-                <a th:href="@{/signup}">회원가입</a>
-            </th:block>
-
-            <a th:if="${session.loginMember != null
-                    and session.loginMember.role == 'ADMIN'}"
-               th:href="@{/admin}">
-                관리자 페이지
-            </a>
-
-            <th:block th:if="${session.checkLogin}">
-                <a th:href="@{/mypage}">마이페이지</a>
-                <a th:href="@{/logout}">로그아웃</a>
-                <a th:href="@{/reward}">리워드 상점</a>
-            </th:block>
-        </div>
-
-    </div>
-</nav>
+<th:block th:replace="~{fragments/common :: nav}">
+</th:block>
 
 <main>
     <section class="board-hero">
@@ -137,6 +106,8 @@
         </form>
     </section>
 </main>
+<th:block th:replace="~{fragments/common :: footer}">
+</th:block>
 
 <script>
     const imageInput = document.getElementById("imageInput");

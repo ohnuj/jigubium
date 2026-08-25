@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,40 +8,23 @@
     <title>관리자 페이지</title>
 
     <link rel="stylesheet" th:href="@{/CSS/admin.css}">
+    <link rel="stylesheet" th:href="@{/CSS/common.css}">
 </head>
 
 <body>
 
-<!-- =========================
+<!-- =====================================================
      상단 네비게이션
-========================= -->
-<nav>
-    <div>
-
-        <a th:href="@{/}">
-            ♻️ 지구비우기
-        </a>
-
-        <div class="nav-center">
-            <a th:href="@{/eco-map}">에코맵</a>
-            <a th:href="@{/game}">재활용게임</a>
-            <a th:href="@{/boards}">커뮤니티</a>
-        </div>
-
-        <a class="main-link"
-           th:href="@{/}">
-            메인으로
-        </a>
-
-    </div>
-</nav>
+===================================================== -->
+<th:block th:replace="~{fragments/common :: nav}">
+</th:block>
 
 
 <main>
 
-    <!-- =========================
+    <!-- =====================================================
          관리자 Hero
-    ========================= -->
+    ===================================================== -->
     <section class="admin-hero">
 
         <div class="admin-hero-inner">
@@ -63,9 +47,9 @@
     </section>
 
 
-    <!-- =========================
+    <!-- =====================================================
          관리자 콘텐츠
-    ========================= -->
+    ===================================================== -->
     <section class="admin-content">
 
 
@@ -91,14 +75,13 @@
         </div>
 
 
-
-        <!-- =========================
+        <!-- =================================================
              관리 메뉴
-        ========================= -->
+        ================================================== -->
         <div class="admin-card-grid">
 
 
-            <!-- 재활용 품목 관리 -->
+            <!-- 재활용 품목 -->
             <article class="admin-card">
 
                 <div class="admin-card-icon">
@@ -123,7 +106,6 @@
 
                 </div>
 
-
                 <div class="admin-card-bottom">
 
                     <a class="admin-button"
@@ -142,8 +124,7 @@
             </article>
 
 
-
-            <!-- 수거함 위치 관리 -->
+            <!-- 수거함 위치 -->
             <article class="admin-card">
 
                 <div class="admin-card-icon">
@@ -168,7 +149,6 @@
 
                 </div>
 
-
                 <div class="admin-card-bottom">
 
                     <a class="admin-button"
@@ -189,10 +169,9 @@
         </div>
 
 
-
-        <!-- =========================
+        <!-- =================================================
              관리자 안내
-        ========================= -->
+        ================================================== -->
         <div class="admin-notice">
 
             <div class="notice-icon">
@@ -200,6 +179,7 @@
             </div>
 
             <div>
+
                 <strong>
                     관리자 안내
                 </strong>
@@ -208,12 +188,12 @@
                     데이터 수정 및 삭제는 서비스 화면에 직접 반영될 수 있으므로
                     변경 전에 내용을 확인해주세요.
                 </p>
+
             </div>
 
         </div>
 
 
-        <!-- 메인으로 -->
         <div class="back-area">
 
             <a th:href="@{/}">
@@ -227,103 +207,11 @@
 </main>
 
 
-<!-- =========================
+<!-- =====================================================
      Footer
-========================= -->
-<footer class="footer">
-
-    <div class="footer-container">
-
-        <!-- 왼쪽 -->
-        <div class="footer-brand">
-
-            <h3>
-                ♻️ 지구비우기
-            </h3>
-
-            <p>
-                올바른 분리배출부터 주변 수거시설 확인까지,<br>
-                일상 속 친환경 실천을 돕는 서비스입니다.
-            </p>
-
-        </div>
-
-
-        <!-- 가운데 -->
-        <div class="footer-menu">
-
-            <h4>
-                서비스
-            </h4>
-
-            <ul>
-
-                <li>
-                    <a th:href="@{/}">
-                        홈
-                    </a>
-                </li>
-
-                <li>
-                    <a th:href="@{/boards}">
-                        커뮤니티
-                    </a>
-                </li>
-
-                <li>
-                    <a th:href="@{/reward}">
-                        리워드 상점
-                    </a>
-                </li>
-
-                <li>
-                    <a th:href="@{/mypage}">
-                        마이페이지
-                    </a>
-                </li>
-
-            </ul>
-
-        </div>
-
-
-        <!-- 오른쪽 -->
-        <div class="footer-info">
-
-            <h4>
-                Project
-            </h4>
-
-            <p>
-                생활형 친환경 실천 플랫폼
-            </p>
-
-            <p>
-                Spring Boot · MyBatis · Thymeleaf · MySQL
-            </p>
-
-            <p>
-                공공데이터 기반 재활용 정보 서비스
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="footer-bottom">
-
-        <p>
-            © 2026 딱갈라. 지구비우기.All rights reserved.
-        </p>
-
-        <p class="footer-notice">
-            본 서비스는 교육 프로젝트 목적으로 제작되었습니다.
-        </p>
-
-    </div>
-
-</footer>
+===================================================== -->
+<th:block th:replace="~{fragments/common :: footer}">
+</th:block>
 
 </body>
 </html>

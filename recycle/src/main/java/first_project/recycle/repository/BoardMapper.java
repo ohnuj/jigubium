@@ -61,4 +61,11 @@ public interface BoardMapper {
     BoardListResponse findPreviousBoard(Long boardId);
 
     BoardListResponse findNextBoard(Long boardId);
+
+    // 관리자용 공지글 (최신 3개)
+    List<BoardListResponse> findRecentNotices();
+
+    // 관리자용 공지글 전체
+    List<BoardListResponse> findAllNotices();
+
 }

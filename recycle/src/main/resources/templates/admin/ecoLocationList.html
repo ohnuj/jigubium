@@ -3,164 +3,519 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>수거함 위치 관리</title>
+
+    <link rel="stylesheet" th:href="@{/CSS/admin.css(v=2)}">
+    <link rel="stylesheet" th:href="@{/CSS/common.css}">
 </head>
 
 <body>
 
-<h1>수거함 위치 관리</h1>
+
+<!-- =====================================================
+     상단 네비게이션
+===================================================== -->
+<th:block th:replace="~{fragments/common :: nav}">
+</th:block>
 
 
-<!-- 검색 / 종류 필터 -->
-<form th:action="@{/admin/locations}"
-      method="get">
-
-    <!-- 종류 -->
-    <select name="locationType">
-
-        <option value="">전체</option>
-
-        <option th:each="type : ${locationTypes}"
-                th:value="${type}"
-                th:text="${type}"
-                th:selected="${type == locationType}">
-        </option>
-
-    </select>
+<main class="admin-management-page">
 
 
-    <!-- 주소 검색 -->
-    <input type="text"
-           name="keyword"
-           th:value="${keyword}"
-           placeholder="도로명주소 검색">
+    <!-- =====================================================
+         Hero
+    ===================================================== -->
+    <section class="admin-page-header">
+
+        <div class="admin-page-header-inner">
+
+            <span class="admin-page-label">
+                ADMIN · ECO LOCATION
+            </span>
+
+            <h1>
+                수거함 위치 관리
+            </h1>
+
+            <p>
+                에코맵에 등록된 수거시설의 종류와
+                도로명주소를 조회하고 관리할 수 있습니다.
+            </p>
+
+        </div>
+
+    </section>
 
 
-    <button type="submit">
-        검색
-    </button>
-
-    <a th:href="@{/admin/locations}">
-        초기화
-    </a>
-
-</form>
+    <section class="admin-list-content">
 
 
-<br>
+        <div class="admin-list-header">
+
+            <div>
+
+                <span class="section-label">
+                    ECO LOCATION DATABASE
+                </span>
+
+                <h2>
+                    수거함 위치 목록
+                </h2>
+
+                <p>
+                    등록된 수거시설을 종류와 주소로 검색하고 관리하세요.
+                </p>
+
+            </div>
 
 
-<!-- 수거함 목록 -->
-<table border="1">
+            <a class="admin-home-button"
+               th:href="@{/admin}">
+                ← 관리자 홈
+            </a>
 
-    <thead>
-
-    <tr>
-        <th>ID</th>
-        <th>종류</th>
-        <th>도로명주소</th>
-        <th>관리</th>
-    </tr>
-
-    </thead>
+        </div>
 
 
-    <tbody>
+        <!-- =================================================
+             검색 + 종류 필터
+        ================================================== -->
+        <div class="admin-search-box location-search-box">
 
-    <tr th:each="location : ${locations}">
-
-        <td th:text="${location.locationId}"></td>
-
-        <td th:text="${location.locationType}"></td>
-
-        <td th:text="${location.roadAddress}"></td>
-
-        <td>
-            <button type="button">
-                수정
-            </button>
-
-            <button type="button">
-                삭제
-            </button>
-        </td>
-
-    </tr>
+            <form th:action="@{/admin/locations}"
+                  method="get">
 
 
-    <!-- 검색 결과 없음 -->
-    <tr th:if="${#lists.isEmpty(locations)}">
+                <div class="admin-filter-select">
 
-        <td colspan="4">
-            검색 결과가 없습니다.
-        </td>
+                    <select  name="locationType"
+                            onchange="this.form.submit()">
 
-    </tr>
+                        <option value="">
+                            전체 종류
+                        </option>
 
-    </tbody>
+                        <option th:each="type : ${locationTypes}"
+                                th:value="${type}"
+                                th:text="${type}"
+                                th:selected="${type == locationType}">
+                        </option>
 
-</table>
+                    </select>
 
-
-<br>
-
-
-<!-- 페이징 -->
-<div th:if="${paging.totalPages > 0}">
-
-    <!-- 이전 페이지 블록 -->
-    <a th:if="${startPage > 1}"
-       th:href="@{/admin/locations(
-            page=${startPage - 1},
-            keyword=${keyword},
-            locationType=${locationType}
-       )}">
-        이전
-    </a>
+                </div>
 
 
-    <!-- 페이지 번호 -->
-    <th:block th:each="pageNum :
-            ${#numbers.sequence(startPage, endPage)}">
+                <div class="admin-search-input">
+
+                    <span class="search-icon">
+                        🔍
+                    </span>
+
+                    <input type="text"
+                           name="keyword"
+                           th:value="${keyword}"
+                           placeholder="도로명주소 검색"
+                           autocomplete="off">
+
+                </div>
 
 
-        <!-- 현재 페이지 -->
-        <strong th:if="${pageNum == paging.page}"
-                th:text="${pageNum}">
-        </strong>
+                <button class="search-button"
+                        type="submit">
+                    검색
+                </button>
 
 
-        <!-- 다른 페이지 -->
-        <a th:unless="${pageNum == paging.page}"
-           th:href="@{/admin/locations(
-                page=${pageNum},
-                keyword=${keyword},
-                locationType=${locationType}
-           )}"
-           th:text="${pageNum}">
-        </a>
+                <a class="reset-button"
+                   th:href="@{/admin/locations}">
+                    초기화
+                </a>
 
-    </th:block>
+            </form>
+
+        </div>
 
 
-    <!-- 다음 페이지 블록 -->
-    <a th:if="${endPage < paging.totalPages}"
-       th:href="@{/admin/locations(
-            page=${endPage + 1},
-            keyword=${keyword},
-            locationType=${locationType}
-       )}">
-        다음
-    </a>
+        <!-- =================================================
+             테이블
+        ================================================== -->
+        <div class="admin-table-card">
 
-</div>
+            <div class="admin-table-wrapper">
+
+                <table class="admin-table eco-location-table">
+
+                    <colgroup>
+                        <col class="location-col-id">
+                        <col class="location-col-type">
+                        <col class="location-col-address">
+                        <col class="location-col-action">
+                    </colgroup>
 
 
-<br>
+                    <thead>
 
-<a th:href="@{/admin}">
-    관리자 페이지로 돌아가기
-</a>
+                    <tr>
+                        <th>ID</th>
+                        <th>종류</th>
+                        <th>도로명주소</th>
+                        <th>관리</th>
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    <th:block th:each="location : ${locations}">
+
+
+                        <!-- 기본 행 -->
+                        <tr class="view-row"
+                            th:id="'location-view-row-' + ${location.locationId}">
+
+
+                            <td class="location-id"
+                                th:text="${location.locationId}">
+                            </td>
+
+
+                            <td>
+
+                                <span class="location-type-tag"
+                                      th:text="${location.locationType}">
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="location-address"
+                                     th:text="${location.roadAddress}">
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="action-buttons">
+
+                                    <button class="edit-button"
+                                            type="button"
+                                            th:onclick="'openLocationEdit('
+                                                + ${location.locationId}
+                                                + ')'">
+
+                                        수정
+
+                                    </button>
+
+
+                                    <form class="inline-delete-form"
+                                          th:action="@{/admin/locations/{id}/delete(id=${location.locationId})}"
+                                          method="post"
+                                          onsubmit="return confirm('해당 수거함 위치를 정말 삭제하시겠습니까?');">
+
+
+                                        <input type="hidden"
+                                               name="page"
+                                               th:value="${paging.page}">
+
+
+                                        <input type="hidden"
+                                               name="keyword"
+                                               th:value="${keyword}">
+
+
+                                        <input type="hidden"
+                                               name="locationType"
+                                               th:value="${locationType}">
+
+
+                                        <button class="delete-button"
+                                                type="submit">
+                                            삭제
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- =================================================
+                             수정폼
+                        ================================================== -->
+                        <tr class="edit-row"
+                            th:id="'location-edit-row-' + ${location.locationId}"
+                            style="display:none;">
+
+
+                            <td colspan="4">
+
+                                <div class="edit-panel">
+
+
+                                    <div class="edit-panel-header">
+
+                                        <div>
+
+                                            <span>
+                                                LOCATION EDIT
+                                            </span>
+
+                                            <h3>
+                                                수거함 위치 수정
+                                            </h3>
+
+                                        </div>
+
+
+                                        <button class="edit-close-button"
+                                                type="button"
+                                                th:onclick="'closeLocationEdit('
+                                                    + ${location.locationId}
+                                                    + ')'">
+
+                                            ✕ 닫기
+
+                                        </button>
+
+                                    </div>
+
+
+                                    <form class="admin-edit-form"
+                                          th:action="@{/admin/locations/{id}/update(id=${location.locationId})}"
+                                          method="post">
+
+
+                                        <input type="hidden"
+                                               name="page"
+                                               th:value="${paging.page}">
+
+
+                                        <input type="hidden"
+                                               name="keyword"
+                                               th:value="${keyword}">
+
+
+                                        <input type="hidden"
+                                               name="currentLocationType"
+                                               th:value="${locationType}">
+
+
+                                        <div class="edit-form-group">
+
+                                            <label>
+                                                수거함 종류
+                                            </label>
+
+
+                                            <select name="locationType">
+
+                                                <option th:each="type : ${locationTypes}"
+                                                        th:value="${type}"
+                                                        th:text="${type}"
+                                                        th:selected="${type == location.locationType}">
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+
+                                        <div class="edit-form-group">
+
+                                            <label>
+                                                도로명주소
+                                            </label>
+
+                                            <input type="text"
+                                                   name="roadAddress"
+                                                   th:value="${location.roadAddress}">
+
+                                        </div>
+
+
+                                        <div class="edit-form-actions">
+
+                                            <button class="save-button"
+                                                    type="submit">
+                                                저장
+                                            </button>
+
+
+                                            <button class="cancel-button"
+                                                    type="button"
+                                                    th:onclick="'closeLocationEdit('
+                                                        + ${location.locationId}
+                                                        + ')'">
+
+                                                취소
+
+                                            </button>
+
+                                        </div>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    </th:block>
+
+
+                    <tr th:if="${#lists.isEmpty(locations)}">
+
+                        <td colspan="4"
+                            class="empty-table">
+
+                            <div class="empty-table-icon">
+                                📍
+                            </div>
+
+                            <strong>
+                                검색 결과가 없습니다.
+                            </strong>
+
+                            <p>
+                                다른 주소 또는 수거함 종류로 검색해보세요.
+                            </p>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             페이징
+        ================================================== -->
+        <div class="admin-pagination"
+             th:if="${paging.totalPages > 0}">
+
+
+            <a class="page-direction"
+               th:if="${startPage > 1}"
+               th:href="@{/admin/locations(
+                    page=${startPage - 1},
+                    keyword=${keyword},
+                    locationType=${locationType}
+               )}">
+                ← 이전
+            </a>
+
+
+            <th:block th:each="pageNum :
+                    ${#numbers.sequence(startPage, endPage)}">
+
+
+                <strong class="current-page"
+                        th:if="${pageNum == paging.page}"
+                        th:text="${pageNum}">
+                </strong>
+
+
+                <a class="page-number"
+                   th:unless="${pageNum == paging.page}"
+                   th:href="@{/admin/locations(
+                        page=${pageNum},
+                        keyword=${keyword},
+                        locationType=${locationType}
+                   )}"
+                   th:text="${pageNum}">
+                </a>
+
+            </th:block>
+
+
+            <a class="page-direction"
+               th:if="${endPage < paging.totalPages}"
+               th:href="@{/admin/locations(
+                    page=${endPage + 1},
+                    keyword=${keyword},
+                    locationType=${locationType}
+               )}">
+                다음 →
+            </a>
+
+        </div>
+
+
+        <div class="admin-back-area">
+
+            <a th:href="@{/admin}">
+                ← 관리자 페이지로 돌아가기
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =====================================================
+     Footer
+===================================================== -->
+<th:block th:replace="~{fragments/common :: footer}">
+</th:block>
+
+
+<script>
+
+    function openLocationEdit(locationId) {
+
+        const viewRow =
+            document.getElementById(
+                "location-view-row-" + locationId
+            );
+
+        const editRow =
+            document.getElementById(
+                "location-edit-row-" + locationId
+            );
+
+        viewRow.style.display = "none";
+        editRow.style.display = "table-row";
+    }
+
+
+    function closeLocationEdit(locationId) {
+
+        const viewRow =
+            document.getElementById(
+                "location-view-row-" + locationId
+            );
+
+        const editRow =
+            document.getElementById(
+                "location-edit-row-" + locationId
+            );
+
+        editRow.style.display = "none";
+        viewRow.style.display = "table-row";
+    }
+
+</script>
 
 </body>
 </html>
