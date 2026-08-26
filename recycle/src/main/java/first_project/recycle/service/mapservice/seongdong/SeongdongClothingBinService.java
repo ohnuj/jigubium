@@ -1,6 +1,7 @@
 package first_project.recycle.service.mapservice.seongdong;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
+
 import first_project.recycle.mapper.EcoLocationMapper;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,9 @@ public class SeongdongClothingBinService {
         this.ecoLocationMapper = ecoLocationMapper;
     }
 
-    public List<ecoLocation> importClothingBins() {
+    public List<EcoLocation> importClothingBins() {
 
-        List<ecoLocation> savedList = new ArrayList<>();
+        List<EcoLocation> savedList = new ArrayList<>();
 
         ClassPathResource resource =
                 new ClassPathResource("data/seongdong-clothing-bin.csv");
@@ -76,7 +77,7 @@ public class SeongdongClothingBinService {
                 BigDecimal latitude =
                         new BigDecimal(latitudeText);
 
-                ecoLocation location = new ecoLocation();
+                EcoLocation location = new EcoLocation();
 
                 location.setLocationName("의류수거함");
                 location.setLocationType("의류수거함");
