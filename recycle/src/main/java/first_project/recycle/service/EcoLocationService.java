@@ -2,6 +2,7 @@ package first_project.recycle.service;
 
 import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.Paging;
+import first_project.recycle.exception.NotFoundException;
 import first_project.recycle.mapper.EcoLocationMapper;
 import org.springframework.stereotype.Service;
 
@@ -38,11 +39,17 @@ public class EcoLocationService {
 
     // 관리자 > ecoLocation 수정
     public void updateEcoLocation(EcoLocation ecoLocation){
-        ecoLocationMapper.updateEcoLocation(ecoLocation);
+        int result = ecoLocationMapper.updateEcoLocation(ecoLocation);
+        if (result == 0){
+            throw new NotFoundException("존재하지 않는 수거함 위치입니다.");
+        }
     }
 
     //관리자 > eco Location 삭제
-    public void deleteEcoLocation(Long itemId){
-        ecoLocationMapper.deleteEcoLocation(itemId);
+    public void deleteEcoLocation(Long locationId){
+        int result = ecoLocationMapper.deleteEcoLocation(locationId);
+        if (result == 0){
+            throw new NotFoundException("존재하지 않는 수거함 위치입니다.");
+        }
     }
 }
