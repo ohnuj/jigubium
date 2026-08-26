@@ -1,8 +1,6 @@
 package first_project.recycle.interceptor;
 
 import first_project.recycle.config.SessionConst;
-import first_project.recycle.domain.User;
-import first_project.recycle.exception.ForbiddenException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -10,25 +8,30 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
-public class AdminInterceptor implements HandlerInterceptor {
-
+public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws Exception {
 
-        //기존세션 가져오기
+        // 기존 세션 조회
+        // 세션이 없으면 새로 생성X
         HttpSession session = request.getSession(false);
 
-        // 1. 세션에서 로그인 사용자 가져오기
-        User loginUser = (User)session.getAttribute(SessionConst.LOGIN_MEMBER);
-
-
-        // 2. 로그인햇지만 admin이 아닌경우
-        if(!"ADMIN".equals(loginUser.getRole())){
-            throw new ForbiddenException("관리자만 접근할 수 있습니다.");
+        // 1. 세션 자체가 없는 경우
+        if (session == null) {
+            response.sendRedirect("/login");
+            return false;
         }
-        // 3. admin 통과
+
+        // 2. 세션은 잇지만 로그인 회원 정보가 없는 경우
+        Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
+        if(loginMember==null){
+            response.sendRedirect("/login");
+            return false;
+        }
+
+        // 3. 로그인 사용자면 통과
         return true;
     }
 }

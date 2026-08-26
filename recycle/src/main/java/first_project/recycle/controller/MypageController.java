@@ -1,10 +1,8 @@
 package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
-import first_project.recycle.domain.EcoPointHistory;
-import first_project.recycle.domain.Member;
-import first_project.recycle.domain.MemberInfo;
-import first_project.recycle.domain.User;
+import first_project.recycle.domain.*;
+import first_project.recycle.service.BadgeService;
 import first_project.recycle.service.BoardService;
 import first_project.recycle.service.EcoPointHistoryService;
 import first_project.recycle.service.MypageService;
@@ -30,6 +28,7 @@ public class MypageController {
     private final MypageService mypageService;
     private final EcoPointHistoryService ecoPointHistoryService;
     private final BoardService boardService;
+    private final BadgeService badgeService;
 
     // 1. 디폴트 진입 -> 로그인 체크 후 내 정보(myinfo) 페이지로 이동
     @GetMapping("")
@@ -67,11 +66,15 @@ public class MypageController {
         // 누적 적립된 에코포인트 조회
         int totalEarnPoint = ecoPointHistoryService.findTotalPoint(memberId);
 
+        // 누적 에코포인트로 뱃지 조회
+        Badge currentBadge = badgeService.findCurrentBadge(totalEarnPoint);
+
         // Thymeleaf 템플릿(HTML)에서 사용할 수 있도록 Model 객체에 데이터 바인딩
         model.addAttribute("member",member); // 회원 프로필 정보 객체
         model.addAttribute("currentTab","myinfo"); // 사이드바에서 '내 정보' 메뉴 활성화 플래그
         model.addAttribute("currentPoint", currentPoint); // 현재 포인트
         model.addAttribute("totalPoint", totalEarnPoint); // 누적 포인트(등급 산정용)
+        model.addAttribute("currentBadge", currentBadge); // 뱃지
 
         return "mypage/myinfo";
     }

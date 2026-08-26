@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="first_project.recycle.repository.AdminMapper">
+    <select id="findDashBoardData" resultType="first_project.recycle.dto.AdminDashBoardResponse">
+        SELECT
+            (SELECT COUNT(member_id) FROM member) AS totalMember,
+            (SELECT COUNT(board_id) FROM board) AS totalBoard,
+            (SELECT COUNT(member_id) FROM member
+            WHERE created_at >= CURDATE()
+            AND created_at &lt; CURDATE() + INTERVAL 1 DAY
+            ) AS todayMember,
+            (SELECT COUNT(board_id) FROM board
+            WHERE created_at >= CURDATE()
+            AND created_at &lt; CURDATE() + INTERVAL 1 DAY
+            ) AS todayBoard
+    </select>
+</mapper>

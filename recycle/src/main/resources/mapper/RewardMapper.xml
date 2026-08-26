@@ -8,6 +8,7 @@
         SELECT
             reward_id AS rewardId,
             reward_name AS rewardName,
+            reward_name_korean AS rewardNameKorean,
             required_point AS requiredPoint,
             stock_quantity AS stockQuantity,
             image_url AS imageUrl
@@ -19,6 +20,7 @@
         SELECT
             reward_id AS rewardId,
             reward_name AS rewardName,
+            reward_name_korean AS rewardNameKorean,
             required_point AS requiredPoint,
             stock_quantity AS stockQuantity,
             image_url AS imageUrl

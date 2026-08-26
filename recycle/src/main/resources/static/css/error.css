@@ -1,0 +1,83 @@
+
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+/* =========================
+  Error Page
+========================= */
+
+.error-page {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.error-container {
+    width: 100%;
+    max-width: 680px;
+    text-align: center;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 64px 40px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
+}
+
+.error-label {
+    display: inline-block;
+    margin-bottom: 12px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #7ac943;
+}
+
+.error-code {
+    margin: 0;
+    font-size: 86px;
+    line-height: 1;
+    font-weight: 800;
+    color: #16492f;
+}
+
+.error-title {
+    margin: 24px 0 12px;
+    font-size: 26px;
+    color: #222;
+}
+
+.error-description {
+    margin: 0;
+    color: #777;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.error-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 36px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+    .error-container {
+        padding: 48px 24px;
+    }
+
+    .error-code {
+        font-size: 68px;
+    }
+
+    .error-title {
+        font-size: 22px;
+    }
+
+    .error-actions {
+        flex-direction: column;
+    }
+
+    .error-actions .btn {
+        width: 100%;
+    }
+}

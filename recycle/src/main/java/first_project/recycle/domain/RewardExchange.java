@@ -13,5 +13,6 @@ public class RewardExchange {
     private LocalDateTime exchangedAt;
 
     private String rewardName;
+    private String rewardNameKorean;
     private String imageUrl;
 }
