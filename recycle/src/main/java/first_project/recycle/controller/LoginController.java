@@ -46,13 +46,18 @@ public class LoginController {
         if (loginUser == null) {
             model.addAttribute("error", "이메일 또는 비밀번호가 맞지 않습니다.");
             model.addAttribute("email", email); // 사용자가 입력했던 이메일 유지
-            model.addAttribute("redirectURL", redirectURL); // 리다이렉트 URL 유지
+            model.addAttribute("redirectURL", getSafeRedirectURL(redirectURL)); // 리다이렉트 URL 유지
             return "loginForm";
         }
 
 
         // 로그인 성공: 현재 요청의 세션을 가져오거나 없으면 신규 생성
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            request.changeSessionId();
+        }else{
+            session = request.getSession(true);
+        }
 
         // 세션 내 비밀번호 노출 방지를 위한 민감 정보 제거 (보안 조치)
         loginUser.setPassword(null);
@@ -64,10 +69,10 @@ public class LoginController {
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginUser);
 
         // 로그인 전 접근 시도했던 URL 또는 기본 URL로 이동
-        return "redirect:" + redirectURL;
+        return "redirect:" + getSafeRedirectURL(redirectURL);
     }
 
-    // POST /logout 요청 처리: 세션 무효화 및 로그아웃
+    // GET /logout 요청 처리: 세션 무효화 및 로그아웃
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
         // 세션이 존재하면 가져오고 없으면 새로 만들지 않음 (false 옵션)
@@ -80,5 +85,18 @@ public class LoginController {
 
         // 로그아웃 후 로그인 화면으로 리다이렉트
         return "redirect:/login";
+    }
+    private String getSafeRedirectURL(
+            String redirectURL) {
+
+        if (redirectURL == null
+                || redirectURL.isBlank()
+                || !redirectURL.startsWith("/")
+                || redirectURL.startsWith("//")) {
+
+            return "/";
+        }
+
+        return redirectURL;
     }
 }

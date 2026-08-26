@@ -5,6 +5,7 @@ import first_project.recycle.domain.Reward;
 import first_project.recycle.domain.User;
 import first_project.recycle.service.EcoPointHistoryService;
 import first_project.recycle.service.RewardService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -23,10 +24,11 @@ public class RewardController {
     private final EcoPointHistoryService ecoPointHistoryService;
 
     @GetMapping("/reward")
-    public String rewardShop(HttpSession session,Model model){
+    public String rewardShop(HttpServletRequest request, Model model){
+        HttpSession session = request.getSession(false);
         //로그인 회원
-        User loginUSer = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        Long memberId = loginUSer.getMemberId();
+        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        Long memberId = loginUser.getMemberId();
 
         //리워드 목록
         List<Reward> rewards = rewardService.findAll();
@@ -38,12 +40,14 @@ public class RewardController {
     }
 
     @PostMapping("/reward/exchange")
-    public String exchange(@RequestParam("rewardId") Long rewardID,
-                           HttpSession session, RedirectAttributes redirectAttributes){
-        User loginUSer = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        Long memberId = loginUSer.getMemberId();
+    public String exchange(@RequestParam("rewardId") Long rewardId,
+                           HttpServletRequest request, RedirectAttributes redirectAttributes){
+        HttpSession session = request.getSession(false);
+
+        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        Long memberId = loginUser.getMemberId();
         try {
-                rewardService.exchangeReward(memberId,rewardID);
+                rewardService.exchangeReward(memberId,rewardId);
                 redirectAttributes.addFlashAttribute(
                         "message","리워드 교환이 완료되었습니다");
 

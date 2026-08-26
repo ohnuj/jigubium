@@ -40,9 +40,6 @@ public class BoardLikeController {
                         SessionConst.LOGIN_MEMBER
                 );
 
-        if (loginUser == null) {
-            return "redirect:/login";
-        }
 
         boardLikeService.toggleLike(
                 boardId,
