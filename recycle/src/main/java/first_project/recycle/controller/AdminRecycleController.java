@@ -4,7 +4,6 @@ import first_project.recycle.domain.Paging;
 import first_project.recycle.domain.RecycleItem;
 import first_project.recycle.service.RecycleService;
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

@@ -3,7 +3,7 @@ package first_project.recycle.service;
 import first_project.recycle.domain.EcoPointHistory;
 import first_project.recycle.domain.Reward;
 import first_project.recycle.domain.RewardExchange;
-import first_project.recycle.service.EcoPointHistoryService;
+import first_project.recycle.exception.NotFoundException;
 import first_project.recycle.repository.RewardExchangeMapper;
 import first_project.recycle.repository.RewardMapper;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class RewardService {
         //1. 교환하려는 리워드 조회
         Reward reward = rewardMapper.findById(rewardId);
         if(reward == null){
-            throw new IllegalStateException("존재하지 않는 상품입니다");
+            throw new NotFoundException("존재하지 않는 상품입니다");
         }
         //2. 재고확인
         if(reward.getStockQuantity() <= 0){

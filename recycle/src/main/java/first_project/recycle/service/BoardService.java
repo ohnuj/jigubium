@@ -293,21 +293,38 @@ public class BoardService {
 
         return board;
     }
+    /**
+     * 게시글 수정 화면 조회
+     * 게시글 존재 여부 + 작성자 본인 여부 + 공지사항 여부 확인
+     */
+    public BoardDetailResponse getBoardForEdit(Long boardId, Long memberId) {
 
+        // 기존 getBoard() 사용
+        // 게시글이 없으면 여기서 NotFoundException 발생
+        BoardDetailResponse board = getBoard(boardId);
+
+        // 작성자 본인 여부 확인
+        if (!Objects.equals(board.getMemberId(), memberId)) {
+            throw new ForbiddenException("게시글을 수정할 권한이 없습니다.");
+        }
+
+        // 공지사항은 일반 게시글 수정 URL로 접근 차단
+        if (board.getBoardType() == BoardType.NOTICE) {
+            throw new ForbiddenException("공지사항은 관리자 페이지에서만 수정할 수 있습니다.");
+        }
+
+        return board;
+    }
     public BoardDetailResponse getBoardDetail(Long boardId) {
 
-        BoardDetailResponse board =
-                boardMapper.findById(boardId);
+        BoardDetailResponse board = boardMapper.findById(boardId);
 
         if (board == null) {
-            throw new NotFoundException(
-                    "존재하지 않는 게시글입니다."
-            );
+            throw new NotFoundException("존재하지 않는 게시글입니다.");
         }
 
         // 이미지 조회
-        List<BoardImage> images =
-                boardImageMapper.findByBoardId(boardId);
+        List<BoardImage> images = boardImageMapper.findByBoardId(boardId);
 
         board.setImages(images);
 
@@ -324,29 +341,33 @@ public class BoardService {
      */
 
     @Transactional
-    public boolean updateBoard(
+    public void updateBoard(
             Long boardId,
             Long memberId,
             BoardUpdateRequest request,
             List<MultipartFile> images) {
 
         // 게시글 존재 여부 확인
-        BoardDetailResponse board =
-                boardMapper.findById(boardId);
+        BoardDetailResponse board = boardMapper.findById(boardId);
 
         if (board == null) {
-            throw new NotFoundException(
-                    "존재하지 않는 게시글입니다."
-            );
+            throw new NotFoundException("존재하지 않는 게시글입니다.");
         }
 
         // 작성자 확인
         if (!Objects.equals(
                 board.getMemberId(),
                 memberId)) {
-            throw new ForbiddenException(
-                    "게시글을 수정할 권한이 없습니다."
-            );
+            throw new ForbiddenException("게시글을 수정할 권한이 없습니다.");
+        }
+        // 공지사항은 관리자 기능으로만 수정
+        if (board.getBoardType() == BoardType.NOTICE) {
+            throw new ForbiddenException("공지사항은 관리자 페이지에서만 수정할 수 있습니다.");
+        }
+
+        // 일반 사용자의 NOTICE 변경 요청 차단
+        if (request.getBoardType() == BoardType.NOTICE) {
+            throw new ForbiddenException("공지사항으로 변경할 수 없습니다.");
         }
 
         validateBoardRequest(
@@ -380,17 +401,13 @@ public class BoardService {
         }
 
 // 검증이 끝난 후 게시글 수정
-        int result = boardMapper.updateBoard(
+      boardMapper.updateBoard(
                 boardId,
                 memberId,
                 request.getBoardType(),
                 request.getTitle(),
-                request.getContent()
-        );
+                request.getContent());
 
-        if (result == 0) {
-            return false;
-        }
 
        Integer maxSortOrder =
                boardImageMapper.findMaxSortOrder(boardId);
@@ -427,7 +444,6 @@ public class BoardService {
                 }
             }
         }
-        return true;
     }
 
     /**
@@ -435,7 +451,7 @@ public class BoardService {
      * 작성자 본인의 글만 삭제하며 이미지 파일도 함께 정리한다
      */
     @Transactional
-    public boolean deleteBoard(
+    public void deleteBoard(
             Long boardId,
             Long memberId) {
 
@@ -446,8 +462,7 @@ public class BoardService {
        // 게시글 없음
         if (board == null) {
             throw new NotFoundException(
-                    "존재하지 않는 게시글입니다."
-            );
+                    "존재하지 않는 게시글입니다.");
         }
 
         // 작성자 아님
@@ -455,8 +470,13 @@ public class BoardService {
                 board.getMemberId(),
                 memberId)) {
             throw new ForbiddenException(
-                    "게시글을 삭제할 권한이 없습니다."
-            );
+                    "게시글을 삭제할 권한이 없습니다.");
+        }
+
+        // 공지사항은 관리자 기능으로만 삭제
+        if (board.getBoardType() == BoardType.NOTICE) {
+            throw new ForbiddenException(
+                    "공지사항은 관리자 페이지에서만 삭제할 수 있습니다.");
         }
 
         // 실제 파일 삭제를 위해 이미지 목록을 먼저 조회
@@ -470,12 +490,9 @@ public class BoardService {
         boardImageMapper.deleteByBoardId(boardId);
 
         // 게시글 삭제
-        int result =
-                boardMapper.deleteBoard(boardId, memberId);
+        boardMapper.deleteBoard(boardId, memberId);
 
-        if (result == 0) {
-            return false;
-        }
+
 
         // DB 트랜잭션 커밋 후 실제 이미지 파일 삭제
         for (BoardImage image : images) {
@@ -484,14 +501,13 @@ public class BoardService {
                     image.getImageUrl()
             );
         }
-        return true;
     }
 
     /**
      * 게시글 기존 이미지 개별 삭제
      */
     @Transactional
-    public boolean deleteBoardImage(
+    public void deleteBoardImage(
             Long boardId,
             Long imageId,
             Long memberId) {
@@ -500,27 +516,53 @@ public class BoardService {
         BoardDetailResponse board =
                 boardMapper.findById(boardId);
 
-        if (board == null ||
-                !Objects.equals(board.getMemberId(), memberId)) {
-            return false;
+        // 1. 게시글 존재 여부 확인
+        if (board == null) {
+            throw new NotFoundException(
+                    "존재하지 않는 게시글입니다."
+            );
         }
 
-        // 이미지 정보 조회
+        // 2. 게시글 작성자 확인
+        if (!Objects.equals(
+                board.getMemberId(),
+                memberId)) {
+
+            throw new ForbiddenException(
+                    "이미지를 삭제할 권한이 없습니다."
+            );
+        }
+        // 공지사항 이미지 삭제 차단
+        if (board.getBoardType() == BoardType.NOTICE) {
+            throw new ForbiddenException(
+                    "공지사항 이미지는 관리자 페이지에서만 삭제할 수 있습니다."
+            );
+        }
+
+        // 이미지 존재 여부
         BoardImage image =
                 boardImageMapper.findById(imageId);
 
-        if (image == null ||
-                !Objects.equals(image.getBoardId(), boardId)) {
-            return false;
+        if (image == null) {
+            throw new NotFoundException(
+                    "존재하지 않는 이미지입니다."
+            );
+        }
+
+        // 4. 해당 게시글에 속한 이미지인지 확인
+        if (!Objects.equals(
+                image.getBoardId(),
+                boardId)) {
+
+            throw new NotFoundException(
+                    "해당 게시글의 이미지가 아닙니다."
+            );
         }
 
         // DB 이미지 삭제
-        int result =
-                boardImageMapper.deleteImage(imageId, boardId);
+        boardImageMapper.deleteImage(imageId, boardId);
 
-        if (result == 0) {
-            return false;
-        }
+
 
         // DB 트랜잭션이 정상 커밋된 뒤
         // 실제 이미지 파일 삭제
@@ -528,7 +570,6 @@ public class BoardService {
                 image.getImageUrl()
         );
 
-        return true;
     }
 
     // 마이페이지 활동 조회 - 작성한 총 게시글 수

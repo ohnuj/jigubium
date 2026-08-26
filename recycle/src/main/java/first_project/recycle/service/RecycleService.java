@@ -4,6 +4,7 @@ import first_project.recycle.domain.Paging;
 import first_project.recycle.domain.RecycleItem;
 import first_project.recycle.dto.RecycleApiResponse;
 import first_project.recycle.dto.RecycleSearchResponse;
+import first_project.recycle.exception.NotFoundException;
 import first_project.recycle.repository.RecycleMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -67,11 +68,17 @@ public class RecycleService {
 
     // 관리자 > 재활용 품목 수정
     public void updateRecycleItem(RecycleItem recycleItem){
-        recycleMapper.updateRecycleItem(recycleItem);
+        int result = recycleMapper.updateRecycleItem(recycleItem);
+        if (result == 0){
+            throw new NotFoundException("존재하지 않는 재활용 품목입니다.");
+        }
     }
 
-    // 관리자 > 재활용 카테고리 삭제
+    // 관리자 > 재활용 품목 삭제
     public void deleteRecycleItem(Long itemId){
-        recycleMapper.deleteRecycleItem(itemId);
+        int result = recycleMapper.deleteRecycleItem(itemId);
+        if (result == 0){
+            throw new NotFoundException("존재하지 않는 재활용 품목입니다.");
+        }
     }
 }
