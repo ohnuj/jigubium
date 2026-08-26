@@ -1,14 +1,11 @@
 package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
-import first_project.recycle.domain.EcoPointHistory;
-import first_project.recycle.domain.Member;
-import first_project.recycle.domain.MemberInfo;
-import first_project.recycle.domain.User;
+import first_project.recycle.domain.*;
+import first_project.recycle.service.BadgeService;
 import first_project.recycle.service.BoardService;
 import first_project.recycle.service.EcoPointHistoryService;
 import first_project.recycle.service.MypageService;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,26 +26,21 @@ public class MypageController {
     private final MypageService mypageService;
     private final EcoPointHistoryService ecoPointHistoryService;
     private final BoardService boardService;
+    private final BadgeService badgeService;
 
     // 1. 디폴트 진입 -> 로그인 체크 후 내 정보(myinfo) 페이지로 이동
     @GetMapping("")
-    public String mypageDefault(HttpServletRequest request) {
-        // 기존 세션이 있는 지 확인 (false는 세션이 없어도 새로 만들지 말라는 의미)
-        HttpSession session = request.getSession(false);
-        // 세션이 아예 없거나 세션 안에 로그인 사용자 정보 키값이 없다면 로그인 페이지로 이동
-        if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
-            return "redirect:/login";
-        }
+    public String mypageDefault() {
         return "redirect:/mypage/myinfo";
     }
 
     // 내 정보 화면
     @GetMapping("/myinfo")
     public String myInfo(HttpServletRequest request, Model model){
+
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
-            return "redirect:/login";
-        }
+
+
         // 세션에 담겨있는 로그인 유저 객체에서 식별자(PK)인 memberId를 꺼냄
         User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Long memberId = loginUser.getMemberId();
@@ -67,11 +58,15 @@ public class MypageController {
         // 누적 적립된 에코포인트 조회
         int totalEarnPoint = ecoPointHistoryService.findTotalPoint(memberId);
 
+        // 누적 에코포인트로 뱃지 조회
+        Badge currentBadge = badgeService.findCurrentBadge(totalEarnPoint);
+
         // Thymeleaf 템플릿(HTML)에서 사용할 수 있도록 Model 객체에 데이터 바인딩
         model.addAttribute("member",member); // 회원 프로필 정보 객체
         model.addAttribute("currentTab","myinfo"); // 사이드바에서 '내 정보' 메뉴 활성화 플래그
         model.addAttribute("currentPoint", currentPoint); // 현재 포인트
         model.addAttribute("totalPoint", totalEarnPoint); // 누적 포인트(등급 산정용)
+        model.addAttribute("currentBadge", currentBadge); // 뱃지
 
         return "mypage/myinfo";
     }
@@ -80,10 +75,7 @@ public class MypageController {
     @GetMapping("/memberinfoconfirm")
     public String memberInfoConfirmForm(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
-            return "redirect:/login";
-        }
-
+        session.removeAttribute("mypageVerified");
         model.addAttribute("currentTab", "info");
         return "mypage/checkpassword";
     }
@@ -94,9 +86,6 @@ public class MypageController {
                                 HttpServletRequest request,
                                 RedirectAttributes redirectAttributes) {
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
-            return "redirect:/login";
-        }
 
         // 이메일 대신 memberId 추출
         User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
@@ -126,8 +115,11 @@ public class MypageController {
     @GetMapping("/updatememberinfo")
     public String updateMemberInfoForm(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
-            return "redirect:/login";
+
+        //pw check을 하고 넘어왔는지 확인, 브라우저를 통해 바로 update하러 오는 것을 방지하기 위함
+        Boolean verified = (Boolean) session.getAttribute("mypageVerified");
+        if (!Boolean.TRUE.equals(verified)) {
+            return "redirect:/mypage/memberinfoconfirm";
         }
 
         // 이메일 대신 memberId 추출
@@ -152,8 +144,13 @@ public class MypageController {
                                    HttpServletRequest request,
                                    RedirectAttributes redirectAttributes) {
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
-            return "redirect:/login";
+        Boolean verified =
+                (Boolean) session.getAttribute(
+                        "mypageVerified"
+                );
+
+        if (!Boolean.TRUE.equals(verified)) {
+            return "redirect:/mypage/memberinfoconfirm";
         }
 
         User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
@@ -182,7 +179,8 @@ public class MypageController {
             loginUser.setNickname(memberinfo.getNickname());
             session.setAttribute(SessionConst.LOGIN_MEMBER, loginUser);
         }
-
+        // 회원정보 수정 끝났으면 비밀번호 확인 상태 제거
+        session.removeAttribute("mypageVerified");
         // 1. 성공 메시지 전달
         redirectAttributes.addFlashAttribute(
                 "successMsg",
@@ -195,11 +193,7 @@ public class MypageController {
 
     // 6. 회원 탈퇴 화면 (GET)
     @GetMapping("/memberdelete")
-    public String memberDelete(HttpServletRequest request, Model model) {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
-            return "redirect:/login";
-        }
+    public String memberDelete(Model model) {
 
         // 사이드바 '회원 탈퇴' 탭 강조
         model.addAttribute("currentTab", "withdraw");
@@ -213,9 +207,7 @@ public class MypageController {
                                HttpServletRequest request,
                                RedirectAttributes redirectAttributes) {
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
-            return "redirect:/login";
-        }
+
 
         User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Long memberId = loginUser.getMemberId(); // memberId 추출
@@ -243,9 +235,7 @@ public class MypageController {
            HttpServletRequest request, Model model) {
 
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
-        return "redirect:/login";
-        }
+
 
         User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Long memberId = loginUser.getMemberId();

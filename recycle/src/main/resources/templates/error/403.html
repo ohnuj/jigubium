@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>접근 권한 없음</title>
-    <link rel="stylesheet" th:href="@{/css/board.css}">
+    <link rel="stylesheet" th:href="@{/css/error.css}">
     <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
@@ -22,9 +22,9 @@
             접근 권한이 없습니다.
         </h2>
 
-        <p class="error-description">
-            요청하신 페이지에 접근할 권한이 없습니다.<br>
-            로그인 상태와 접근 권한을 확인해주세요.
+        <p class="error-description"   th:text="${message != null ? message : '요청하신 페이지에 접근할 권한이 없습니다.'}">
+            요청하신 페이지에 접근할 권한이 없습니다.
+
         </p>
 
         <div class="error-actions">
@@ -36,11 +36,6 @@
             <a class="btn btn-primary"
                th:href="@{/}">
                 홈으로
-            </a>
-
-            <a class="btn btn-secondary"
-               th:href="@{/boards}">
-                게시판으로
             </a>
         </div>
 

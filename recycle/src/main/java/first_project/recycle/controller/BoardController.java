@@ -83,7 +83,6 @@ public class BoardController {
 // 최신 공지 3개를 상단에 고정
         if (boardType == null
                 && (keyword == null || keyword.isBlank())
-                && sort == null
                 && !myPosts) {
 
             List<BoardListResponse> notices =
@@ -168,16 +167,9 @@ public class BoardController {
      * 게시글 작성 페이지
      */
     @GetMapping("/write")
-    public String writeForm(Model model,
-                            HttpSession session){
+    public String writeForm(Model model){
 
-        User loginUser =
-                (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
-        // 로그인하지 않은 사용자는 로그인 페이지로 이동
-        if (loginUser == null) {
-            return "redirect:/login";
-        }
         // 작성 페이지에서 게시판 타입 선택에 사용
         model.addAttribute("boardTypes", List.of(BoardType.FREE,BoardType.INFO,BoardType.SUGGESTION));
 
@@ -187,20 +179,15 @@ public class BoardController {
     /**
      * 게시글 등록
      */
-    @PostMapping
+    @PostMapping("/write")
     public String write(
             @ModelAttribute BoardCreateRequest request,
             @RequestParam(required = false) List<MultipartFile> images,
             HttpSession session) {
 
-        // 로그인 기능 연동 전 임시 회원 ID
+
         User loginUser =
                 (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-
-        if (loginUser == null) {
-            return "redirect:/login";
-        }
-
 
         Long boardId = boardService.write(
                 loginUser.getMemberId(),
@@ -343,16 +330,11 @@ public class BoardController {
             BoardType listBoardType,
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "false") boolean myPosts,
-
             Model model,
             HttpSession session) {
 
         User loginUser =
                 (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-
-        if (loginUser == null) {
-            return "redirect:/login";
-        }
 
         BoardDetailResponse board =
                 boardService.getBoard(boardId);
@@ -390,7 +372,6 @@ public class BoardController {
             @PathVariable Long boardId,
             @ModelAttribute BoardUpdateRequest request,
             @RequestParam(required = false) List<MultipartFile> images,
-
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String searchType,
@@ -398,7 +379,6 @@ public class BoardController {
             BoardType listBoardType,
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "false") boolean myPosts,
-
             HttpSession session) {
 
         User loginUser =
@@ -406,9 +386,7 @@ public class BoardController {
                         SessionConst.LOGIN_MEMBER
                 );
 
-        if (loginUser == null) {
-            return "redirect:/login";
-        }
+
 
         boolean updated =
                 boardService.updateBoard(
@@ -456,9 +434,7 @@ public class BoardController {
                         SessionConst.LOGIN_MEMBER
                 );
 
-        if (loginUser == null) {
-            return "redirect:/login";
-        }
+
 
         Long memberId = loginUser.getMemberId();
 
@@ -506,9 +482,6 @@ public class BoardController {
                         SessionConst.LOGIN_MEMBER
                 );
 
-        if (loginUser == null) {
-            return "redirect:/login";
-        }
 
         boolean deleted =
                 boardService.deleteBoardImage(

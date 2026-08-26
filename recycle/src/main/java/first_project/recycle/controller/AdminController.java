@@ -2,10 +2,8 @@ package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
 import first_project.recycle.domain.User;
-import first_project.recycle.dto.BoardCreateRequest;
-import first_project.recycle.dto.BoardDetailResponse;
-import first_project.recycle.dto.BoardListResponse;
-import first_project.recycle.dto.BoardUpdateRequest;
+import first_project.recycle.dto.*;
+import first_project.recycle.service.AdminService;
 import first_project.recycle.service.BoardService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -21,11 +19,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminController {
     private final BoardService boardService;
+    private final AdminService adminService;
 
     // 관리자 메인페이지 > 전체 공지사항을 최신순으로 조회
     @GetMapping
     public String adminHome(Model model){
 
+        //DashBoard 조회
+        AdminDashBoardResponse dashBoard = adminService.findDashBoardData();
+        model.addAttribute("dashBoard",dashBoard);
         //전체 공지사항 조회
         List<BoardListResponse> notices = boardService.getAllNotices();
         model.addAttribute("notices", notices);

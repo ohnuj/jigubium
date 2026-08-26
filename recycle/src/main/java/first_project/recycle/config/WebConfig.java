@@ -2,6 +2,7 @@ package first_project.recycle.config;
 
 
 import first_project.recycle.interceptor.AdminInterceptor;
+import first_project.recycle.interceptor.LoginInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -18,12 +19,15 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final String uploadDir;
     private final AdminInterceptor adminInterceptor;
+    private final LoginInterceptor loginInterceptor;
 
     public WebConfig(
             @Value("${recycle.upload.dir}") String uploadDir,
-            AdminInterceptor adminInterceptor) {
+            AdminInterceptor adminInterceptor,
+            LoginInterceptor loginInterceptor) {
         this.uploadDir = uploadDir;
         this.adminInterceptor = adminInterceptor;
+        this.loginInterceptor = loginInterceptor;
     }
 
 
@@ -44,7 +48,36 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry){
-        registry.addInterceptor(adminInterceptor).addPathPatterns("/admin","/admin/**");
+        // 1. 로그인 여부 검사 > 로그인 해야 사용 가능
+        registry.addInterceptor(loginInterceptor).order(1).addPathPatterns(
+                "/mypage/**",
+
+                "/boards/write",
+                "/boards/*/edit",
+                "/boards/*/delete",
+                "/boards/*/images/*/delete",
+                "/boards/*/like",
+
+                "/boards/*/comments",
+                "/boards/*/comments/**",
+
+                "/game",
+
+                "/reward",
+                "/reward/**",
+
+                // 공공데이터 DB적재
+                "/api/*/import",
+
+                "/admin",
+                "/admin/**");
+        // 2. 관리자 권한 검사 > 관리자만 사용 가능
+        registry.addInterceptor(adminInterceptor).order(2).addPathPatterns(
+                "/admin",
+                "/admin/**",
+
+                // 관리자만 공공데이터 DB적재
+                "/api/*/import");
     }
 
 }

@@ -44,10 +44,6 @@ public class CommentController {
                         SessionConst.LOGIN_MEMBER
                 );
 
-        if (loginUser == null) {
-            return "redirect:/login";
-        }
-
         commentService.createComment(
                 boardId,
                 loginUser.getMemberId(),
@@ -89,10 +85,6 @@ public class CommentController {
                 (User) session.getAttribute(
                         SessionConst.LOGIN_MEMBER
                 );
-
-        if (loginUser == null) {
-            return "redirect:/login";
-        }
 
         boolean updated =
                 commentService.updateComment(
@@ -142,10 +134,6 @@ public class CommentController {
                 (User) session.getAttribute(
                         SessionConst.LOGIN_MEMBER
                 );
-
-        if (loginUser == null) {
-            return "redirect:/login";
-        }
 
         boolean deleted =
                 commentService.deleteComment(
