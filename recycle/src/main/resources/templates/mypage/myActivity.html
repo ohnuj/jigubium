@@ -19,10 +19,10 @@
     <!-- 좌측 사이드바 -->
     <aside class="mypage-sidebar">
         <ul class="mypage-menu-list">
-            <li><a th:href="@{/mypage/myinfo}">내 정보</a></li>
-            <li><a th:href="@{/mypage/memberinfoconfirm}">회원정보 수정</a></li>
-            <li class="active"><a th:href="@{/mypage/memberactivity}">나의 활동</a></li>
-            <li><a th:href="@{/mypage/memberdelete}">회원 탈퇴</a></li>
+            <li><a th:href="@{/mypage/myInfo}">내 정보</a></li>
+            <li><a th:href="@{/mypage/memberInfoConfirm}">회원정보 수정</a></li>
+            <li class="active"><a th:href="@{/mypage/myActivity}">나의 활동</a></li>
+            <li><a th:href="@{/mypage/memberDelete}">회원 탈퇴</a></li>
         </ul>
     </aside>
 
@@ -136,7 +136,7 @@
             <!-- 페이징 버튼 -->
             <div th:if="${pagingPages > 1}" style="display: flex; justify-content: center; gap: 5px; margin-top: 20px;">
                 <a th:each="pageNum : ${#numbers.sequence(1, pagingPages)}"
-                   th:href="@{/mypage/memberactivity(page=${pageNum})}"
+                   th:href="@{/mypage/myActivity(page=${pageNum})}"
                    th:text="${pageNum}"
                    th:style="${pageNum == currentPage} ?
                              'display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:6px; background-color:#174d32; color:white; font-weight:600; font-size:12px;' :

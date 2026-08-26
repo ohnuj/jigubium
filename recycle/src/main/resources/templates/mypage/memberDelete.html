@@ -17,10 +17,10 @@
     <!-- 좌측 사이드바 (4번 탭 활성화) -->
     <aside class="mypage-sidebar">
         <ul class="mypage-menu-list">
-            <li><a th:href="@{/mypage/myinfo}">내 정보</a></li>
-            <li><a th:href="@{/mypage/memberinfoconfirm}">회원정보 수정</a></li>
-            <li><a th:href="@{/mypage/memberactivity}">나의 활동</a></li>
-            <li class="active"><a th:href="@{/mypage/memberdelete}">회원 탈퇴</a></li>
+            <li><a th:href="@{/mypage/myInfo}">내 정보</a></li>
+            <li><a th:href="@{/mypage/memberInfoConfirm}">회원정보 수정</a></li>
+            <li><a th:href="@{/mypage/myActivity}">나의 활동</a></li>
+            <li class="active"><a th:href="@{/mypage/memberDelete}">회원 탈퇴</a></li>
         </ul>
     </aside>
 
@@ -41,7 +41,7 @@
                 계속 진행하시려면 현재 비밀번호를 입력해주세요.
             </p>
 
-            <form th:action="@{/mypage/memberdelete}" method="post" onsubmit="return confirm('정말로 탈퇴하시겠습니까? 탈퇴 후 복구는 불가능합니다.');">
+            <form th:action="@{/mypage/memberDelete}" method="post" onsubmit="return confirm('정말로 탈퇴하시겠습니까? 탈퇴 후 복구는 불가능합니다.');">
                 <div class="form-group">
                     <label for="password">비밀번호 확인</label>
                     <input type="password" id="password" name="password" class="mypage-input"

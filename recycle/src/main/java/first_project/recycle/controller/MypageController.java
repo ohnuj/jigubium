@@ -31,11 +31,11 @@ public class MypageController {
     // 1. 디폴트 진입 -> 로그인 체크 후 내 정보(myinfo) 페이지로 이동
     @GetMapping("")
     public String mypageDefault() {
-        return "redirect:/mypage/myinfo";
+        return "redirect:/mypage/myInfo";
     }
 
     // 내 정보 화면
-    @GetMapping("/myinfo")
+    @GetMapping("/myInfo")
     public String myInfo(HttpServletRequest request, Model model){
 
         HttpSession session = request.getSession(false);
@@ -63,25 +63,25 @@ public class MypageController {
 
         // Thymeleaf 템플릿(HTML)에서 사용할 수 있도록 Model 객체에 데이터 바인딩
         model.addAttribute("member",member); // 회원 프로필 정보 객체
-        model.addAttribute("currentTab","myinfo"); // 사이드바에서 '내 정보' 메뉴 활성화 플래그
+        model.addAttribute("currentTab","myInfo"); // 사이드바에서 '내 정보' 메뉴 활성화 플래그
         model.addAttribute("currentPoint", currentPoint); // 현재 포인트
         model.addAttribute("totalPoint", totalEarnPoint); // 누적 포인트(등급 산정용)
         model.addAttribute("currentBadge", currentBadge); // 뱃지
 
-        return "mypage/myinfo";
+        return "mypage/myInfo";
     }
 
     // 2. 비밀번호 입력 화면 (1번 탭 디폴트)
-    @GetMapping("/memberinfoconfirm")
+    @GetMapping("/memberInfoConfirm")
     public String memberInfoConfirmForm(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);
         session.removeAttribute("mypageVerified");
         model.addAttribute("currentTab", "info");
-        return "mypage/checkpassword";
+        return "mypage/checkPassword";
     }
 
     // 3. 비밀번호 확인 처리 (POST)
-    @PostMapping("/checkpassword")
+    @PostMapping("/checkPassword")
     public String checkPassword(@RequestParam("password") String password,
                                 HttpServletRequest request,
                                 RedirectAttributes redirectAttributes) {
@@ -103,23 +103,23 @@ public class MypageController {
             );
 
             // 실패 시 비밀번호 입력 화면으로 다시 이동
-            return "redirect:/mypage/memberinfoconfirm";
+            return "redirect:/mypage/memberInfoConfirm";
         }
         // 비밀번호 통과 플래그를 세션에 기록
         session.setAttribute("mypageVerified", true);
         // 검증 성공 시 정보 수정 화면 URL로 이동
-        return "redirect:/mypage/updatememberinfo";
+        return "redirect:/mypage/updateMemberInfo";
     }
 
     // 4. 회원정보 수정 화면 (GET)
-    @GetMapping("/updatememberinfo")
+    @GetMapping("/updateMemberInfo")
     public String updateMemberInfoForm(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);
 
         //pw check을 하고 넘어왔는지 확인, 브라우저를 통해 바로 update하러 오는 것을 방지하기 위함
         Boolean verified = (Boolean) session.getAttribute("mypageVerified");
         if (!Boolean.TRUE.equals(verified)) {
-            return "redirect:/mypage/memberinfoconfirm";
+            return "redirect:/mypage/memberInfoConfirm";
         }
 
         // 이메일 대신 memberId 추출
@@ -139,7 +139,7 @@ public class MypageController {
     }
 
     // 5. 회원정보 수정 처리 (POST)
-    @PostMapping("/updatememberinfo")
+    @PostMapping("/updateMemberInfo")
     public String updateMemberInfo(@ModelAttribute MemberInfo memberinfo,
                                    HttpServletRequest request,
                                    RedirectAttributes redirectAttributes) {
@@ -150,7 +150,7 @@ public class MypageController {
                 );
 
         if (!Boolean.TRUE.equals(verified)) {
-            return "redirect:/mypage/memberinfoconfirm";
+            return "redirect:/mypage/memberInfoConfirm";
         }
 
         User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
@@ -167,7 +167,7 @@ public class MypageController {
                         "errorMsg",
                         "새 비밀번호와 비밀번호 확인이 일치하지 않습니다."
                 );
-                return "redirect:/mypage/updatememberinfo";
+                return "redirect:/mypage/updateMemberInfo";
             }
         }
 
@@ -192,17 +192,17 @@ public class MypageController {
     }
 
     // 6. 회원 탈퇴 화면 (GET)
-    @GetMapping("/memberdelete")
+    @GetMapping("/memberDelete")
     public String memberDelete(Model model) {
 
         // 사이드바 '회원 탈퇴' 탭 강조
         model.addAttribute("currentTab", "withdraw");
-        return "mypage/memberdelete";
+        return "mypage/memberDelete";
     }
 
     // 7. 회원 탈퇴 처리 (POST)
     // 비밀번호 재검증 후 DB에서 회원 데이터 영구 삭제 및 세션 무효화
-    @PostMapping("/memberdelete")
+    @PostMapping("/memberDelete")
     public String deleteMember(@RequestParam("password") String password,
                                HttpServletRequest request,
                                RedirectAttributes redirectAttributes) {
@@ -219,7 +219,7 @@ public class MypageController {
         if (!isDeleted) {
             redirectAttributes.addFlashAttribute(
                     "errorMsg", "비밀번호가 일치하지 않습니다.");
-            return "redirect:/mypage/memberdelete";
+            return "redirect:/mypage/memberDelete";
         }
 
         // 탈퇴 성공 시 세션 파기 후 로그인 창으로 이동
@@ -228,8 +228,8 @@ public class MypageController {
     }
 
     // 회원 활동 조회
-    @GetMapping("/memberactivity")
-   public String memberActicity(
+    @GetMapping("/myActivity")
+   public String myActivity(
            // 요청받은 현재 페이지 번호를 기본값으로 1페이지로 하겠다
            @RequestParam(name = "page", defaultValue = "1") int page,
            HttpServletRequest request, Model model) {

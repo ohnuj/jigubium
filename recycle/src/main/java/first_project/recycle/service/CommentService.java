@@ -28,6 +28,7 @@ public class CommentService {
     private final CommentMapper commentMapper;
     private final BoardMapper boardMapper;
     private final EcoPointHistoryService ecoPointHistoryService;
+
     /**
      * 특정 게시글의 댓글 목록 조회
      */
@@ -55,7 +56,7 @@ public class CommentService {
             );
         }
 
-// 공지사항 댓글 작성 차단
+        // 공지사항 댓글 작성 차단
         if (board.getBoardType() == BoardType.NOTICE) {
             throw new ForbiddenException(
                     "공지사항에는 댓글을 작성할 수 없습니다."
@@ -82,40 +83,29 @@ public class CommentService {
     }
 
 
-
     /**
      * 댓글 수정
      * 작성자 본인의 댓글만 수정 가능
      */
     @Transactional
-    public boolean updateComment(
-            Long boardId,
-            Long commentId,
-            Long memberId,
-            CommentUpdateRequest request) {
+    public void updateComment(Long boardId, Long commentId, Long memberId, CommentUpdateRequest request) {
 
-        Comment comment =
-                commentMapper.findById(
-                        boardId,
-                        commentId
-                );
+        Comment comment = commentMapper.findById(boardId, commentId);
 
+        // 댓글 존재 여부 확인
         if (comment == null) {
-            throw new NotFoundException(
-                    "댓글을 찾을 수 없습니다."
-            );
+            throw new NotFoundException("댓글을 찾을 수 없습니다.");
         }
-
+        // 댓글 작성자 본인 확인
+        if (!comment.getMemberId().equals(memberId)) {
+            throw new ForbiddenException("댓글 수정 권한이 없습니다.");
+        }
+        // 댓글 내용 검증
         validateComment(request.getContent());
+        // 댓글 수정
+        commentMapper.updateComment(boardId, commentId, memberId, request.getContent());
 
-        int result = commentMapper.updateComment(
-                boardId,
-                commentId,
-                memberId,
-                request.getContent()
-        );
 
-        return result > 0;
     }
 
 
@@ -124,30 +114,21 @@ public class CommentService {
      * 작성자 본인의 댓글만 삭제 가능
      */
     @Transactional
-    public boolean deleteComment(
-            Long boardId,
-            Long commentId,
-            Long memberId) {
+    public void deleteComment(Long boardId, Long commentId, Long memberId) {
 
-        Comment comment =
-                commentMapper.findById(
-                        boardId,
-                        commentId
-                );
+        Comment comment = commentMapper.findById(boardId, commentId);
 
+        // 댓글 존재 확인
         if (comment == null) {
-            throw new NotFoundException(
-                    "댓글을 찾을 수 없습니다."
-            );
+            throw new NotFoundException("댓글을 찾을 수 없습니다.");
         }
 
-        int result =
-                commentMapper.deleteComment(
-                        boardId,
-                        commentId,
-                        memberId);
+        // 댓글 작성자 본인 확인
+        if (!comment.getMemberId().equals(memberId)) {
+            throw new ForbiddenException("댓글 삭제 권한이 없습니다.");
+        }
+        commentMapper.deleteComment(boardId, commentId, memberId);
 
-        return result > 0;
     }
 
     /**

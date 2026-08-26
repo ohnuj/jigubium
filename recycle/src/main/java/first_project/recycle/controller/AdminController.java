@@ -37,15 +37,15 @@ public class AdminController {
     // 공지사항 작성
     @PostMapping("/notices")
     public String createNotice(
-            @ModelAttribute BoardCreateRequest request,
+            @ModelAttribute BoardCreateRequest boardRequest,
             HttpServletRequest httpServletRequest){
 
-        //로그인 및 ADMIN 확인
+        // 현재 로그인한 관리자 정보 조회
         HttpSession session = httpServletRequest.getSession(false);
 
         User loginUser = (User)session.getAttribute(SessionConst.LOGIN_MEMBER);
 
-        boardService.writeNotice(loginUser.getMemberId(),request);
+        boardService.writeNotice(loginUser.getMemberId(),boardRequest);
 
         return "redirect:/admin";
     }
@@ -63,9 +63,9 @@ public class AdminController {
     // 공지사항 수정
     @PostMapping("/notices/{boardId}/edit")
     public String editNotice(@PathVariable Long boardId,
-                             @ModelAttribute BoardUpdateRequest request){
+                             @ModelAttribute BoardUpdateRequest boardRequest){
 
-        boardService.updateNotice(boardId, request);
+        boardService.updateNotice(boardId, boardRequest);
         return "redirect:/admin";
     }
     // 공지사항 삭제

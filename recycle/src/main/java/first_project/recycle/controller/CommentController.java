@@ -6,8 +6,8 @@ import first_project.recycle.domain.BoardType;
 import first_project.recycle.domain.User;
 import first_project.recycle.dto.CommentCreateRequest;
 import first_project.recycle.dto.CommentUpdateRequest;
-import first_project.recycle.exception.ForbiddenException;
 import first_project.recycle.service.CommentService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -27,7 +27,7 @@ public class CommentController {
     @PostMapping
     public String createComment(
             @PathVariable Long boardId,
-            @ModelAttribute CommentCreateRequest request,
+            @ModelAttribute CommentCreateRequest commentRequest,
 
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "1") int commentPage,
@@ -37,8 +37,9 @@ public class CommentController {
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "false") boolean myPosts,
 
-            HttpSession session) {
+            HttpServletRequest request) {
 
+        HttpSession session = request.getSession(false);
         User loginUser =
                 (User) session.getAttribute(
                         SessionConst.LOGIN_MEMBER
@@ -47,11 +48,10 @@ public class CommentController {
         commentService.createComment(
                 boardId,
                 loginUser.getMemberId(),
-                request
+                commentRequest
         );
 
-        return redirectToDetail(
-                boardId,
+        return redirectToDetail(boardId,
                 page,
                 commentPage,
                 keyword,
@@ -69,7 +69,7 @@ public class CommentController {
     public String updateComment(
             @PathVariable Long boardId,
             @PathVariable Long commentId,
-            @ModelAttribute CommentUpdateRequest request,
+            @ModelAttribute CommentUpdateRequest commentRequest,
 
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "1") int commentPage,
@@ -79,27 +79,20 @@ public class CommentController {
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "false") boolean myPosts,
 
-            HttpSession session) {
+            HttpServletRequest request) {
 
+        HttpSession session = request.getSession(false);
         User loginUser =
                 (User) session.getAttribute(
                         SessionConst.LOGIN_MEMBER
                 );
 
-        boolean updated =
-                commentService.updateComment(
+        commentService.updateComment(
                         boardId,
                         commentId,
                         loginUser.getMemberId(),
-                        request
+                        commentRequest
                 );
-
-        if (!updated) {
-            throw new ForbiddenException(
-                    "댓글을 수정할 권한이 없습니다."
-            );
-        }
-
         return redirectToDetail(
                 boardId,
                 page,
@@ -128,25 +121,19 @@ public class CommentController {
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "false") boolean myPosts,
 
-            HttpSession session) {
+            HttpServletRequest request) {
 
+        HttpSession session = request.getSession(false);
         User loginUser =
                 (User) session.getAttribute(
                         SessionConst.LOGIN_MEMBER
                 );
 
-        boolean deleted =
-                commentService.deleteComment(
+         commentService.deleteComment(
                         boardId,
                         commentId,
                         loginUser.getMemberId()
                 );
-
-        if (!deleted) {
-            throw new ForbiddenException(
-                    "댓글을 삭제할 권한이 없습니다."
-            );
-        }
 
         return redirectToDetail(
                 boardId,
