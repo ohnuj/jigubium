@@ -67,7 +67,7 @@ public class WebConfig implements WebMvcConfigurer {
                 "/reward/**",
 
                 // 공공데이터 DB적재
-                "/api/*/import",
+//                "/api/*/import",
 
                 "/admin",
                 "/admin/**");

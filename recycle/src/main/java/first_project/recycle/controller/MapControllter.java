@@ -15,6 +15,7 @@ import first_project.recycle.service.mapservice.maposervice.MapoMedicineBinServi
 import first_project.recycle.service.mapservice.seodaemunservice.SeodaemunClothingBinService;
 import first_project.recycle.service.mapservice.seongbukservice.SeongbukBatteryBinService;
 import first_project.recycle.service.mapservice.seongbukservice.SeongbukClothingBinService;
+import first_project.recycle.service.mapservice.seongdong.SeongdongClothingBinService;
 import first_project.recycle.service.mapservice.songpaservice.SongpaBatteryBinService;
 import first_project.recycle.service.mapservice.songpaservice.SongpaClothingBinService;
 import first_project.recycle.service.mapservice.songpaservice.SongpaMedicineBinService;
@@ -117,6 +118,8 @@ public class MapControllter {
     // 마포구 폐의약품 수거장소 서비스 객체
     private final MapoMedicineBinService mapoMedicineBinService;
 
+    // 성동구 의류수거함 서비스 객체
+    private final SeongdongClothingBinService seongdongClothingBinService;
 
     //DB 조회용 서비스 객체
     private final EcoLocationService ecoLocationService;
@@ -154,7 +157,8 @@ public class MapControllter {
             SongpaMedicineBinService songpaMedicineBinService,
             GuroClothingBinService guroClothingBinService,
             MapoBatteryBinService mapoBatteryBinService,
-            MapoMedicineBinService mapoMedicineBinService
+            MapoMedicineBinService mapoMedicineBinService,
+            SeongdongClothingBinService seongdongClothingBinService
     ) {
         this.jongnoClothingBinService = jongnoClothingBinService;
         this.jongnoBatteryBinService = jongnoBatteryBinService;
@@ -187,6 +191,8 @@ public class MapControllter {
         this.guroClothingBinService = guroClothingBinService;
         this.mapoBatteryBinService = mapoBatteryBinService;
         this.mapoMedicineBinService = mapoMedicineBinService;
+        this.seongdongClothingBinService = seongdongClothingBinService;
+
     }
 
     //지도 페이지 이동
@@ -387,6 +393,12 @@ public class MapControllter {
         return mapoMedicineBinService.importMedicineBins();
     }
 
+    // 성동구 의류수거함 csv 호출 및 저장
+    @PostMapping("/api/seongdong-clothing-bins/import")
+    @ResponseBody
+    public List<ecoLocation> importSeongdongClothingBins() {
+        return seongdongClothingBinService.importClothingBins();
+    }
 
     // 폐가전 CSV DB 저장
     @PostMapping("/api/waste-electronics/import")
