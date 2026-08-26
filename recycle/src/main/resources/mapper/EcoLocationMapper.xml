@@ -6,7 +6,7 @@
 <mapper namespace="first_project.recycle.mapper.EcoLocationMapper">
 
     <insert id="insertEcoLocation"
-            parameterType="first_project.recycle.domain.ecoLocation">
+            parameterType="first_project.recycle.domain.EcoLocation">
 
         INSERT INTO eco_location (
         location_name,
@@ -37,7 +37,7 @@
         AND location_type = #{locationType}
 
     </select>
-    <select id="findByLocationType" resultType="first_project.recycle.domain.ecoLocation">
+    <select id="findByLocationType" resultType="first_project.recycle.domain.EcoLocation">
         SELECT
             location_id AS locationId,
             location_name AS locationName,
@@ -51,7 +51,7 @@
         WHERE location_type = #{locationType}
     </select>
 
-    <select id="findEcoLocationsForAdmin" resultType="first_project.recycle.domain.ecoLocation">
+    <select id="findEcoLocationsForAdmin" resultType="first_project.recycle.domain.EcoLocation">
         SELECT
             location_id AS locationId,
             location_type AS locationType,
@@ -105,7 +105,7 @@
     </select>
 
     <!--eco location 수정-->
-    <update id="updateEcoLocation" parameterType="first_project.recycle.domain.ecoLocation">
+    <update id="updateEcoLocation" parameterType="first_project.recycle.domain.EcoLocation">
         UPDATE eco_location
         SET location_type = #{locationType},
              road_address = #{roadAddress}

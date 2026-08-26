@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.seongbukservice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.seongbuk.SeongbukBatteryBinResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +33,7 @@ public class SeongbukBatteryBinService {
      * 3. 주소와 좌표가 정상적인 데이터만 선별
      * 4. 중복되지 않은 데이터만 DB에 저장
      */
-    public List<ecoLocation> getBatteryBins() {
+    public List<EcoLocation> getBatteryBins() {
 
         // 1. 성북구 폐건전지·폐형광등 API 주소
         String url =
@@ -59,14 +59,14 @@ public class SeongbukBatteryBinService {
         }
 
         // 3. DataItem을 ecoLocation으로 변환
-        List<ecoLocation> locations =
+        List<EcoLocation> locations =
                 response.getData()
                         .stream()
                         .map(this::convertToEcoLocation)
                         .toList();
 
         // 4. 변환된 데이터를 검사하고 DB에 저장
-        for (ecoLocation location : locations) {
+        for (EcoLocation location : locations) {
 
             // 주소 또는 좌표가 없으면 저장하지 않음
             if (
@@ -97,10 +97,10 @@ public class SeongbukBatteryBinService {
     }
 
     // API 데이터를 ecoLocation으로 변환
-    private ecoLocation convertToEcoLocation(
+    private EcoLocation convertToEcoLocation(
             SeongbukBatteryBinResponse.DataItem dataItem
     ) {
-        ecoLocation location = new ecoLocation();
+        EcoLocation location = new EcoLocation();
 
         /*
          * 장소명 우선순위

@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.gwanakservice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.mapper.EcoLocationMapper;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -25,9 +25,9 @@ public class GwanakBatteryBinService {
         this.ecoLocationMapper = ecoLocationMapper;
     }
 
-    public List<ecoLocation> importBatteryBins() {
+    public List<EcoLocation> importBatteryBins() {
 
-        List<ecoLocation> locations = new ArrayList<>();
+        List<EcoLocation> locations = new ArrayList<>();
 
         try {
 
@@ -74,8 +74,8 @@ public class GwanakBatteryBinService {
                     continue;
                 }
 
-                ecoLocation location =
-                        new ecoLocation();
+                EcoLocation location =
+                        new EcoLocation();
 
                 // 위치명을 화면에 보여주기 좋게 사용
                 location.setLocationName(

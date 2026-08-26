@@ -1,5 +1,5 @@
 package first_project.recycle.service.mapservice.guroservice;
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
 import first_project.recycle.service.KakaoAddressService;
@@ -34,9 +34,9 @@ public class GuroClothingBinService {
      * 3. 카카오 주소 검색으로 좌표 변환
      * 4. 중복되지 않은 정상 데이터만 DB에 저장
      */
-    public List<ecoLocation> importClothingBins() {
+    public List<EcoLocation> importClothingBins() {
 
-        List<ecoLocation> locations = new ArrayList<>();
+        List<EcoLocation> locations = new ArrayList<>();
 
         // 1. resources/data의 CSV 파일을 CP949로 읽기
         try (BufferedReader reader = new BufferedReader(
@@ -72,7 +72,7 @@ public class GuroClothingBinService {
                 String roadAddress =
                         normalizeAddress(originalAddress);
 
-                ecoLocation location = new ecoLocation();
+                EcoLocation location = new EcoLocation();
 
                 location.setLocationName("의류수거함");
                 location.setLocationType("의류수거함");

@@ -1,5 +1,6 @@
 package first_project.recycle.service.mapservice.seodaemunservice;
 
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
 import first_project.recycle.domain.ecoLocationdto.seodaemun.SeodaemunMedicineBinResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import first_project.recycle.service.KakaoAddressService;
 import first_project.recycle.mapper.EcoLocationMapper;
-import first_project.recycle.domain.ecoLocation;
 
 
 import java.math.BigDecimal;
@@ -39,7 +39,7 @@ public class SeodaemunMedicineBinService {
     }
 
     // 서대문구 폐의약품 수거함 데이터 불러오기
-    public List<ecoLocation> getMedicineBins() {
+    public List<EcoLocation> getMedicineBins() {
 
         SeodaemunMedicineBinResponse response = restClient
                 .get()
@@ -63,7 +63,7 @@ public class SeodaemunMedicineBinService {
             return List.of();
         }
         // DataItem → ecoLocation 변환
-        List<ecoLocation> locations = response
+        List<EcoLocation> locations = response
                 .getData()
                 .stream()
                 .map(this::convertToEcoLocation)
@@ -92,10 +92,10 @@ public class SeodaemunMedicineBinService {
     }
 
     // 서대문구 폐의약품 데이터를 ecoLocation으로 변환
-    private ecoLocation convertToEcoLocation(
+    private EcoLocation convertToEcoLocation(
             SeodaemunMedicineBinResponse.DataItem dataItem
     ) {
-        ecoLocation location = new ecoLocation();
+        EcoLocation location = new EcoLocation();
 
         // 장소 기본 정보
         location.setLocationName(dataItem.getName());

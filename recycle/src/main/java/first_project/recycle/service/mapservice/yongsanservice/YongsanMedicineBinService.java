@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.yongsanservice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
 import first_project.recycle.domain.ecoLocationdto.yongsan.YongsanMedicineBinDTO;
 import first_project.recycle.domain.ecoLocationdto.yongsan.YongsanMedicineBinResponse;
@@ -42,7 +42,7 @@ public class YongsanMedicineBinService {
         this.kakaoAddressService = kakaoAddressService;
         this.ecoLocationMapper = ecoLocationMapper;
     }
-    public List<ecoLocation> getMedicineBins() {
+    public List<EcoLocation> getMedicineBins() {
 
         String url =
                 apiUrl
@@ -65,7 +65,7 @@ public class YongsanMedicineBinService {
             return List.of();
         }
 
-        List<ecoLocation> locations = response.getData().stream()
+        List<EcoLocation> locations = response.getData().stream()
                 .map(this::convertToEcoLocation)
                 .toList();
 
@@ -98,11 +98,11 @@ public class YongsanMedicineBinService {
         return locations;
     }
     // 용산구 폐의약품 DTO를 ecoLocation으로 변환
-    private ecoLocation convertToEcoLocation(
+    private EcoLocation convertToEcoLocation(
             YongsanMedicineBinDTO dto
     ) {
 
-        ecoLocation location = new ecoLocation();
+        EcoLocation location = new EcoLocation();
 
         // 폐의약품 수거 위치 기본 정보
         location.setLocationName("폐의약품 수거함");

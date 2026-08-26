@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.jungnangservice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
 import first_project.recycle.service.KakaoAddressService;
@@ -34,9 +34,9 @@ public class JungnangClothingBinService {
      * 3. 없는 좌표는 카카오 주소 검색으로 보완
      * 4. 정상 데이터만 중복 확인 후 DB에 저장
      */
-    public List<ecoLocation> importClothingBins() {
+    public List<EcoLocation> importClothingBins() {
 
-        List<ecoLocation> locations = new ArrayList<>();
+        List<EcoLocation> locations = new ArrayList<>();
 
         // 1. resources/data의 CSV 파일을 CP949로 읽기
         try (BufferedReader reader = new BufferedReader(
@@ -79,7 +79,7 @@ public class JungnangClothingBinService {
                     continue;
                 }
 
-                ecoLocation location = new ecoLocation();
+                EcoLocation location = new EcoLocation();
 
                 location.setLocationName("의류수거함");
                 location.setLocationType("의류수거함");
@@ -152,7 +152,7 @@ public class JungnangClothingBinService {
 
     // 도로명주소를 먼저 검색하고 실패하면 지번주소 검색
     private void setCoordinatesFromAddress(
-            ecoLocation location,
+            EcoLocation location,
             String roadAddress,
             String jibunAddress
     ) {
