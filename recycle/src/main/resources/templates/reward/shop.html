@@ -6,7 +6,8 @@
 
     <title>리워드 상점</title>
 
-    <link rel="stylesheet" th:href="@{/css/shop.css}">
+    <link rel="stylesheet" th:href="@{/css/shop.css(v=2)}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 
 <body>
@@ -14,30 +15,8 @@
 <!-- =========================
      상단 네비게이션
 ========================= -->
-<nav>
-    <div>
-        <a th:href="@{/}">♻️ 지구비우기</a>
-
-        <div class="nav-center">
-            <a th:href="@{/eco-map}">에코맵</a>
-            <a th:href="@{/game}">재활용게임</a>
-            <a th:href="@{/boards}">커뮤니티</a>
-        </div>
-
-        <!-- 로그인 전 -->
-        <th:block th:unless="${session.checkLogin}">
-            <a th:href="@{/login}">로그인</a>
-            <a th:href="@{/signup}">회원가입</a>
-        </th:block>
-
-        <!-- 로그인 후 -->
-        <th:block th:if="${session.checkLogin}">
-            <a th:href="@{/mypage}">마이페이지</a>
-            <a th:href="@{/logout}">로그아웃</a>
-            <a class="active" th:href="@{/reward}">리워드 상점</a>
-        </th:block>
-    </div>
-</nav>
+<th:block th:replace="~{fragments/common :: nav}">
+</th:block>
 
 
 <main>
@@ -201,7 +180,7 @@
 
                     <!-- 상품명 -->
                     <div class="reward-name"
-                         th:text="${reward.rewardName}">
+                         th:text="${reward.rewardNameKorean}">
                         상품명
                     </div>
 
@@ -297,92 +276,7 @@
 <!-- =========================
      Footer
 ========================= -->
-<footer th:fragment="footer" class="footer">
-
-    <div class="footer-container">
-
-        <!-- 왼쪽: 서비스 소개 -->
-        <div class="footer-brand">
-
-            <h3>♻️ 지구비우기</h3>
-
-            <p>
-                올바른 분리배출부터 주변 수거시설 확인까지,<br>
-                일상 속 친환경 실천을 돕는 서비스입니다.
-            </p>
-
-        </div>
-
-
-        <!-- 가운데: 주요 서비스 -->
-        <div class="footer-menu">
-
-            <h4>서비스</h4>
-
-            <ul>
-
-                <li>
-                    <a th:href="@{/}">
-                        홈
-                    </a>
-                </li>
-
-                <li>
-                    <a th:href="@{/boards}">
-                        커뮤니티
-                    </a>
-                </li>
-
-                <li>
-                    <a th:href="@{/reward}">
-                        리워드 상점
-                    </a>
-                </li>
-
-                <li>
-                    <a th:href="@{/mypage}">
-                        마이페이지
-                    </a>
-                </li>
-
-            </ul>
-
-        </div>
-
-
-        <!-- 오른쪽: 프로젝트 정보 -->
-        <div class="footer-info">
-
-            <h4>Project</h4>
-
-            <p>생활형 친환경 실천 플랫폼</p>
-
-            <p>
-                Spring Boot · MyBatis · Thymeleaf · MySQL
-            </p>
-
-            <p>
-                공공데이터 기반 재활용 정보 서비스
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="footer-bottom">
-
-        <p>
-            © 2026 딱갈라. 지구비우기.All rights reserved.
-        </p>
-
-        <p class="footer-notice">
-            본 서비스는 교육 프로젝트 목적으로 제작되었습니다.
-        </p>
-
-    </div>
-
-</footer>
-
+<th:block th:replace="~{fragments/common :: footer}">
+</th:block>
 </body>
 </html>

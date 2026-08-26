@@ -7,8 +7,8 @@
 
     <title>관리자 페이지</title>
 
-    <link rel="stylesheet" th:href="@{/CSS/admin.css(v=2)}">
-    <link rel="stylesheet" th:href="@{/CSS/common.css(v=2)}">
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=5)}">
+    <link rel="stylesheet" th:href="@{/css/common.css(v=2)}">
 </head>
 
 <body>
@@ -29,18 +29,86 @@
 
         <div class="admin-hero-inner">
 
-            <span class="admin-badge">
+            <!-- 왼쪽 -->
+            <div class="admin-hero-content">
+
+            <span class="admin-label">
                 ADMIN CONSOLE
             </span>
 
-            <h1>
-                관리자 페이지
-            </h1>
+                <h1>관리자 페이지</h1>
 
-            <p>
-                지구비우기 서비스의 재활용 품목과<br>
-                수거함 위치 데이터를 관리할 수 있습니다.
-            </p>
+                <p>
+                    지구비우기 서비스의 재활용 품목과<br>
+                    수거함 위치 데이터를 관리할 수 있습니다.
+                </p>
+
+            </div>
+
+
+            <!-- 오른쪽 : 대시보드 -->
+            <div class="admin-dashboard">
+
+                <!-- 전체 회원 -->
+                <div class="dashboard-card">
+                <span class="dashboard-label">
+                    전체 회원
+                </span>
+
+                    <div class="dashboard-value">
+                        <strong th:text="${dashBoard.totalMember}">
+                            152
+                        </strong>
+                        <span>명</span>
+                    </div>
+                </div>
+
+
+                <!-- 전체 게시글 -->
+                <div class="dashboard-card">
+                <span class="dashboard-label">
+                    전체 게시글
+                </span>
+
+                    <div class="dashboard-value">
+                        <strong th:text="${dashBoard.totalBoard}">
+                            384
+                        </strong>
+                        <span>개</span>
+                    </div>
+                </div>
+
+
+                <!-- 오늘 가입자 -->
+                <div class="dashboard-card dashboard-card-today">
+                <span class="dashboard-label">
+                    오늘 가입자
+                </span>
+
+                    <div class="dashboard-value">
+                        <strong th:text="${dashBoard.todayMember}">
+                            8
+                        </strong>
+                        <span>명</span>
+                    </div>
+                </div>
+
+
+                <!-- 오늘 게시글 -->
+                <div class="dashboard-card dashboard-card-today">
+                <span class="dashboard-label">
+                    오늘 게시글
+                </span>
+
+                    <div class="dashboard-value">
+                        <strong th:text="${dashBoard.todayBoard}">
+                            12
+                        </strong>
+                        <span>개</span>
+                    </div>
+                </div>
+
+            </div>
 
         </div>
 

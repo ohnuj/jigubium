@@ -83,7 +83,6 @@ public class BoardController {
 // 최신 공지 3개를 상단에 고정
         if (boardType == null
                 && (keyword == null || keyword.isBlank())
-                && sort == null
                 && !myPosts) {
 
             List<BoardListResponse> notices =

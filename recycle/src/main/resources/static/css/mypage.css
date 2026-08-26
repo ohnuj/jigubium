@@ -248,25 +248,37 @@ nav > .nav-inner {
 
 /* 회원 등급 아이콘 및 명칭 영역 */
 .grade-badge-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.grade-icon-circle {
+    width: 36px;
+    height: 36px;
+
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background-color: #eef7ea;
+    border: 1px solid #d5e6cf;
+
+    font-size: 19px;
+    line-height: 1;
 }
 
-.grade-badge-wrap img {
-    width: 22px;
-    height: 22px;
-    object-fit: contain;
-}
-
-.grade-badge-wrap .grade-name {
+.grade-name {
     font-weight: 700;
-    font-size: 15px;
+    color: #123c2e;
 }
 
 .grade-total {
-    font-size: 13px;
-    color: #7b8c81;
+    color: #7c8c81;
     font-weight: 500;
 }
 

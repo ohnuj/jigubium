@@ -37,123 +37,154 @@ textarea {
 }
 
 
-/* =========================================================
-   NAV
-========================================================= */
-
-nav {
-    background: #174d32;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-nav > div {
-    width: min(1120px, calc(100% - 40px));
-    min-height: 68px;
-
-    margin: 0 auto;
-
-    display: flex;
-    align-items: center;
-    gap: 24px;
-}
-
-nav a {
-    color: #eaf4e8;
-    font-size: 14px;
-    font-weight: 600;
-
-    transition: opacity 0.2s;
-}
-
-nav a:hover {
-    opacity: 0.75;
-}
-
-.nav-brand {
-    font-size: 18px;
-    font-weight: 800;
-
-    white-space: nowrap;
-}
-
-.nav-center {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-
-    margin-left: 30px;
-}
-
-.nav-right {
-    margin-left: auto;
-
-    display: flex;
-    align-items: center;
-    gap: 18px;
-}
-
-nav .active {
-    color: #b8f36b;
-}
-
 
 /* =========================================================
    ADMIN HERO
 ========================================================= */
+/* ========================================
+   관리자 상단 Hero + Dashboard
+======================================== */
 
-.admin-hero,
-.admin-page-header {
-    background:
-            linear-gradient(
-                    135deg,
-                    #174d32 0%,
-                    #2c7048 100%
-            );
-
+.admin-hero {
+    background: #236742;
     color: #ffffff;
 }
 
-.admin-hero-inner,
-.admin-page-header-inner {
-    width: min(1120px, calc(100% - 40px));
+.admin-hero-inner {
+    width: 100%;
+    max-width: 1180px;
+    min-height: 230px;
 
     margin: 0 auto;
+    padding: 42px 24px;
 
-    padding: 52px 6px 48px;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 70px;
+
+    align-items: center;
 }
 
-.admin-badge,
-.admin-page-label {
+
+/* ========================================
+   왼쪽 관리자 소개
+======================================== */
+
+.admin-hero-content {
+    min-width: 0;
+}
+
+.admin-label {
     display: inline-block;
 
-    margin-bottom: 12px;
-
-    color: #baff69;
+    margin-bottom: 14px;
 
     font-size: 12px;
     font-weight: 800;
 
-    letter-spacing: 0.06em;
+    color: #b9ff61;
 }
 
-.admin-hero h1,
-.admin-page-header h1 {
-    margin: 0 0 12px;
+.admin-hero-content h1 {
+    margin: 0 0 16px;
 
-    font-size: 34px;
-    line-height: 1.25;
+    font-size: 32px;
+    font-weight: 800;
 
-    letter-spacing: -0.04em;
+    color: #ffffff;
 }
 
-.admin-hero p,
-.admin-page-header p {
+.admin-hero-content p {
     margin: 0;
-
-    color: #dcebdd;
 
     font-size: 14px;
     line-height: 1.7;
+
+    color: rgba(255, 255, 255, 0.88);
+}
+
+
+/* ========================================
+   Dashboard 영역
+======================================== */
+
+.admin-dashboard {
+    width: 66%;
+    justify-self: end;
+
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+
+/* 통계 카드 */
+
+.dashboard-card {
+    min-height: 58px;
+
+    padding: 12px 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: rgba(255, 255, 255, 0.10);
+
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+
+    transition:
+            background 0.2s ease,
+            transform 0.2s ease;
+}
+
+.dashboard-card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+
+/* 이름 */
+
+.dashboard-label {
+    font-size: 13px;
+    font-weight: 600;
+
+    color: rgba(255, 255, 255, 0.82);
+}
+
+
+/* 숫자 */
+
+.dashboard-value {
+    display: flex;
+    align-items: baseline;
+
+    gap: 5px;
+}
+
+.dashboard-value strong {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1;
+
+    color: #ffffff;
+}
+
+.dashboard-value span {
+    font-size: 13px;
+    font-weight: 600;
+
+    color: #c7ff76;
+}
+
+
+/* 오늘 현황은 살짝 강조 */
+
+.dashboard-card-today {
+    background: rgba(190, 255, 101, 0.10);
 }
 
 
@@ -1723,6 +1754,11 @@ select[name="locationType"]:focus {
     .nav-center {
         display: none;
     }
+    .admin-hero-inner {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
 
     .admin-card-grid {
         grid-template-columns: 1fr;
@@ -1795,6 +1831,18 @@ select[name="locationType"]:focus {
     .footer-bottom {
         width: calc(100% - 28px);
     }
+    .admin-dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-hero-content h1 {
+        font-size: 28px;
+    }
+
+    .dashboard-card {
+        min-height: 78px;
+    }
+
 
     .admin-list-header,
     .admin-section-header {

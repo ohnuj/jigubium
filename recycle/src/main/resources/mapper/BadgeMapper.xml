@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="first_project.recycle.repository.BadgeMapper">
+    <select id="findCurrentBadge"
+            resultType="first_project.recycle.domain.Badge">
+
+        SELECT
+            badge_id AS badgeId,
+            badge_name AS badgeName,
+            required_point AS requiredPoint,
+            icon_url AS iconUrl
+        FROM badge
+        WHERE required_point &lt;= #{totalPoint}
+        ORDER BY required_point DESC
+        LIMIT 1
+
+    </select>
+
+</mapper>

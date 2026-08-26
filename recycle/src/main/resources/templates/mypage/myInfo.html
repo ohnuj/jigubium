@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마이페이지 - 내 정보</title>
-    <link rel="stylesheet" th:href="@{/css/mypage.css(v=12)}">
+    <link rel="stylesheet" th:href="@{/css/mypage.css(v=14)}">
     <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
@@ -32,40 +32,32 @@
         </div>
 
         <div class="mypage-card">
-            <!-- 1. 회원 등급 (씨앗 / 새싹 / 나무 / 열매) -->
+            <!-- 1. 회원 등급 -->
             <div class="info-row">
                 <span class="info-label">회원 등급</span>
+
                 <div class="info-value">
-                    <div class="grade-badge-wrap">
-                        <!-- 1단계 씨앗 (0 ~ 249P) -->
-                        <th:block th:if="${totalPoint == null or totalPoint < 250}">
-                            <img th:src="@{/images/seed.png}" alt="씨앗" onerror="this.style.display='none'">
-                            <span class="grade-name" style="color: #795548;">씨앗 (1단계)</span>
-                        </th:block>
+                    <div class="grade-badge-wrap" th:if="${currentBadge != null}">
 
-                        <!-- 2단계 새싹 (250 ~ 499P) -->
-                        <th:block th:if="${totalPoint != null and totalPoint >= 250 and totalPoint < 500}">
-                            <img th:src="@{/images/sprout.png}" alt="새싹" onerror="this.style.display='none'">
-                            <span class="grade-name" style="color: #2e7d32;">새싹 (2단계)</span>
-                        </th:block>
+            <span class="grade-icon-circle"
+                  th:text="${currentBadge.badgeName == '씨앗' ? '🌱' :
+                            currentBadge.badgeName == '새싹' ? '🌿' :
+                            currentBadge.badgeName == '나무' ? '🌳' : '🍎'}">
+                🌱
+            </span>
 
-                        <!-- 3단계 나무 (500 ~ 749P) -->
-                        <th:block th:if="${totalPoint != null and totalPoint >= 500 and totalPoint < 750}">
-                            <img th:src="@{/images/tree.png}" alt="나무" onerror="this.style.display='none'">
-                            <span class="grade-name" style="color: #1b5e20;">나무 (3단계)</span>
-                        </th:block>
+                        <span class="grade-name"
+                              th:text="${currentBadge.badgeName}">
+                씨앗
+            </span>
 
-                        <!-- 4단계 열매 (750P 이상) -->
-                        <th:block th:if="${totalPoint != null and totalPoint >= 750}">
-                            <img th:src="@{/images/fruit.png}" alt="열매" onerror="this.style.display='none'">
-                            <span class="grade-name" style="color: #d32f2f;">열매 (4단계)</span>
-                        </th:block>
-
-                        <!-- 누적 적립 표시 -->
                         <span class="grade-total"
-                              th:text="'(누적 적립 ' + ${#numbers.formatInteger(totalPoint != null ? totalPoint : 0, 0, 'COMMA')} + ' P)'">
-                            (누적 적립 0 P)
-                        </span>
+                              th:text="'(누적 적립 '
+                  + ${#numbers.formatInteger(totalPoint != null ? totalPoint : 0, 0, 'COMMA')}
+                  + ' P)'">
+                (누적 적립 0 P)
+            </span>
+
                     </div>
                 </div>
             </div>
