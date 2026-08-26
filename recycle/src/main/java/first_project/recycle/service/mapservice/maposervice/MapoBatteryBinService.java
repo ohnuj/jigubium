@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.maposervice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
 import first_project.recycle.service.KakaoAddressService;
@@ -35,9 +35,9 @@ public class MapoBatteryBinService {
      * 3. 도로명주소를 카카오 API로 검색
      * 4. 중복되지 않은 정상 데이터만 DB에 저장
      */
-    public List<ecoLocation> importBatteryBins() {
+    public List<EcoLocation> importBatteryBins() {
 
-        List<ecoLocation> locations = new ArrayList<>();
+        List<EcoLocation> locations = new ArrayList<>();
 
         // 1. 정리된 CSV 파일을 CP949로 읽기
         try (BufferedReader reader = new BufferedReader(
@@ -73,7 +73,7 @@ public class MapoBatteryBinService {
                     continue;
                 }
 
-                ecoLocation location = new ecoLocation();
+                EcoLocation location = new EcoLocation();
 
                 /*
                  * 장소명 우선순위

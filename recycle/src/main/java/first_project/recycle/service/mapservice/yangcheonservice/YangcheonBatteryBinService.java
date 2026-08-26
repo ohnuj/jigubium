@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.yangcheonservice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
 import first_project.recycle.domain.ecoLocationdto.yangcheon.YangcheonBatteryBinResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
@@ -55,7 +55,7 @@ public class YangcheonBatteryBinService {
      * 3. 설치위치를 카카오 API로 검색
      * 4. 좌표가 정상인 데이터만 DB에 저장
      */
-    public List<ecoLocation> getBatteryBins() {
+    public List<EcoLocation> getBatteryBins() {
 
         // 1. 최신 양천구 폐건전지·폐형광등 API
         String url =
@@ -80,14 +80,14 @@ public class YangcheonBatteryBinService {
         }
 
         // 2. DataItem을 ecoLocation으로 변환
-        List<ecoLocation> locations =
+        List<EcoLocation> locations =
                 response.getData()
                         .stream()
                         .map(this::convertToEcoLocation)
                         .toList();
 
         // 3. 정상 데이터만 중복 확인 후 DB 저장
-        for (ecoLocation location : locations) {
+        for (EcoLocation location : locations) {
 
             if (
                     location.getRoadAddress() == null ||
@@ -114,10 +114,10 @@ public class YangcheonBatteryBinService {
     }
 
     // API 데이터를 ecoLocation으로 변환
-    private ecoLocation convertToEcoLocation(
+    private EcoLocation convertToEcoLocation(
             YangcheonBatteryBinResponse.DataItem dataItem
     ) {
-        ecoLocation location = new ecoLocation();
+        EcoLocation location = new EcoLocation();
 
         String installationLocation =
                 normalizeText(dataItem.getInstallationLocation());

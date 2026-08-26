@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.seodaemunservice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.seodaemun.SeodaemunClothingBinResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +40,7 @@ public class SeodaemunClothingBinService {
         this.ecoLocationMapper = ecoLocationMapper;
     }
 
-    public List<ecoLocation> getClothingBins() {
+    public List<EcoLocation> getClothingBins() {
 
         SeodaemunClothingBinResponse response = restClient
                 .get()
@@ -63,7 +63,7 @@ public class SeodaemunClothingBinService {
             return List.of();
         }
 
-        List<ecoLocation> locations = response
+        List<EcoLocation> locations = response
                 .getData()
                 .stream()
                 .map(this::convertToEcoLocation)
@@ -96,11 +96,11 @@ public class SeodaemunClothingBinService {
     }
 
     // 서대문구 의류수거함 데이터를 ecoLocation으로 변환
-    private ecoLocation convertToEcoLocation(
+    private EcoLocation convertToEcoLocation(
             SeodaemunClothingBinResponse.DataItem dataItem
     ) {
 
-        ecoLocation location = new ecoLocation();
+        EcoLocation location = new EcoLocation();
 
         location.setLocationName("의류수거함");
         location.setLocationType("의류수거함");

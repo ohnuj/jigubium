@@ -1,5 +1,5 @@
 package first_project.recycle.service.mapservice.yangcheonservice;
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
 import first_project.recycle.domain.ecoLocationdto.yangcheon.YangcheonMedicineBinResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
@@ -36,7 +36,7 @@ public class YangcheonMedicineBinService {
      * 3. 주소를 카카오 API로 검색하여 좌표 변환
      * 4. 중복되지 않은 정상 데이터만 DB에 저장
      */
-    public List<ecoLocation> getMedicineBins() {
+    public List<EcoLocation> getMedicineBins() {
 
         // 1. 양천구 폐의약품 수거함 API
         String url =
@@ -61,14 +61,14 @@ public class YangcheonMedicineBinService {
         }
 
         // 2. DataItem을 ecoLocation으로 변환
-        List<ecoLocation> locations =
+        List<EcoLocation> locations =
                 response.getData()
                         .stream()
                         .map(this::convertToEcoLocation)
                         .toList();
 
         // 3. 정상적인 데이터만 DB에 저장
-        for (ecoLocation location : locations) {
+        for (EcoLocation location : locations) {
 
             if (
                     location.getRoadAddress() == null ||
@@ -96,10 +96,10 @@ public class YangcheonMedicineBinService {
     }
 
     // API 데이터를 ecoLocation으로 변환
-    private ecoLocation convertToEcoLocation(
+    private EcoLocation convertToEcoLocation(
             YangcheonMedicineBinResponse.DataItem dataItem
     ) {
-        ecoLocation location = new ecoLocation();
+        EcoLocation location = new EcoLocation();
 
         // 수거함 위치명을 장소명으로 사용
         String locationName =

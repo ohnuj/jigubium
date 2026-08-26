@@ -1,7 +1,7 @@
 package first_project.recycle.controller;
 
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.Paging;
-import first_project.recycle.domain.ecoLocation;
 import first_project.recycle.service.EcoLocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -48,7 +48,7 @@ public class AdminEcoLocationController {
 
     @PostMapping("/{locationId}/update")
     public String updateEcoLocation(@PathVariable Long locationId,
-                                    ecoLocation ecoLocation,
+                                    EcoLocation ecoLocation,
                                     @RequestParam(defaultValue = "1") int page,
                                     @RequestParam(defaultValue = "") String keyword,
                                     @RequestParam(defaultValue = "") String locationType,

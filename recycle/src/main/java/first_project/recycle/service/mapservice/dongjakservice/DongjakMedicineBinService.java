@@ -1,7 +1,7 @@
 package first_project.recycle.service.mapservice.dongjakservice;
 
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
 import first_project.recycle.domain.ecoLocationdto.dongjak.DongjakMedicineBinResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
@@ -44,7 +44,7 @@ public class DongjakMedicineBinService {
      * 6. 기존 DB 데이터와 중복되는지 확인
      * 7. 중복되지 않은 데이터만 DB에 저장
      */
-    public List<ecoLocation> getMedicineBins(){
+    public List<EcoLocation> getMedicineBins(){
         String url = "https://api.odcloud.kr/api/15077702/v1/"
                 + "uddi:222c1714-3518-4070-a74a-b7abc7304bb6"
                 + "?page=1&perPage=1000";
@@ -57,9 +57,9 @@ public class DongjakMedicineBinService {
             return List.of();
         }
         // 데이터를 ecoLocation 목록으로 변환 작업
-        List<ecoLocation> locations = response.getData().stream().map(this::convertToEcoLocation).toList();
+        List<EcoLocation> locations = response.getData().stream().map(this::convertToEcoLocation).toList();
         // 변환된 데이터들을 검사해 정상적인 것만 DB에 저장
-        for (ecoLocation location : locations){
+        for (EcoLocation location : locations){
             if (location.getRoadAddress() == null || location.getRoadAddress().isBlank() ||
             location.getLatitude() == null || location.getLongitude() == null){
                 continue;
@@ -74,10 +74,10 @@ public class DongjakMedicineBinService {
         return locations;
 
     }
-    private ecoLocation convertToEcoLocation(
+    private EcoLocation convertToEcoLocation(
             DongjakMedicineBinResponse.DataItem dataItem
     ){
-        ecoLocation location = new ecoLocation();
+        EcoLocation location = new EcoLocation();
         // 약국 명칭을 그대로 사용하되 만약 명칭이 없다면 기본 이름 쓰기
         String locationName = dataItem.getPharmacyName();
         if (locationName == null || locationName.isBlank()) {

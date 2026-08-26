@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.seongbukservice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.mapper.EcoLocationMapper;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -43,9 +43,9 @@ public class SeongbukClothingBinService {
     }
 
     // CSV 데이터를 변환하고 DB에 저장
-    public List<ecoLocation> importClothingBins() {
+    public List<EcoLocation> importClothingBins() {
 
-        List<ecoLocation> locations = new ArrayList<>();
+        List<EcoLocation> locations = new ArrayList<>();
 
         /*
          * 1. resources/data 폴더의 CSV 파일 불러오기
@@ -102,7 +102,7 @@ public class SeongbukClothingBinService {
                 }
 
                 // 8. CSV 데이터를 ecoLocation 객체로 변환
-                ecoLocation location = new ecoLocation();
+                EcoLocation location = new EcoLocation();
 
                 location.setLocationName("의류수거함");
                 location.setLocationType("의류수거함");

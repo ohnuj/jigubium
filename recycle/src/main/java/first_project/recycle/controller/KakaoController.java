@@ -50,7 +50,9 @@ public class KakaoController {
      * 사용자가 카카오 로그인을 완료했을 때 카카오 인증 서버가 인가 코드(code)를 담아 호출
      */
     @GetMapping("/oauth/kakao/callback")
-    public String kakaoCallback(@RequestParam String code, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    public String kakaoCallback(@RequestParam String code,
+                                HttpServletRequest request,
+                                RedirectAttributes redirectAttributes) {
         // 1. 전달받은 인가 코드(code)를 카카오 인증 서버에 전달하여 Access Token 발급
         String accessToken = kakaoService.getAccessToken(code);
 
@@ -61,7 +63,12 @@ public class KakaoController {
             redirectAttributes.addFlashAttribute("message", "회원가입을 축하합니다! 신규 가입 에코포인트 100P가 지급되었습니다.");
         }
         // 3. 현재 요청의 HTTP 세션 조회 (없으면 신규 생성)
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            request.changeSessionId();
+        } else {
+            session = request.getSession(true);
+        }
 
         // 4. 일반 로그인과 동일하게 로그인 상태 플래그 세션 저장
         session.setAttribute("checkLogin", true);

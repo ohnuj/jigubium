@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.yangcheonservice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.yangcheon.YangcheonClothingBinResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ public class YangcheonClothingBinService {
      * 3. 주소와 좌표가 정상적인 데이터 선별
      * 4. 중복되지 않은 데이터만 DB에 저장
      */
-    public List<ecoLocation> getClothingBins() {
+    public List<EcoLocation> getClothingBins() {
 
         // 1. 최신 양천구 의류수거함 API
         String url =
@@ -57,14 +57,14 @@ public class YangcheonClothingBinService {
         }
 
         // 2. DataItem을 ecoLocation으로 변환
-        List<ecoLocation> locations =
+        List<EcoLocation> locations =
                 response.getData()
                         .stream()
                         .map(this::convertToEcoLocation)
                         .toList();
 
         // 3. 정상적인 데이터만 DB에 저장
-        for (ecoLocation location : locations) {
+        for (EcoLocation location : locations) {
 
             if (
                     location.getRoadAddress() == null ||
@@ -92,10 +92,10 @@ public class YangcheonClothingBinService {
     }
 
     // API 데이터를 ecoLocation으로 변환
-    private ecoLocation convertToEcoLocation(
+    private EcoLocation convertToEcoLocation(
             YangcheonClothingBinResponse.DataItem dataItem
     ) {
-        ecoLocation location = new ecoLocation();
+        EcoLocation location = new EcoLocation();
 
         location.setLocationName("의류수거함");
         location.setLocationType("의류수거함");

@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.wasteelectronicsservice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
 import first_project.recycle.service.KakaoAddressService;
@@ -33,9 +33,9 @@ public class WasteElectronicsService {
 
 
     // 폐가전 CSV를 읽어서 서울 데이터만 DB에 저장
-    public List<ecoLocation> importWasteElectronics() {
+    public List<EcoLocation> importWasteElectronics() {
 
-        List<ecoLocation> locations = new ArrayList<>();
+        List<EcoLocation> locations = new ArrayList<>();
 
         try {
 
@@ -137,8 +137,8 @@ public class WasteElectronicsService {
                     }
 
 
-                    ecoLocation location =
-                            new ecoLocation();
+                    EcoLocation location =
+                            new EcoLocation();
 
                     // 상호명
                     location.setLocationName(

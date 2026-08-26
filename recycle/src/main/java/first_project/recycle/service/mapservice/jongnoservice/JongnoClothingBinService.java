@@ -1,8 +1,8 @@
 package first_project.recycle.service.mapservice.jongnoservice;
 
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.jongno.JongnoClothingBinDto;
 import first_project.recycle.domain.ecoLocationdto.jongno.JongnoClothingBinResponse;
-import first_project.recycle.domain.ecoLocation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -31,7 +31,7 @@ public class JongnoClothingBinService {
         this.ecoLocationMapper = ecoLocationMapper;
     }
 
-    public List<ecoLocation> getClothingBins() {
+    public List<EcoLocation> getClothingBins() {
         String url =
                 "https://api.odcloud.kr/api/15104622/v1/uddi:2bbbc640-8375-4ea6-b855-e32e4de4b8c5"
                         + "?page=1"
@@ -51,7 +51,7 @@ public class JongnoClothingBinService {
         if (response == null || response.getData() == null) {
             return List.of();
         }
-        List<ecoLocation> locations = response.getData().stream()
+        List<EcoLocation> locations = response.getData().stream()
                 .map(this::convertToEcoLocation)
                 .toList();
 
@@ -72,9 +72,9 @@ public class JongnoClothingBinService {
 
     }
     // api의 한글로 되어 있는 걸 도메인 속 변수들 속에 넣어줌
-    private ecoLocation convertToEcoLocation(JongnoClothingBinDto dto) {
+    private EcoLocation convertToEcoLocation(JongnoClothingBinDto dto) {
 
-        ecoLocation location = new ecoLocation();
+        EcoLocation location = new EcoLocation();
 
         //locationname 및 type 설정
         location.setLocationName("의류수거함");
