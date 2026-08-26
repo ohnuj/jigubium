@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.jungnangservice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.jungnang.JungnangBatteryBinResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +31,7 @@ public class JungnangBatteryBinService {
      * 3. 주소와 좌표가 정상적인 데이터 선별
      * 4. 중복되지 않은 데이터만 DB에 저장
      */
-    public List<ecoLocation> getBatteryBins() {
+    public List<EcoLocation> getBatteryBins() {
 
         // 1. 최신 2026년 중랑구 API 호출 주소
         String url =
@@ -57,14 +57,14 @@ public class JungnangBatteryBinService {
         }
 
         // 3. DataItem을 ecoLocation으로 변환
-        List<ecoLocation> locations =
+        List<EcoLocation> locations =
                 response.getData()
                         .stream()
                         .map(this::convertToEcoLocation)
                         .toList();
 
         // 4. 정상적인 데이터만 DB에 저장
-        for (ecoLocation location : locations) {
+        for (EcoLocation location : locations) {
 
             if (
                     location.getRoadAddress() == null ||
@@ -93,10 +93,10 @@ public class JungnangBatteryBinService {
     }
 
     // API 데이터를 ecoLocation으로 변환
-    private ecoLocation convertToEcoLocation(
+    private EcoLocation convertToEcoLocation(
             JungnangBatteryBinResponse.DataItem dataItem
     ) {
-        ecoLocation location = new ecoLocation();
+        EcoLocation location = new EcoLocation();
 
         // 세부위치를 장소명으로 사용
         String locationName = dataItem.getDetailName();

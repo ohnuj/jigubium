@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.jongnoservice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.jongno.JongnoBatteryBinDTO;
 import first_project.recycle.domain.ecoLocationdto.jongno.JongnoBatteryBinResponse;
 import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
@@ -44,7 +44,7 @@ public class JongnoBatteryBinService {
     }
 
     // 폐건전지 수거함 데이터 가져와서 리스트에 담기
-    public List<ecoLocation> getBatteryBins() {
+    public List<EcoLocation> getBatteryBins() {
         //api 요청 주소 형식
         String url =
                 apiUrl
@@ -63,7 +63,7 @@ public class JongnoBatteryBinService {
                 .body(JongnoBatteryBinResponse.class);
 
         // 수거함 정보를 객체변환 뒤 list로 반환
-        List<ecoLocation> locations = response.getData().stream()
+        List<EcoLocation> locations = response.getData().stream()
                 .map(this::convertToEcoLocation)
                 .toList();
 
@@ -104,9 +104,9 @@ public class JongnoBatteryBinService {
 //나머지 마커는 정상 표시
 
     //ecoLocation 객체로 변환
-    private ecoLocation convertToEcoLocation(JongnoBatteryBinDTO dto) {
+    private EcoLocation convertToEcoLocation(JongnoBatteryBinDTO dto) {
         // 변환 결과 저장할 객체
-        ecoLocation location = new ecoLocation();
+        EcoLocation location = new EcoLocation();
 
         location.setLocationName("폐건전지·폐형광등 수거함");
         location.setLocationType("폐건전지·폐형광등 수거함");

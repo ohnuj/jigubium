@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.yeongdeungposervice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
 import first_project.recycle.service.KakaoAddressService;
@@ -49,9 +49,9 @@ public class YeongdeungpoClothingBinService {
      * 7. 기존 데이터와 중복되는지 확인
      * 8. 중복되지 않은 데이터만 DB에 저장
      */
-    public List<ecoLocation> importClothingBins() {
+    public List<EcoLocation> importClothingBins() {
 
-        List<ecoLocation> locations = new ArrayList<>();
+        List<EcoLocation> locations = new ArrayList<>();
 
         /*
          * try-with-resources
@@ -108,7 +108,7 @@ public class YeongdeungpoClothingBinService {
                     continue;
                 }
 
-                ecoLocation location = new ecoLocation();
+                EcoLocation location = new EcoLocation();
 
                 location.setLocationName("의류수거함");
                 location.setLocationType("의류수거함");
@@ -189,7 +189,7 @@ public class YeongdeungpoClothingBinService {
      * 도로명주소 또는 지번주소를 사용해 좌표를 찾는다.
      */
     private void setCoordinatesFromAddress(
-            ecoLocation location,
+            EcoLocation location,
             String roadAddress,
             String jibunAddress
     ) {

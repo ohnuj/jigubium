@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.yeongdeungposervice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
 import first_project.recycle.service.KakaoAddressService;
@@ -29,8 +29,8 @@ public class YeongdeungpoBatteryBinService {
     }
 
     //좌표 변환하고 DB에 저장
-    public List<ecoLocation> importBatteryBins() {
-        List<ecoLocation> locations = new ArrayList<>();
+    public List<EcoLocation> importBatteryBins() {
+        List<EcoLocation> locations = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new ClassPathResource("data/yeongdeungpo-battery-bin.csv")
@@ -55,7 +55,7 @@ public class YeongdeungpoBatteryBinService {
                     continue;
                 }
                 String roadAddress = normalizeAddress(originalAddress);
-                ecoLocation location = new ecoLocation();
+                EcoLocation location = new EcoLocation();
 
                 // 세부위치를 장소명으로 사용
                 String locationName = detailName;

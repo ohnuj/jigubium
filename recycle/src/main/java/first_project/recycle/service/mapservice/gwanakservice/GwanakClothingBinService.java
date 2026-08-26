@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.gwanakservice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.mapper.EcoLocationMapper;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -23,9 +23,9 @@ public class GwanakClothingBinService {
         this.ecoLocationMapper = ecoLocationMapper;
     }
 
-    public List<ecoLocation> importClothingBins() {
+    public List<EcoLocation> importClothingBins() {
 
-        List<ecoLocation> locations = new ArrayList<>();
+        List<EcoLocation> locations = new ArrayList<>();
 
         try {
 
@@ -72,7 +72,7 @@ public class GwanakClothingBinService {
                     continue;
                 }
 
-                ecoLocation location = new ecoLocation();
+                EcoLocation location = new EcoLocation();
 
                 // 예: 낙성대동-1
                 location.setLocationName(binName);

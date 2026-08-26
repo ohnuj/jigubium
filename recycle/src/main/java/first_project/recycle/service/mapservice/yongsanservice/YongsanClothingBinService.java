@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.yongsanservice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.yongsan.YongsanClothingBinDTO;
 import first_project.recycle.domain.ecoLocationdto.yongsan.YongsanClothingBinResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
@@ -45,7 +45,7 @@ public class YongsanClothingBinService {
      *
      */
 
-    public List<ecoLocation> getClothingBins() {
+    public List<EcoLocation> getClothingBins() {
 
         String url =
                 apiUrl
@@ -68,7 +68,7 @@ public class YongsanClothingBinService {
             return List.of();
         }
 
-        List<ecoLocation> locations = response.getData().stream()
+        List<EcoLocation> locations = response.getData().stream()
                 .map(this::convertToEcoLocation)
                 .toList();
 
@@ -98,11 +98,11 @@ public class YongsanClothingBinService {
         return locations;
     }
     // 용산구 API DTO를 우리 프로젝트의 ecoLocation 구조로 변환
-    private ecoLocation convertToEcoLocation(
+    private EcoLocation convertToEcoLocation(
             YongsanClothingBinDTO dto
     ) {
 
-        ecoLocation location = new ecoLocation();
+        EcoLocation location = new EcoLocation();
 
         location.setLocationName("의류수거함");
         location.setLocationType("의류수거함");

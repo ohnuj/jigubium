@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.dongjakservice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.dongjak.DongjakClothingBinResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ public class DongjakClothingBinService {
     }
 
     // 데이터를 DB에 저장하는 메서드
-    public List<ecoLocation> getClothingBins() {
+    public List<EcoLocation> getClothingBins() {
         String url = "https://api.odcloud.kr/api/15068021/v1/"  // swagger
                 + "uddi:cd670738-3614-4e80-a341-f495bb1f91e0"   // UUID
                 + "?page=1&perPage=1000";   // 기본으로 넣어줘야 하는 파라미터
@@ -51,14 +51,14 @@ public class DongjakClothingBinService {
         }
 
         // 공공데이터의 DataItem 목록을 ecoLocation 목록으로 변환
-        List<ecoLocation> locations =
+        List<EcoLocation> locations =
                 response.getData()
                         .stream()
                         .map(this::convertToEcoLocation)
                         .toList();
 
         // 변환 완료된 데이터를 하나씩 리스트에서 끄집어 내 정상적일 경우 DB에 저장
-        for (ecoLocation location : locations) {
+        for (EcoLocation location : locations) {
             if (location.getRoadAddress() == null ||
                     location.getRoadAddress().isBlank() ||
                     location.getLatitude() == null ||
@@ -80,10 +80,10 @@ public class DongjakClothingBinService {
 
 
     }
-    private ecoLocation convertToEcoLocation(
+    private EcoLocation convertToEcoLocation(
             DongjakClothingBinResponse.DataItem dataItem
     ){
-        ecoLocation location = new ecoLocation();
+        EcoLocation location = new EcoLocation();
         // 화면에 표시할 장소명과 장소 타입은 "의류수거함"으로 통일
         location.setLocationName("의류수거함");
         location.setLocationType("의류수거함");

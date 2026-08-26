@@ -1,6 +1,6 @@
 package first_project.recycle.service.mapservice.dongjakservice;
 
-import first_project.recycle.domain.ecoLocation;
+import first_project.recycle.domain.EcoLocation;
 import first_project.recycle.domain.ecoLocationdto.KakaoAddressResponse;
 import first_project.recycle.domain.ecoLocationdto.dongjak.DongjakBatteryBinResponse;
 import first_project.recycle.mapper.EcoLocationMapper;
@@ -29,7 +29,7 @@ public class DongjakBatteryBinService {
         this.kakaoAddressService = kakaoAddressService;
         this.ecoLocationMapper = ecoLocationMapper;
     }
-    public List<ecoLocation> getBatteryBins(){
+    public List<EcoLocation> getBatteryBins(){
         String url =
                 "https://api.odcloud.kr/api/15038384/v1/"
                         + "uddi:4979ec89-d261-4491-80d0-919d0d8e2d39"
@@ -50,13 +50,13 @@ public class DongjakBatteryBinService {
             return List.of();
         }
 
-        List<ecoLocation> locations =
+        List<EcoLocation> locations =
                 response.getData()
                         .stream()
                         .map(this::convertToEcoLocation)
                         .toList();
 
-        for (ecoLocation location : locations) {
+        for (EcoLocation location : locations) {
 
             // 좌표 변환 실패한 데이터는 저장하지 않음
             if (
@@ -82,10 +82,10 @@ public class DongjakBatteryBinService {
 
         return locations;
     }
-    private ecoLocation convertToEcoLocation(
+    private EcoLocation convertToEcoLocation(
             DongjakBatteryBinResponse.DataItem dataItem
     ){
-        ecoLocation location = new ecoLocation();
+        EcoLocation location = new EcoLocation();
         //장소명
         String locationName = dataItem.getBuildingName();
         if (locationName == null || locationName.isBlank()){

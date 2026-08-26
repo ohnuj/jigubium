@@ -5,7 +5,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class ecoLocation {
+public class EcoLocation {
     private Long locationId; // 장소 id
     private String locationName;  // 장소명
     private String locationType;  // 장소타입(ex. 의류수거함, 페건전지)
