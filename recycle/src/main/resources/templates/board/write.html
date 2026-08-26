@@ -20,7 +20,7 @@
     </section>
 
     <section class="board-container narrow">
-        <form id="writeForm" class="panel form-panel form-grid" th:action="@{/boards}" method="post" enctype="multipart/form-data">
+        <form id="writeForm" class="panel form-panel form-grid" th:action="@{/boards/write}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="boardType">게시판 타입</label>
                 <select id="boardType" name="boardType" required>

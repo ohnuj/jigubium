@@ -49,9 +49,35 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry){
         // 1. 로그인 여부 검사 > 로그인 해야 사용 가능
-        registry.addInterceptor(loginInterceptor).order(1).addPathPatterns("/mypage/**","/admin","/admin/**");
+        registry.addInterceptor(loginInterceptor).order(1).addPathPatterns(
+                "/mypage/**",
+
+                "/boards/write",
+                "/boards/*/edit",
+                "/boards/*/delete",
+                "/boards/*/images/*/delete",
+                "/boards/*/like",
+
+                "/boards/*/comments",
+                "/boards/*/comments/**",
+
+                "/game",
+
+                "/reward",
+                "/reward/**",
+
+                // 공공데이터 DB적재
+                "/api/*/import",
+
+                "/admin",
+                "/admin/**");
         // 2. 관리자 권한 검사 > 관리자만 사용 가능
-        registry.addInterceptor(adminInterceptor).order(2).addPathPatterns("/admin","/admin/**");
+        registry.addInterceptor(adminInterceptor).order(2).addPathPatterns(
+                "/admin",
+                "/admin/**",
+
+                // 관리자만 공공데이터 DB적재
+                "/api/*/import");
     }
 
 }

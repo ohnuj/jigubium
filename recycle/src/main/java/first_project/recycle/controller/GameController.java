@@ -27,9 +27,6 @@ public class GameController {
     @GetMapping("/game")
     public String gamePage(HttpSession session, Model model, HttpServletResponse response) throws IOException {
         User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        if (loginUser == null) {
-            return "redirect:/login";
-        }
 
         Long memberId = loginUser.getMemberId();
 
