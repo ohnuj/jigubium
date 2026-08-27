@@ -3,14 +3,12 @@ package first_project.recycle.service;
 import first_project.recycle.domain.EcoPointHistory;
 import first_project.recycle.domain.Member;
 import first_project.recycle.domain.MemberInfo;
-import first_project.recycle.repository.EcoPointHistoryMapper;
 import first_project.recycle.repository.MypageMapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.annotations.Param;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +19,8 @@ public class MypageService {
 
     // DB 접근을 담당하는 매퍼 인터페이스 주입
     private final MypageMapper mypageMapper;
+    // 비밀번호 hash검증
+    private final PasswordEncoder passwordEncoder;
 
     // 회원 정보 조회
     public Member getMemberInfo(Long memberId) {
@@ -30,16 +30,32 @@ public class MypageService {
     // 회원 정보 수정
     @Transactional // DB수정 작업 중 예외가 터지면 롤백하여 데이터 무결성 보장
     public void updateMemberInfo(Long memberId, MemberInfo memberinfo) {
+        Member member = mypageMapper.findById(memberId);
+
+        if (member == null) {
+            throw new IllegalArgumentException("회원정보를 찾을 수 없습니다.");
+        }
+
+        if ("KAKAO".equals(member.getProvider())) {
+            memberinfo.setNewpassword(null);
+        } else {
+            if (memberinfo.getNewpassword() != null
+                    && !memberinfo.getNewpassword().isBlank()) {
+            String encodedPassword = passwordEncoder.encode(memberinfo.getNewpassword());
+
+            memberinfo.setNewpassword(encodedPassword);
+             }
+         }
         mypageMapper.updateMember(memberId, memberinfo);
     }
-    // 비밀번호 확인 절차 -> DB의 기존 비밀번호와 사용자가 입력창에 적은 문자열이 같은지 비교
+    // 비밀번호 확인 절차 -> 사용자가 입력한 비밀번호와 DB의 BCrypt 해시값 검증
     public boolean verifyPassword(Long memberId, String password) {
         Member member = mypageMapper.findById(memberId);
-        if (member == null || member.getPassword() == null) {
+        if (member == null || member.getPassword() == null || password == null) {
             return false;
         }
         // 문지 동등 비교 결과 반환
-        return member.getPassword().equals(password);
+        return passwordEncoder.matches(password, member.getPassword());
     }
 
     // 회원 탈퇴
@@ -47,8 +63,18 @@ public class MypageService {
     @Transactional
     public boolean deleteMember(Long memberId, String password) {
         Member member = mypageMapper.findById(memberId);
-        if (member == null || !password.equals(member.getPassword())) {
+
+        if (member == null){
             return false;
+        }
+        //카카오 유저가 아닌 사용자만 비밀번호 체크
+        if (!"KAKAO".equals(member.getProvider())) {
+            if (member.getPassword() == null || password == null) {
+                return false;
+            }
+            if (!passwordEncoder.matches(password, member.getPassword())) {
+                return false;
+            }
         }
         // DB에서 회원 행 삭제 실행
         mypageMapper.deleteById(memberId);
