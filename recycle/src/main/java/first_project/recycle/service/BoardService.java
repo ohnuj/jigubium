@@ -55,6 +55,8 @@ public class BoardService {
         return boardMapper.findAllNotices();
     }
 
+    // 관리자용 전체 건의사항
+    public List<BoardListResponse> getAllSuggestions(){return boardMapper.findAllSuggestions();}
     // 관리자용 공지사항 상세조회
     public BoardDetailResponse getNotice(Long boardId){
         BoardDetailResponse notice = getBoardDetail(boardId);

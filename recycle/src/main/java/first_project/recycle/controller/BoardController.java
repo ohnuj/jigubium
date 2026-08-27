@@ -4,10 +4,10 @@ package first_project.recycle.controller;
 import first_project.recycle.config.SessionConst;
 import first_project.recycle.domain.BoardType;
 import first_project.recycle.domain.Paging;
+import first_project.recycle.domain.SessionUser;
 import first_project.recycle.dto.*;
 import first_project.recycle.service.BoardLikeService;
 import first_project.recycle.service.BoardService;
-import first_project.recycle.domain.User;
 import first_project.recycle.service.CommentService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -56,8 +56,8 @@ public class BoardController {
                 return "redirect:/login";
             }
 
-            User loginUser = (User) session.getAttribute(
-                            SessionConst.LOGIN_MEMBER);
+            SessionUser loginUser =
+                    (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
             // 세션은 있지만 로그인 정보가 없는 경우
             if (loginUser == null) {
@@ -127,7 +127,8 @@ public class BoardController {
             @RequestParam(required = false) List<MultipartFile> images,
             HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         Long boardId = boardService.write(loginUser.getMemberId(), boardRequest, images);
 
@@ -196,8 +197,8 @@ public class BoardController {
         }
 
         // 로그인 사용자
-        User loginUser =
-                (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         model.addAttribute("loginUser", loginUser);
         model.addAttribute("previousBoard", boardService.getPreviousBoard(boardId, board.getBoardType()));
@@ -237,8 +238,8 @@ public class BoardController {
             HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
-        User loginUser =
-                (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         BoardDetailResponse board = boardService.getBoardForEdit(boardId,loginUser.getMemberId());
 
@@ -275,9 +276,8 @@ public class BoardController {
             @RequestParam(defaultValue = "false") boolean myPosts,
             HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        User loginUser =
-                (User) session.getAttribute(
-                        SessionConst.LOGIN_MEMBER);
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         boardService.updateBoard(boardId, loginUser.getMemberId(), boardRequest, images);
 
@@ -300,7 +300,8 @@ public class BoardController {
 
             HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         Long memberId = loginUser.getMemberId();
 
@@ -326,7 +327,8 @@ public class BoardController {
 
             HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         boardService.deleteBoardImage(boardId, imageId, loginUser.getMemberId());
 

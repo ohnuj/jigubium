@@ -3,7 +3,7 @@ package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
 import first_project.recycle.domain.BoardType;
-import first_project.recycle.domain.User;
+import first_project.recycle.domain.SessionUser;
 import first_project.recycle.service.BoardLikeService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +35,8 @@ public class BoardLikeController {
             @RequestParam(defaultValue = "false") boolean myPosts,
             HttpSession session) {
 
-        User loginUser =
-                (User) session.getAttribute(
-                        SessionConst.LOGIN_MEMBER
-                );
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
 
         boardLikeService.toggleLike(
