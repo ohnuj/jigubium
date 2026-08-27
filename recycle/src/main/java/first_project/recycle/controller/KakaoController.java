@@ -1,6 +1,7 @@
 package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
+import first_project.recycle.domain.SessionUser;
 import first_project.recycle.domain.User;
 import first_project.recycle.service.KakaoService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -119,7 +120,7 @@ public class KakaoController {
         User loginUser = kakaoService.kakaoLoginProcess(accessToken);
 
         // 신규 카카오 회원
-        if (loginUser.isNewUser()){
+        if (loginUser.isNewUser()) {
             redirectAttributes.addFlashAttribute(
                     "message",
                     "회원가입을 축하합니다. 신규 가입 에코포인트 100p가 지급되었습니다.");
@@ -128,9 +129,18 @@ public class KakaoController {
         // 8. login 성공 후 세션 ID 변경
         request.changeSessionId();
 
+        // 세션에 저장할 최소 로그인 정보만 별도 객체로 생성
+        SessionUser sessionUser = new SessionUser(
+                loginUser.getMemberId(),
+                loginUser.getNickname(),
+                loginUser.getProvider(),
+                loginUser.getRole()
+        );
+
         // 9. 일반 로그인과 동일한 세션 구조
         session.setAttribute("checkLogin", true);
-        session.setAttribute(SessionConst.LOGIN_MEMBER, loginUser);
+        session.setAttribute(SessionConst.LOGIN_MEMBER, sessionUser);
+
         return "redirect:/";
     }
 }

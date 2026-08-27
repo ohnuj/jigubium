@@ -42,8 +42,8 @@ public class MypageController {
 
 
         // 세션에 담겨있는 로그인 유저 객체에서 식별자(PK)인 memberId를 꺼냄
-        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        Long memberId = loginUser.getMemberId();
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);        Long memberId = loginUser.getMemberId();
 
         // DB에서 회원의 최신 상세 정보 가져옴
         Member member = mypageService.getMemberInfo(memberId);
@@ -75,10 +75,10 @@ public class MypageController {
     @GetMapping("/memberInfoConfirm")
     public String memberInfoConfirmForm(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);
-        User user = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
         // 카카오 회원은 인증 없이 회원정보 수정 화면 (닉네임만 수정 가능)
-        if ("KAKAO".equals(user.getProvider())) {
+        if ("KAKAO".equals(loginUser.getProvider())) {
             return "redirect:/mypage/updateMemberInfo";
         }
         session.removeAttribute("mypageVerified");
@@ -94,8 +94,8 @@ public class MypageController {
         HttpSession session = request.getSession(false);
 
         // 이메일 대신 memberId 추출
-        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        Long memberId = loginUser.getMemberId();
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);        Long memberId = loginUser.getMemberId();
 
         // 서비스 계층을 통해 DB 비밀번화와 일치하는지 비교 검증
         boolean isMatch = mypageService.verifyPassword(memberId, password);
@@ -121,8 +121,8 @@ public class MypageController {
     @GetMapping("/updateMemberInfo")
     public String updateMemberInfoForm(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);
-        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
         if (!"KAKAO".equals(loginUser.getProvider())) {
             //pw check을 하고 넘어왔는지 확인, 브라우저를 통해 바로 update하러 오는 것을 방지하기 위함
             Boolean verified = (Boolean) session.getAttribute("mypageVerified");
@@ -151,8 +151,8 @@ public class MypageController {
                                    HttpServletRequest request,
                                    RedirectAttributes redirectAttributes) {
         HttpSession session = request.getSession(false);
-        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
         // LOCAL 회원만 비밀번호 검증
         if (!"KAKAO".equals(loginUser.getProvider())) {
             Boolean verified =
@@ -211,8 +211,8 @@ public class MypageController {
     public String memberDelete(HttpServletRequest request,Model model) {
 
         HttpSession session = request.getSession(false);
-        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        Long memberId = loginUser.getMemberId();
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);        Long memberId = loginUser.getMemberId();
         Member member = mypageService.getMemberInfo(memberId);
 
         model.addAttribute("member", member);
@@ -230,8 +230,8 @@ public class MypageController {
         HttpSession session = request.getSession(false);
 
 
-        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        Long memberId = loginUser.getMemberId(); // memberId 추출
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);        Long memberId = loginUser.getMemberId(); // memberId 추출
         // 서비스 호출 -> 비밀번호 확인후 일치하면 삭제 진행
         boolean isDeleted = mypageService.deleteMember(memberId, password);
 
@@ -264,8 +264,8 @@ public class MypageController {
         HttpSession session = request.getSession(false);
 
 
-        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        Long memberId = loginUser.getMemberId();
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);        Long memberId = loginUser.getMemberId();
 
         // 한 페이지당 보여줄 게시물 개수
         int pageSize = 10;

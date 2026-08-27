@@ -1,7 +1,7 @@
 package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
-import first_project.recycle.domain.User;
+import first_project.recycle.domain.SessionUser;
 import first_project.recycle.service.GameService.GameService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -26,7 +26,8 @@ public class GameController {
 
     @GetMapping("/game")
     public String gamePage(HttpSession session, Model model, HttpServletResponse response) throws IOException {
-        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         Long memberId = loginUser.getMemberId();
 
@@ -50,7 +51,8 @@ public class GameController {
     @PostMapping("/game/result")
     public ResponseEntity<Map<String, Object>> saveResult(@RequestBody Map<String, Object> resultData,
                                                           HttpSession session) {
-        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
         if (loginUser == null) {
             return ResponseEntity.status(401).body(Map.of("success", false, "message", "로그인이 필요합니다."));
         }

@@ -13,4 +13,5 @@ public class AdminService {
     public AdminDashBoardResponse findDashBoardData(){
         return adminMapper.findDashBoardData();
     }
+
 }
