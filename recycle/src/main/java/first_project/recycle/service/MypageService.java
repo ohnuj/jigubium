@@ -35,6 +35,12 @@ public class MypageService {
         if (member == null) {
             throw new IllegalArgumentException("회원정보를 찾을 수 없습니다.");
         }
+        // 닉네임의 모든 공백 제거
+        if (memberinfo.getNickname() != null) {
+            memberinfo.setNickname(
+                    memberinfo.getNickname().replaceAll("\\s+", "")
+            );
+        }
 
         if ("KAKAO".equals(member.getProvider())) {
             memberinfo.setNewpassword(null);

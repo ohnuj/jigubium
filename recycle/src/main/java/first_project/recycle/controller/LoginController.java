@@ -1,6 +1,7 @@
 package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
+import first_project.recycle.domain.SessionUser;
 import first_project.recycle.domain.User;
 import first_project.recycle.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,18 +56,23 @@ public class LoginController {
         HttpSession session = request.getSession(false);
         if (session != null) {
             request.changeSessionId();
-        }else{
+        } else {
             session = request.getSession(true);
         }
 
-        // 세션 내 비밀번호 노출 방지를 위한 민감 정보 제거 (보안 조치)
-        loginUser.setPassword(null);
+        // 세션에 저장할 최소 로그인 정보만 별도 객체로 생성
+        SessionUser sessionUser = new SessionUser(
+                loginUser.getMemberId(),
+                loginUser.getNickname(),
+                loginUser.getProvider(),
+                loginUser.getRole()
+        );
 
         // 로그인 여부 확인 플래그 저장
         session.setAttribute("checkLogin", true);
 
-        // 상수 키(SessionConst.LOGIN_MEMBER)를 사용하여 세션에 회원 객체 바인딩
-        session.setAttribute(SessionConst.LOGIN_MEMBER, loginUser);
+        // 비밀번호 등 민감정보가 없는 세션 전용 객체 저장
+        session.setAttribute(SessionConst.LOGIN_MEMBER, sessionUser);
 
         // 로그인 전 접근 시도했던 URL 또는 기본 URL로 이동
         return "redirect:" + getSafeRedirectURL(redirectURL);
@@ -86,6 +92,7 @@ public class LoginController {
         // 로그아웃 후 로그인 화면으로 리다이렉트
         return "redirect:/login";
     }
+
     private String getSafeRedirectURL(
             String redirectURL) {
 

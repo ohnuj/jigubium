@@ -3,7 +3,7 @@ package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
 import first_project.recycle.domain.BoardType;
-import first_project.recycle.domain.User;
+import first_project.recycle.domain.SessionUser;
 import first_project.recycle.dto.CommentCreateRequest;
 import first_project.recycle.dto.CommentUpdateRequest;
 import first_project.recycle.service.CommentService;
@@ -40,10 +40,8 @@ public class CommentController {
             HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
-        User loginUser =
-                (User) session.getAttribute(
-                        SessionConst.LOGIN_MEMBER
-                );
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         commentService.createComment(
                 boardId,
@@ -82,10 +80,8 @@ public class CommentController {
             HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
-        User loginUser =
-                (User) session.getAttribute(
-                        SessionConst.LOGIN_MEMBER
-                );
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         commentService.updateComment(
                         boardId,
@@ -124,10 +120,8 @@ public class CommentController {
             HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
-        User loginUser =
-                (User) session.getAttribute(
-                        SessionConst.LOGIN_MEMBER
-                );
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
          commentService.deleteComment(
                         boardId,

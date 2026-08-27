@@ -81,4 +81,6 @@ public interface BoardMapper {
                      @Param("title") String title,
                      @Param("content") String content);
     int deleteNotice(@Param("boardId") Long boardId);
+
+    List<BoardListResponse> findAllSuggestions();
 }

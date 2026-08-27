@@ -28,6 +28,13 @@ public class UserService {
     // 회원가입 처리 (DB 쓰기 작업이므로 readOnly=false인 일반 트랜잭션 적용)
     @Transactional
     public boolean signup(User user) {
+
+        // 0. 회원정보 정규화 - 모든 공백 제거
+        user.setName(user.getName().replaceAll("\\s+", ""));
+        user.setNickname(user.getNickname().replaceAll("\\s+", ""));
+        user.setEmail(user.getEmail().replaceAll("\\s+", "").toLowerCase());
+
+
         // 1. 동일한 이메일로 가입된 회원이 있는지 중복 검증
         if (userMapper.countByEmail(user.getEmail()) > 0) {
             return false; // 중복된 이메일이 존재하면 가입 실패 반환
@@ -47,6 +54,10 @@ public class UserService {
 
     // 로그인 검증 처리 (클래스 레벨의 readOnly=true 트랜잭션 적용)
     public User login(String email, String password) {
+
+        // 이메일 정규화 - 모든 공백 제거 + 소문자 변환
+        email = email.replaceAll("\\s+", "").toLowerCase();
+
         // 1. 입력받은 이메일로 DB에서 회원 단건 조회
         User findUser = userMapper.findByEmail(email);
 

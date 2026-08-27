@@ -32,9 +32,9 @@
             <!-- 왼쪽 -->
             <div class="admin-hero-content">
 
-            <span class="admin-label">
-                ADMIN CONSOLE
-            </span>
+                <span class="admin-label">
+                    ADMIN CONSOLE
+                </span>
 
                 <h1>관리자 페이지</h1>
 
@@ -51,9 +51,10 @@
 
                 <!-- 전체 회원 -->
                 <div class="dashboard-card">
-                <span class="dashboard-label">
-                    전체 회원
-                </span>
+
+                    <span class="dashboard-label">
+                        전체 회원
+                    </span>
 
                     <div class="dashboard-value">
                         <strong th:text="${dashBoard.totalMember}">
@@ -61,14 +62,16 @@
                         </strong>
                         <span>명</span>
                     </div>
+
                 </div>
 
 
                 <!-- 전체 게시글 -->
                 <div class="dashboard-card">
-                <span class="dashboard-label">
-                    전체 게시글
-                </span>
+
+                    <span class="dashboard-label">
+                        전체 게시글
+                    </span>
 
                     <div class="dashboard-value">
                         <strong th:text="${dashBoard.totalBoard}">
@@ -76,14 +79,33 @@
                         </strong>
                         <span>개</span>
                     </div>
+
+                </div>
+
+
+                <!-- 미확인 건의글 -->
+                <div class="dashboard-card">
+
+                    <span class="dashboard-label">
+                        미확인 건의글
+                    </span>
+
+                    <div class="dashboard-value">
+                        <strong th:text="${dashBoard.uncheckedSuggestion}">
+                            10
+                        </strong>
+                        <span>개</span>
+                    </div>
+
                 </div>
 
 
                 <!-- 오늘 가입자 -->
                 <div class="dashboard-card dashboard-card-today">
-                <span class="dashboard-label">
-                    오늘 가입자
-                </span>
+
+                    <span class="dashboard-label">
+                        오늘 가입자
+                    </span>
 
                     <div class="dashboard-value">
                         <strong th:text="${dashBoard.todayMember}">
@@ -91,14 +113,16 @@
                         </strong>
                         <span>명</span>
                     </div>
+
                 </div>
 
 
                 <!-- 오늘 게시글 -->
                 <div class="dashboard-card dashboard-card-today">
-                <span class="dashboard-label">
-                    오늘 게시글
-                </span>
+
+                    <span class="dashboard-label">
+                        오늘 게시글
+                    </span>
 
                     <div class="dashboard-value">
                         <strong th:text="${dashBoard.todayBoard}">
@@ -106,6 +130,7 @@
                         </strong>
                         <span>개</span>
                     </div>
+
                 </div>
 
             </div>
@@ -122,17 +147,17 @@
 
 
         <!-- =====================================================
-        공지사항 관리
-   ===================================================== -->
+             공지사항 관리
+        ===================================================== -->
         <section class="admin-notice-management">
 
             <div class="admin-section-header">
 
                 <div>
 
-            <span class="section-label">
-                NOTICE MANAGEMENT
-            </span>
+                    <span class="section-label">
+                        NOTICE MANAGEMENT
+                    </span>
 
                     <h2>
                         공지사항 관리
@@ -149,6 +174,7 @@
 
             <div class="notice-management-grid">
 
+
                 <!-- =================================================
                      공지사항 작성
                 ================================================== -->
@@ -157,13 +183,15 @@
                     <div class="notice-card-header">
 
                         <div>
-                    <span class="notice-card-label">
-                        NEW NOTICE
-                    </span>
+
+                            <span class="notice-card-label">
+                                NEW NOTICE
+                            </span>
 
                             <h3>
                                 공지사항 작성
                             </h3>
+
                         </div>
 
                         <div class="notice-card-icon">
@@ -223,26 +251,32 @@
 
 
                 <!-- =================================================
-                     등록된 공지사항
+                     오른쪽 : 공지사항 + 건의글
                 ================================================== -->
                 <div class="notice-list-card">
 
+
+                    <!-- =================================================
+                         등록된 공지사항
+                    ================================================== -->
                     <div class="notice-card-header">
 
                         <div>
-                    <span class="notice-card-label">
-                        NOTICE LIST
-                    </span>
+
+                            <span class="notice-card-label">
+                                NOTICE LIST
+                            </span>
 
                             <h3>
                                 등록된 공지사항
                             </h3>
+
                         </div>
 
                         <span class="notice-count"
                               th:text="|총 ${#lists.size(notices)}개|">
-                    총 0개
-                </span>
+                            총 0개
+                        </span>
 
                     </div>
 
@@ -276,9 +310,9 @@
 
                                 <div class="notice-title-row">
 
-                            <span class="notice-badge-small">
-                                공지
-                            </span>
+                                    <span class="notice-badge-small">
+                                        공지
+                                    </span>
 
                                     <a th:href="@{/boards/{boardId}(boardId=${notice.boardId})}"
                                        th:text="${notice.title}"
@@ -291,17 +325,17 @@
 
                                 <div class="notice-admin-meta">
 
-                            <span>
-                                관리자
-                            </span>
+                                    <span>
+                                        관리자
+                                    </span>
 
                                     <span class="notice-meta-divider">
-                                ·
-                            </span>
+                                        ·
+                                    </span>
 
                                     <span th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}">
-                                2026-08-25 14:30
-                            </span>
+                                        2026-08-25 14:30
+                                    </span>
 
                                 </div>
 
@@ -334,6 +368,109 @@
 
                     </div>
 
+
+                    <!-- =================================================
+                         건의글 목록
+                    ================================================== -->
+                    <div class="suggestion-section">
+
+                        <div class="suggestion-section-header">
+
+                            <div>
+
+                                <span class="notice-card-label">
+                                    SUGGESTION LIST
+                                </span>
+
+                                <h3>
+                                    건의글
+                                </h3>
+
+                            </div>
+
+                            <span class="notice-count"
+                                  th:text="|총 ${#lists.size(suggestions)}개|">
+                                총 0개
+                            </span>
+
+                        </div>
+
+
+                        <div class="suggestion-admin-list">
+
+                            <!-- 건의글이 없을 때 -->
+                            <div class="notice-empty"
+                                 th:if="${#lists.isEmpty(suggestions)}">
+
+                                <div class="notice-empty-icon">
+                                    💬
+                                </div>
+
+                                <strong>
+                                    등록된 건의글이 없습니다.
+                                </strong>
+
+                                <p>
+                                    회원이 작성한 건의글이 여기에 표시됩니다.
+                                </p>
+
+                            </div>
+
+
+                            <!-- 건의글이 있을 때 -->
+                            <div class="suggestion-admin-item"
+                                 th:each="suggestion : ${suggestions}">
+
+                                <div class="notice-admin-main">
+
+                                    <div class="notice-title-row">
+
+                                        <!-- 미확인 -->
+                                        <span class="suggestion-badge unchecked"
+                                              th:if="${!suggestion.adminChecked}">
+                                            미확인
+                                        </span>
+
+                                        <!-- 확인 -->
+                                        <span class="suggestion-badge checked"
+                                              th:if="${suggestion.adminChecked}">
+                                            확인
+                                        </span>
+
+
+                                        <a th:href="@{/boards/{boardId}(boardId=${suggestion.boardId})}"
+                                           th:text="${suggestion.title}"
+                                           class="notice-admin-title">
+                                            건의글 제목
+                                        </a>
+
+                                    </div>
+
+
+                                    <div class="notice-admin-meta">
+
+                                        <span th:text="${suggestion.nickname}">
+                                            작성자
+                                        </span>
+
+                                        <span class="notice-meta-divider">
+                                            ·
+                                        </span>
+
+                                        <span th:text="${#temporals.format(suggestion.createdAt, 'yyyy-MM-dd HH:mm')}">
+                                            2026-08-27 16:30
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
@@ -348,9 +485,9 @@
 
             <div>
 
-        <span class="section-label">
-            MANAGEMENT
-        </span>
+                <span class="section-label">
+                    MANAGEMENT
+                </span>
 
                 <h2>
                     데이터 관리

@@ -14,4 +14,5 @@ public class Board {
    private LocalDateTime createdAt; // 작성일자
    private LocalDateTime updatedAt; // 수정일자
    private Integer viewCount;
+   private Boolean adminChecked;
 }

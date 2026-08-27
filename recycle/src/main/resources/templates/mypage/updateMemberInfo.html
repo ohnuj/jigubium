@@ -54,7 +54,9 @@
                 <div class="form-group">
                     <label for="nickname">닉네임</label>
                     <input type="text" id="nickname" name="nickname" class="mypage-input"
-                           th:value="${member != null ? member.nickname : ''}" required>
+                           th:value="${member != null ? member.nickname : ''}"
+                           oninput="this.value = this.value.replace(/\s+/g, '')"
+                           required>
                 </div>
 
                 <th:block th:if="${member != null and member.provider != 'KAKAO'}">

@@ -23,6 +23,8 @@ public class BoardListResponse {
     private Integer likeCount;
     private boolean hasImage;
 
+    private Boolean adminChecked;
+
     /**
      * 게시글 수정 여부 확인
      */
