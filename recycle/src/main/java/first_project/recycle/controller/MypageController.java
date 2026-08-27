@@ -36,7 +36,7 @@ public class MypageController {
 
     // 내 정보 화면
     @GetMapping("/myInfo")
-    public String myInfo(HttpServletRequest request, Model model){
+    public String myInfo(HttpServletRequest request, Model model) {
 
         HttpSession session = request.getSession(false);
 
@@ -62,8 +62,8 @@ public class MypageController {
         Badge currentBadge = badgeService.findCurrentBadge(totalEarnPoint);
 
         // Thymeleaf 템플릿(HTML)에서 사용할 수 있도록 Model 객체에 데이터 바인딩
-        model.addAttribute("member",member); // 회원 프로필 정보 객체
-        model.addAttribute("currentTab","myInfo"); // 사이드바에서 '내 정보' 메뉴 활성화 플래그
+        model.addAttribute("member", member); // 회원 프로필 정보 객체
+        model.addAttribute("currentTab", "myInfo"); // 사이드바에서 '내 정보' 메뉴 활성화 플래그
         model.addAttribute("currentPoint", currentPoint); // 현재 포인트
         model.addAttribute("totalPoint", totalEarnPoint); // 누적 포인트(등급 산정용)
         model.addAttribute("currentBadge", currentBadge); // 뱃지
@@ -75,6 +75,12 @@ public class MypageController {
     @GetMapping("/memberInfoConfirm")
     public String memberInfoConfirmForm(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);
+        User user = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        // 카카오 회원은 인증 없이 회원정보 수정 화면 (닉네임만 수정 가능)
+        if ("KAKAO".equals(user.getProvider())) {
+            return "redirect:/mypage/updateMemberInfo";
+        }
         session.removeAttribute("mypageVerified");
         model.addAttribute("currentTab", "info");
         return "mypage/checkPassword";
@@ -115,15 +121,16 @@ public class MypageController {
     @GetMapping("/updateMemberInfo")
     public String updateMemberInfoForm(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);
-
-        //pw check을 하고 넘어왔는지 확인, 브라우저를 통해 바로 update하러 오는 것을 방지하기 위함
-        Boolean verified = (Boolean) session.getAttribute("mypageVerified");
-        if (!Boolean.TRUE.equals(verified)) {
-            return "redirect:/mypage/memberInfoConfirm";
-        }
-
-        // 이메일 대신 memberId 추출
         User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        if (!"KAKAO".equals(loginUser.getProvider())) {
+            //pw check을 하고 넘어왔는지 확인, 브라우저를 통해 바로 update하러 오는 것을 방지하기 위함
+            Boolean verified = (Boolean) session.getAttribute("mypageVerified");
+            if (!Boolean.TRUE.equals(verified)) {
+                return "redirect:/mypage/memberInfoConfirm";
+            }
+        }
+        // 이메일 대신 memberId 추출
         Long memberId = loginUser.getMemberId();
 
         Member member = mypageService.getMemberInfo(memberId);
@@ -144,29 +151,36 @@ public class MypageController {
                                    HttpServletRequest request,
                                    RedirectAttributes redirectAttributes) {
         HttpSession session = request.getSession(false);
-        Boolean verified =
-                (Boolean) session.getAttribute(
-                        "mypageVerified"
-                );
+        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
-        if (!Boolean.TRUE.equals(verified)) {
-            return "redirect:/mypage/memberInfoConfirm";
+        // LOCAL 회원만 비밀번호 검증
+        if (!"KAKAO".equals(loginUser.getProvider())) {
+            Boolean verified =
+                    (Boolean) session.getAttribute(
+                            "mypageVerified");
+
+            if (!Boolean.TRUE.equals(verified)) {
+                return "redirect:/mypage/memberInfoConfirm";
+            }
         }
 
-        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Long memberId = loginUser.getMemberId();
 
         /*
-        * 새 비밀번호 일치 여부 검증
-        * 사용자가 새 비밀번호를 입력했을 경우에만 '새 비밀번호' 와 '새 비밀번호 확인'이 서로 일치해야
-        * 성공적으로 정보 수정이 진행된다.
-        */
-        if (memberinfo.getNewpassword() != null && !memberinfo.getNewpassword().isBlank()) {
-            if (!memberinfo.getNewpassword().equals(memberinfo.getNewpasswordconfirm())) {
+         * LOCAL 회원이 새 비밀번호를 입력한 경우에만
+         * 새 비밀번호와 확인 비밀번호 일치 여부 검증
+         */
+        if (!"KAKAO".equals(loginUser.getProvider())
+                && memberinfo.getNewpassword() != null
+                && !memberinfo.getNewpassword().isBlank()) {
+
+            if (!memberinfo.getNewpassword()
+                    .equals(memberinfo.getNewpasswordconfirm())) {
+
                 redirectAttributes.addFlashAttribute(
                         "errorMsg",
-                        "새 비밀번호와 비밀번호 확인이 일치하지 않습니다."
-                );
+                        "새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+
                 return "redirect:/mypage/updateMemberInfo";
             }
         }
@@ -175,7 +189,8 @@ public class MypageController {
         mypageService.updateMemberInfo(memberId, memberinfo);
 
         // 세션에 저장된 닉네임 동기화 (상단 GNB나 화면 세션에 즉시 반영하기 위해 세션 객체 동기화)
-        if (memberinfo.getNickname() != null && !memberinfo.getNickname().isBlank()) {
+        if (memberinfo.getNickname() != null
+                && !memberinfo.getNickname().isBlank()) {
             loginUser.setNickname(memberinfo.getNickname());
             session.setAttribute(SessionConst.LOGIN_MEMBER, loginUser);
         }
@@ -193,8 +208,14 @@ public class MypageController {
 
     // 6. 회원 탈퇴 화면 (GET)
     @GetMapping("/memberDelete")
-    public String memberDelete(Model model) {
+    public String memberDelete(HttpServletRequest request,Model model) {
 
+        HttpSession session = request.getSession(false);
+        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        Long memberId = loginUser.getMemberId();
+        Member member = mypageService.getMemberInfo(memberId);
+
+        model.addAttribute("member", member);
         // 사이드바 '회원 탈퇴' 탭 강조
         model.addAttribute("currentTab", "withdraw");
         return "mypage/memberDelete";
@@ -203,7 +224,7 @@ public class MypageController {
     // 7. 회원 탈퇴 처리 (POST)
     // 비밀번호 재검증 후 DB에서 회원 데이터 영구 삭제 및 세션 무효화
     @PostMapping("/memberDelete")
-    public String deleteMember(@RequestParam("password") String password,
+    public String deleteMember(@RequestParam(value = "password", required = false) String password,
                                HttpServletRequest request,
                                RedirectAttributes redirectAttributes) {
         HttpSession session = request.getSession(false);
@@ -211,14 +232,20 @@ public class MypageController {
 
         User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Long memberId = loginUser.getMemberId(); // memberId 추출
-
         // 서비스 호출 -> 비밀번호 확인후 일치하면 삭제 진행
         boolean isDeleted = mypageService.deleteMember(memberId, password);
 
         // 비밀번호 불일치로 삭제 실패시
         if (!isDeleted) {
-            redirectAttributes.addFlashAttribute(
-                    "errorMsg", "비밀번호가 일치하지 않습니다.");
+            // 카카오 유저
+            if ("KAKAO".equals(loginUser.getProvider())) {
+                redirectAttributes.addFlashAttribute(
+                        "errorMsg",
+                        "회원 탈퇴에 실패했습니다.");
+            } else {
+                redirectAttributes.addFlashAttribute(
+                        "errorMsg", "비밀번호가 일치하지 않습니다.");
+            }
             return "redirect:/mypage/memberDelete";
         }
 
@@ -229,10 +256,10 @@ public class MypageController {
 
     // 회원 활동 조회
     @GetMapping("/myActivity")
-   public String myActivity(
-           // 요청받은 현재 페이지 번호를 기본값으로 1페이지로 하겠다
-           @RequestParam(name = "page", defaultValue = "1") int page,
-           HttpServletRequest request, Model model) {
+    public String myActivity(
+            // 요청받은 현재 페이지 번호를 기본값으로 1페이지로 하겠다
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            HttpServletRequest request, Model model) {
 
         HttpSession session = request.getSession(false);
 
@@ -248,41 +275,40 @@ public class MypageController {
         // 13건이면 1.3 -> 올림하여 2페이지로 계산
         int pagingPages = (int) Math.ceil((double) pointPageCount / pageSize);
         // 내역이 0건이어도 기본 1페이지는 유지
-        if(pagingPages == 0) pagingPages = 1;
+        if (pagingPages == 0) pagingPages = 1;
 
         // 2. 에코포인트 변동 내역 조회 -> 현재 페이지 번호와 페이지 크기를 기반으로
         // LIMIT/OFFSET 페이징 목록 조회
-            List<EcoPointHistory> pointHistoryList = mypageService.getPointHistoryPaging
-                    (memberId, page, pageSize);
+        List<EcoPointHistory> pointHistoryList = mypageService.getPointHistoryPaging
+                (memberId, page, pageSize);
 
         // 3. 현재 보유 포인트
-            int currentPoint = ecoPointHistoryService.findCurrentBalance(memberId);
+        int currentPoint = ecoPointHistoryService.findCurrentBalance(memberId);
 
         // 4. 작성한 총 게시글 수 조회
-            int boardCount = boardService.getBoardCount(memberId);
+        int boardCount = boardService.getBoardCount(memberId);
 
         // 5. 작성한 총 댓글 수 조회
-            int commentCount = mypageService.getCommentCount(memberId);
+        int commentCount = mypageService.getCommentCount(memberId);
 
         // 6. 리워드 상품명 및 보유 갯수
-            List<Map<String, Object>> myRewardList = mypageService.getMyReward(memberId);
+        List<Map<String, Object>> myRewardList = mypageService.getMyReward(memberId);
 
-            // 모델에 데이터 바인딩
-            model.addAttribute("boardCount",boardCount); // 게시글 수
-            model.addAttribute("pointHistoryList", pointHistoryList); // 포인트 내역(10개단위)
-            model.addAttribute("currentTab","activity"); // 사이드바 활성화 탭
-            model.addAttribute("currentPoint", currentPoint); // 현재 포인트
-            model.addAttribute("rewardList", myRewardList); // 보유 리워드 목록
-            model.addAttribute("commentCount", commentCount); // 댓글 수
+        // 모델에 데이터 바인딩
+        model.addAttribute("boardCount", boardCount); // 게시글 수
+        model.addAttribute("pointHistoryList", pointHistoryList); // 포인트 내역(10개단위)
+        model.addAttribute("currentTab", "activity"); // 사이드바 활성화 탭
+        model.addAttribute("currentPoint", currentPoint); // 현재 포인트
+        model.addAttribute("rewardList", myRewardList); // 보유 리워드 목록
+        model.addAttribute("commentCount", commentCount); // 댓글 수
 
-            // 페이징 관련 변수 전달
-            model.addAttribute("currentPage",page); // 현재 페이지
-            model.addAttribute("pagingPages", pagingPages); // 존채 페이지 수(버튼 생성용)
-            model.addAttribute("pointPageCount", pointPageCount); // 전체 변동 건수
+        // 페이징 관련 변수 전달
+        model.addAttribute("currentPage", page); // 현재 페이지
+        model.addAttribute("pagingPages", pagingPages); // 존채 페이지 수(버튼 생성용)
+        model.addAttribute("pointPageCount", pointPageCount); // 전체 변동 건수
 
-            return "mypage/myActivity";
-        }
-
+        return "mypage/myActivity";
+    }
 
 
 }
