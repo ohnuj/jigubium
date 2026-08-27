@@ -21,17 +21,32 @@
 
         <!-- POST /signup 요청 전송 -> SignupController의 @PostMapping("/signup")으로 전달 -->
         <form th:action="@{/signup}" method="post">
-            <!-- 사용자 이름 입력 -> User 객체의 name 필드에 매핑 -->
+            <!-- 사용자 이름 입력 -> 입력 중 모든 공백 제거 -->
             <div>
-                <input type="text" name="name" placeholder="이름" required autofocus>
+                <input type="text"
+                       name="name"
+                       placeholder="이름"
+                       oninput="this.value = this.value.replace(/\s+/g, '')"
+                       required
+                       autofocus>
             </div>
-            <!-- 닉네임 입력 -> User 객체의 nickname 필드에 매핑 -->
+
+            <!-- 닉네임 입력 -> 입력 중 모든 공백 제거 -->
             <div>
-                <input type="text" name="nickname" placeholder="닉네임" required>
+                <input type="text"
+                       name="nickname"
+                       placeholder="닉네임"
+                       oninput="this.value = this.value.replace(/\s+/g, '')"
+                       required>
             </div>
-            <!-- 이메일 입력 -> User 객체의 email 필드에 매핑 (형식 검증 포함) -->
+
+            <!-- 이메일 입력 -> 입력 중 모든 공백 제거 -->
             <div>
-                <input type="email" name="email" placeholder="이메일" required>
+                <input type="email"
+                       name="email"
+                       placeholder="이메일"
+                       oninput="this.value = this.value.replace(/\s+/g, '')"
+                       required>
             </div>
             <!-- 비밀번호 입력 -> User 객체의 password 필드에 매핑 (마스킹 처리) -->
             <div>
