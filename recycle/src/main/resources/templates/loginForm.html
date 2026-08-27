@@ -14,7 +14,10 @@
 <div class="auth-wrap">
     <!-- 로그인 폼 카드 박스 -->
     <div class="auth-card">
-        <h1 class="logo">지구비우기</h1>
+    <a class="nav-logo"
+       th:href="@{/}">
+        ♻️ 지구비우기
+    </a>
 
         <!-- 로그인 실패 시 컨트롤러의 Model에 담긴 error 메시지가 있을 때만 노출 -->
         <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
@@ -40,6 +43,16 @@
         <!-- 카카오 소셜 로그인 연동 링크 버튼 (/oauth/kakao 호출) -->
         <div>
             <a th:href="@{/oauth/kakao}" class="btn-kakao">카카오계정으로 로그인</a>
+        </div>
+        <!-- 구글 로그인 연동 링크 버튼 (/oauth/google 호출) -->
+        <div>
+            <a th:href="@{/oauth/google}" class="btn-google">Google 계정으로 로그인</a>
+        </div>
+        <div>
+            <a th:href="@{/oauth/naver}" class="btn-naver">
+                <span class="naver-icon">N</span>
+                <span>네이버 아이디로 로그인</span>
+            </a>
         </div>
 
 
