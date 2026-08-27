@@ -3,8 +3,11 @@ package first_project.recycle.service;
 import first_project.recycle.domain.User;
 import first_project.recycle.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 // 스프링 빈(Service)으로 등록하여 비즈니스 로직 처리 계층임을 명시
 @Service
@@ -19,30 +22,56 @@ public class UserService {
 
     private final EcoPointHistoryService ecoPointHistoryService;
 
+    // password Hash화
+    private final PasswordEncoder passwordEncoder;
+
     // 회원가입 처리 (DB 쓰기 작업이므로 readOnly=false인 일반 트랜잭션 적용)
     @Transactional
     public boolean signup(User user) {
+
+        // 0. 회원정보 정규화 - 모든 공백 제거
+        user.setName(user.getName().replaceAll("\\s+", ""));
+        user.setNickname(user.getNickname().replaceAll("\\s+", ""));
+        user.setEmail(user.getEmail().replaceAll("\\s+", "").toLowerCase());
+
+
         // 1. 동일한 이메일로 가입된 회원이 있는지 중복 검증
         if (userMapper.countByEmail(user.getEmail()) > 0) {
             return false; // 중복된 이메일이 존재하면 가입 실패 반환
         }
-        // 2. 중복이 없으면 DB에 회원 정보 저장 (PK 자동 생성 및 user 객체에 세팅)
+
+        // 2. 비밀번호 해쉬화
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+
+        // 3. 중복이 없으면 DB에 회원 정보 저장 (PK 자동 생성 및 user 객체에 세팅)
         userMapper.insert(user);
-        // 회원가입시 에코포인트 100p 제공
+
+        // 4. 회원가입시 에코포인트 100p 제공
         ecoPointHistoryService.earnPoint(user.getMemberId(),100,"SIGNUP",user.getMemberId());
         return true; // 가입 성공 반환
     }
 
     // 로그인 검증 처리 (클래스 레벨의 readOnly=true 트랜잭션 적용)
     public User login(String email, String password) {
+
+        // 이메일 정규화 - 모든 공백 제거 + 소문자 변환
+        email = email.replaceAll("\\s+", "").toLowerCase();
+
         // 1. 입력받은 이메일로 DB에서 회원 단건 조회
         User findUser = userMapper.findByEmail(email);
 
-        // 2. 회원이 존재하지 않거나, 입력한 비밀번호가 일치하지 않는 경우
-        if (findUser == null || !findUser.getPassword().equals(password)) {
-            return null; // 인증 실패 시 null 반환
+        // 2. 존재하지 않는 회원
+        if (findUser == null) {
+            return null;
         }
-        // 3. 인증 성공 시 조회된 회원 정보 객체 반환
+
+        // 3. 입력 비밀번호화 DB의 pw hash 값 비교 > 틀린 비밀번호
+        if (!passwordEncoder.matches(password, findUser.getPassword())) {
+            return null;
+        }
+
+        // 4. 인증 성공 시 조회된 회원 정보 객체 반환
         return findUser;
     }
 }

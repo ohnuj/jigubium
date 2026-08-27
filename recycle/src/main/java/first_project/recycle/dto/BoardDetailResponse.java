@@ -26,6 +26,8 @@ public class BoardDetailResponse {
     private Integer likeCount;
     private boolean liked;
 
+    private Boolean adminChecked;
+
     private List<BoardImage> images;
 
     public boolean isModified() {

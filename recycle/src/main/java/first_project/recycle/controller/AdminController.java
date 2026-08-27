@@ -1,7 +1,7 @@
 package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
-import first_project.recycle.domain.User;
+import first_project.recycle.domain.SessionUser;
 import first_project.recycle.dto.*;
 import first_project.recycle.service.AdminService;
 import first_project.recycle.service.BoardService;
@@ -31,6 +31,9 @@ public class AdminController {
         //전체 공지사항 조회
         List<BoardListResponse> notices = boardService.getAllNotices();
         model.addAttribute("notices", notices);
+        //전체 건의글 조회
+        List<BoardListResponse> suggestions = boardService.getAllSuggestions();
+        model.addAttribute("suggestions", suggestions);
         return "admin/adminHome";
     }
 
@@ -43,7 +46,8 @@ public class AdminController {
         // 현재 로그인한 관리자 정보 조회
         HttpSession session = httpServletRequest.getSession(false);
 
-        User loginUser = (User)session.getAttribute(SessionConst.LOGIN_MEMBER);
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         boardService.writeNotice(loginUser.getMemberId(),boardRequest);
 

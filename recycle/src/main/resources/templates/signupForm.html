@@ -12,26 +12,44 @@
 
 <!-- 전체 화면 중앙 정렬 및 배경 레이아웃 감싸는 영역 -->
 <div class="auth-wrap">
-    <!-- 회원가입 폼 카드 컨테이너 -->
+    <!-- 회원가입 폼 카드 박스 -->
     <div class="auth-card">
-        <h1 class="logo">지구비우기 회원가입</h1>
+        <a class="nav-logo"
+           th:href="@{/}">
+            ♻️ 지구비우기
+        </a>
 
         <!-- 컨트롤러에서 model.addAttribute("error", ...)로 넘겨준 에러가 있을 때만 렌더링 -->
         <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
 
         <!-- POST /signup 요청 전송 -> SignupController의 @PostMapping("/signup")으로 전달 -->
         <form th:action="@{/signup}" method="post">
-            <!-- 사용자 이름 입력 -> User 객체의 name 필드에 매핑 -->
+            <!-- 사용자 이름 입력 -> 입력 중 모든 공백 제거 -->
             <div>
-                <input type="text" name="name" placeholder="이름" required autofocus>
+                <input type="text"
+                       name="name"
+                       placeholder="이름"
+                       oninput="this.value = this.value.replace(/\s+/g, '')"
+                       required
+                       autofocus>
             </div>
-            <!-- 닉네임 입력 -> User 객체의 nickname 필드에 매핑 -->
+
+            <!-- 닉네임 입력 -> 입력 중 모든 공백 제거 -->
             <div>
-                <input type="text" name="nickname" placeholder="닉네임" required>
+                <input type="text"
+                       name="nickname"
+                       placeholder="닉네임"
+                       oninput="this.value = this.value.replace(/\s+/g, '')"
+                       required>
             </div>
-            <!-- 이메일 입력 -> User 객체의 email 필드에 매핑 (형식 검증 포함) -->
+
+            <!-- 이메일 입력 -> 입력 중 모든 공백 제거 -->
             <div>
-                <input type="email" name="email" placeholder="이메일" required>
+                <input type="email"
+                       name="email"
+                       placeholder="이메일"
+                       oninput="this.value = this.value.replace(/\s+/g, '')"
+                       required>
             </div>
             <!-- 비밀번호 입력 -> User 객체의 password 필드에 매핑 (마스킹 처리) -->
             <div>
@@ -51,6 +69,15 @@
         <!-- 카카오 소셜 로그인 연동 링크 버튼 (/oauth/kakao 호출) -->
         <div>
             <a th:href="@{/oauth/kakao}" class="btn-kakao">카카오계정으로 가입하기</a>
+        </div>
+        <div>
+            <a th:href="@{/oauth/google}" class="btn-google">Google 계정으로 가입하기</a>
+        </div>
+        <div>
+            <a th:href="@{/oauth/naver}" class="btn-naver">
+                <span class="naver-icon">N</span>
+                <span>네이버 아이디로 가입하기</span>
+            </a>
         </div>
 
         <!-- 로그인 페이지(/login) 이동 링크 -->

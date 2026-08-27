@@ -57,7 +57,6 @@ public class GlobalExceptionHandler {
      *
      * 예)
      * /boards/abc
-     *
      * boardId가 Long이어야 하는데 문자열이 들어온 경우
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

@@ -2,7 +2,7 @@ package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
 import first_project.recycle.domain.Reward;
-import first_project.recycle.domain.User;
+import first_project.recycle.domain.SessionUser;
 import first_project.recycle.service.EcoPointHistoryService;
 import first_project.recycle.service.RewardService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +27,8 @@ public class RewardController {
     public String rewardShop(HttpServletRequest request, Model model){
         HttpSession session = request.getSession(false);
         //로그인 회원
-        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Long memberId = loginUser.getMemberId();
 
         //리워드 목록
@@ -44,7 +45,8 @@ public class RewardController {
                            HttpServletRequest request, RedirectAttributes redirectAttributes){
         HttpSession session = request.getSession(false);
 
-        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Long memberId = loginUser.getMemberId();
         try {
                 rewardService.exchangeReward(memberId,rewardId);

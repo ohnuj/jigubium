@@ -7,43 +7,70 @@
         SELECT
         item_name AS name,
         CASE
+
         <!-- 1. 음식물 -->
-        WHEN disposal_method LIKE '%음식물%' THEN 'food'
+        WHEN disposal_method LIKE '%음식물%'
+        THEN 'food'
 
-        <!-- 2. 대형폐기물 / 무상방문수거 -->
-        WHEN disposal_method LIKE '%대형폐기물%' OR disposal_method LIKE '%무상방문수거%' THEN 'large'
+        <!-- 2. 소형가전 / 전자제품 -->
+        WHEN disposal_method LIKE '%소형전기전자제품%'
+        OR disposal_method LIKE '%소형전기전제품%'
+        OR disposal_method LIKE '%전기전자제품%'
+        THEN 'electronics'
 
-        <!-- 3. 소형가전 / 전자제품 -->
-        WHEN disposal_method LIKE '%소형전기전자제품%' OR disposal_method LIKE '%소형전기전제품%' OR disposal_method LIKE '%전기전자제품%' THEN 'electronics'
+        <!-- 3. 폐의약품 / 생활계유해 -->
+        WHEN disposal_method LIKE '%폐의약품%'
+        OR disposal_method LIKE '%유해폐기물%'
+        OR disposal_method LIKE '%농약%'
+        THEN 'medicine'
 
-        <!-- 4. 폐의약품 / 생활계유해 -->
-        WHEN disposal_method LIKE '%폐의약품%' OR disposal_method LIKE '%유해폐기물%' OR disposal_method LIKE '%농약%' THEN 'medicine'
+        <!-- 4. 폐전지 -->
+        WHEN disposal_method LIKE '%전지%'
+        THEN 'battery'
 
-        <!-- 5. 폐전지 -->
-        WHEN disposal_method LIKE '%전지%' THEN 'battery'
+        <!-- 5. 의류 -->
+        WHEN disposal_method LIKE '%의류 수거함%'
+        OR disposal_method LIKE '%의류수거함%'
+        THEN 'clothes'
 
-        <!-- 6. 의류 -->
-        WHEN disposal_method LIKE '%의류 수거함%' OR disposal_method LIKE '%의류수거함%' THEN 'clothes'
+        <!-- 6. 비닐 -->
+        WHEN disposal_method LIKE '%비닐%'
+        THEN 'vinyl'
 
-        <!-- 7. 비닐 -->
-        WHEN disposal_method LIKE '%비닐%' THEN 'vinyl'
+        <!-- 7. 유리병 -->
+        WHEN disposal_method LIKE '%유리병%'
+        THEN 'glass'
 
-        <!-- 8. 유리병 -->
-        WHEN disposal_method LIKE '%유리병%' THEN 'glass'
+        <!-- 8. 캔 / 고철 -->
+        WHEN disposal_method LIKE '%금속캔%'
+        OR disposal_method LIKE '%고철%'
+        THEN 'can'
 
-        <!-- 9. 캔 / 고철 -->
-        WHEN disposal_method LIKE '%금속캔%' OR disposal_method LIKE '%고철%' THEN 'can'
+        <!-- 9. 종이 / 종이팩 -->
+        WHEN disposal_method LIKE '%종이%'
+        OR disposal_method LIKE '%종이팩%'
+        OR disposal_method LIKE '%골판지%'
+        THEN 'paper'
 
-        <!-- 10. 종이 / 종이팩 -->
-        WHEN disposal_method LIKE '%종이%' OR disposal_method LIKE '%종이팩%' OR disposal_method LIKE '%골판지%' THEN 'paper'
+        <!-- 10. 플라스틱 / 페트 -->
+        WHEN disposal_method LIKE '%플라스틱%'
+        OR disposal_method LIKE '%무색페트병%'
+        OR disposal_method LIKE '%스티로폼%'
+        THEN 'plastic'
 
-        <!-- 11. 플라스틱 / 페트 -->
-        WHEN disposal_method LIKE '%플라스틱%' OR disposal_method LIKE '%무색페트병%' OR disposal_method LIKE '%스티로폼%' THEN 'plastic'
+        <!-- 11. 대형폐기물 / 무상방문수거 -->
+        <!-- 범위가 넓기 때문에 구체적인 품목 분류 뒤에서 검사 -->
+        WHEN disposal_method LIKE '%대형폐기물%'
+        OR disposal_method LIKE '%무상방문수거%'
+        THEN 'large'
 
         <!-- 12. 일반쓰레기 / 종량제 / 불연성 -->
         ELSE 'general'
+
         END AS category
+
         FROM recycle_item
+
         ORDER BY RAND()
         LIMIT #{count}
     </select>

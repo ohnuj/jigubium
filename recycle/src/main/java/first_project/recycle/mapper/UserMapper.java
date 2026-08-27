@@ -4,6 +4,8 @@ import first_project.recycle.domain.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 // MyBatis 매퍼 인터페이스임을 명시하여 스프링 컨테이너 빈으로 등록
 @Mapper
 public interface UserMapper {
@@ -24,4 +26,5 @@ public interface UserMapper {
 
     // 소셜 로그인 전용 회원 정보 등록 (비밀번호 제외)
     void insertOAuthUser(User user);
+
 }

@@ -28,7 +28,13 @@
     <main class="mypage-main">
         <div class="mypage-title-area">
             <h2>회원정보 수정</h2>
-            <p>닉네임 변경 및 신규 비밀번호 설정을 진행할 수 있습니다.</p>
+            <p th:if="${member != null and member.provider != 'KAKAO'}">
+                닉네임 변경 및 신규 비밀번호 설정을 진행할 수 있습니다.
+            </p>
+
+            <p th:if="${member != null and member.provider == 'KAKAO'}">
+                닉네임을 변경할 수 있습니다.
+            </p>
         </div>
 
         <div class="mypage-card">
@@ -36,7 +42,8 @@
                 비밀번호 확인이 일치하지 않습니다.
             </div>
 
-            <form th:action="@{/mypage/updateMemberInfo}" method="post">
+            <form th:action="@{/mypage/updateMemberInfo}" method="post"
+                  onsubmit="return confirm('정말로 수정하시겠습니까?');">
                 <!-- 이메일 (수정 불가) -->
                 <div class="form-group">
                     <label>이메일 계정</label>
@@ -47,10 +54,14 @@
                 <div class="form-group">
                     <label for="nickname">닉네임</label>
                     <input type="text" id="nickname" name="nickname" class="mypage-input"
-                           th:value="${member != null ? member.nickname : ''}" required>
+                           th:value="${member != null ? member.nickname : ''}"
+                           oninput="this.value = this.value.replace(/\s+/g, '')"
+                           required>
                 </div>
 
-                <!-- 새 비밀번호 -->
+                <th:block th:if="${member != null and member.provider != 'KAKAO'}">
+
+                    <!-- 새 비밀번호 -->
                 <div class="form-group">
                     <label for="newpassword">새 비밀번호 (선택)</label>
                     <input type="password" id="newpassword" name="newpassword" class="mypage-input"
@@ -63,6 +74,8 @@
                     <input type="password" id="newpasswordconfirm" name="newpasswordconfirm" class="mypage-input"
                            placeholder="새 비밀번호를 한 번 더 입력해주세요.">
                 </div>
+
+                </th:block>
 
                 <button type="submit" class="btn-submit-green" style="margin-top: 10px;">정보 수정 완료</button>
             </form>
