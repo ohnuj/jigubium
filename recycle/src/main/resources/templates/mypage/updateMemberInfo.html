@@ -7,6 +7,70 @@
     <link rel="stylesheet" th:href="@{/css/mypage.css(v=12)}">
     <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const pwInput = document.getElementById("newpassword");
+        const pwConfirmInput = document.getElementById("newpasswordconfirm");
+        const msg = document.getElementById("pwMatchMessage");
+
+        if (!pwInput || !pwConfirmInput || !msg) return;
+
+        // 입력 중 실시간 일치 여부 확인 함수
+        function checkPasswordMatch() {
+            const pw = pwInput.value;
+            const confirmPw = pwConfirmInput.value;
+
+            // 둘 다 비어있을 때는 문구 없음
+            if (pw === "" && confirmPw === "") {
+                msg.textContent = "";
+                return;
+            }
+
+            // 비밀번호 확인란에 입력이 들어왔을 때 실시간 체크
+            if (confirmPw !== "") {
+                if (pw === confirmPw) {
+                    msg.textContent = "비밀번호가 일치합니다.";
+                    msg.style.color = "green";
+                } else {
+                    msg.textContent = "비밀번호가 일치하지 않습니다.";
+                    msg.style.color = "red";
+                }
+            } else {
+                msg.textContent = "";
+            }
+        }
+
+        // 글자 입력할 때마다 실시간 감지
+        pwInput.addEventListener("input", checkPasswordMatch);
+        pwConfirmInput.addEventListener("input", checkPasswordMatch);
+    });
+
+    // 버튼 클릭(Submit) 시 검증 함수
+    function validateForm() {
+        const pwInput = document.getElementById("newpassword");
+        const pwConfirmInput = document.getElementById("newpasswordconfirm");
+
+        // 카카오 회원이거나 비밀번호 입력창이 없는 경우 통과
+        if (!pwInput || !pwConfirmInput) {
+            return confirm("정말로 수정하시겠습니까?");
+        }
+
+        const pw = pwInput.value.trim();
+        const confirmPw = pwConfirmInput.value.trim();
+
+        // 1. 새 비밀번호를 입력했는데 일치하지 않는 경우 -> 전송 원천 차단
+        if (pw !== "" || confirmPw !== "") {
+            if (pw !== confirmPw) {
+                alert("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+                pwConfirmInput.focus();
+                return false; // false를 리턴하면 버튼을 눌러도 전송되지 않음
+            }
+        }
+
+        // 2. 정상적인 경우 기존의 확인 팝업창 띄우기
+        return confirm("정말로 수정하시겠습니까?");
+    }
+</script>
 <body>
 
 <!-- 상단 네비게이션 바 -->
@@ -42,15 +106,15 @@
                 비밀번호 확인이 일치하지 않습니다.
             </div>
 
-            <form th:action="@{/mypage/updateMemberInfo}" method="post"
-                  onsubmit="return confirm('정말로 수정하시겠습니까?');">
-                <!-- 이메일 (수정 불가) -->
+            <form th:action="@{/mypage/updateMemberInfo}" method="post" onsubmit="return validateForm();">
+
+                <!-- 이메일 (기존 유지) -->
                 <div class="form-group">
                     <label>이메일 계정</label>
                     <input type="text" class="mypage-input" th:value="${member != null ? member.email : ''}" readonly>
                 </div>
 
-                <!-- 닉네임 수정 -->
+                <!-- 닉네임 (기존 유지) -->
                 <div class="form-group">
                     <label for="nickname">닉네임</label>
                     <input type="text" id="nickname" name="nickname" class="mypage-input"
@@ -60,21 +124,21 @@
                 </div>
 
                 <th:block th:if="${member != null and member.provider != 'KAKAO'}">
-
                     <!-- 새 비밀번호 -->
-                <div class="form-group">
-                    <label for="newpassword">새 비밀번호 (선택)</label>
-                    <input type="password" id="newpassword" name="newpassword" class="mypage-input"
-                           placeholder="변경을 원할 때만 새 비밀번호를 입력해주세요.">
-                </div>
+                    <div class="form-group">
+                        <label for="newpassword">새 비밀번호 (선택)</label>
+                        <input type="password" id="newpassword" name="newpassword" class="mypage-input"
+                               placeholder="변경을 원할 때만 새 비밀번호를 입력해주세요.">
+                    </div>
 
-                <!-- 새 비밀번호 확인 -->
-                <div class="form-group">
-                    <label for="newpasswordconfirm">새 비밀번호 확인</label>
-                    <input type="password" id="newpasswordconfirm" name="newpasswordconfirm" class="mypage-input"
-                           placeholder="새 비밀번호를 한 번 더 입력해주세요.">
-                </div>
-
+                    <!-- 새 비밀번호 확인 -->
+                    <div class="form-group">
+                        <label for="newpasswordconfirm">새 비밀번호 확인</label>
+                        <input type="password" id="newpasswordconfirm" name="newpasswordconfirm" class="mypage-input"
+                               placeholder="새 비밀번호를 한 번 더 입력해주세요.">
+                        <!-- 실시간 상태 표시 영역 -->
+                        <div id="pwMatchMessage" style="font-size: 13px; margin-top: 5px;"></div>
+                    </div>
                 </th:block>
 
                 <button type="submit" class="btn-submit-green" style="margin-top: 10px;">정보 수정 완료</button>
