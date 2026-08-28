@@ -35,6 +35,7 @@ public class NaverController {
     public String naverLogin(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
 
+        // state 난수 생성 및 세션 저장 (CSRF 방어)
         SecureRandom secureRandom = new SecureRandom();
         byte[] randomBytes = new byte[32];
         secureRandom.nextBytes(randomBytes);
@@ -70,6 +71,7 @@ public class NaverController {
         String savedState = (String) session.getAttribute("NAVER_OAUTH_STATE");
         session.removeAttribute("NAVER_OAUTH_STATE");
 
+        // state 검증
         if (state == null || savedState == null || !savedState.equals(state)) {
             redirectAttributes.addFlashAttribute("error", "네이버 로그인 인증에 실패했습니다.");
             return "redirect:/login";

@@ -7,23 +7,97 @@
     <insert id="insertExchange"
             parameterType="first_project.recycle.domain.RewardExchange"
             useGeneratedKeys="true"
-            keyProperty="exchangeId">
+            keyProperty="exchangeId"
+            keyColumn="exchange_id">
         INSERT INTO reward_exchange (member_id,reward_id,point_used)
         VALUES (#{memberId},#{rewardId},#{pointUsed})
     </insert>
 
+        <!--회원별 리워드 교환 내역-->
     <select id="findByMemberId" resultType="first_project.recycle.domain.RewardExchange">
         SELECT
             re.exchange_id AS exchangeId,
             re.member_id AS memberId,
             re.reward_id AS rewardId,
             re.point_used AS pointUsed,
+            re.status AS status,
             re.exchanged_at AS exchangedAt,
+            re.processed_at AS processedAt,
+
             r.reward_name AS rewardName,
+            r.reward_name_korean AS rewardNameKorean,
             r.image_url AS imageUrl
         FROM reward_exchange re
         JOIN reward r ON re.reward_id = r.reward_id
         WHERE re.member_id = #{memberId}
         ORDER BY re.exchange_id desc
     </select>
+
+    <!--교환 요청 단건 조회-->
+    <select id="findById" resultType="first_project.recycle.domain.RewardExchange">
+        SELECT
+            re.exchange_id AS exchangeId,
+            re.member_id AS memberId,
+            re.reward_id AS rewardId,
+            re.point_used AS pointUsed,
+            re.status AS status,
+            re.exchanged_at AS exchangedAt,
+            re.processed_at AS processedAt,
+
+            r.reward_name AS rewardName,
+            r.reward_name_korean AS rewardNameKorean,
+            r.image_url AS imageUrl
+        FROM reward_exchange re
+                 JOIN reward r ON re.reward_id = r.reward_id
+        WHERE re.exchange_id = #{exchangeId}
+    </select>
+
+    <!--관리자 > 전체 리워드 교환 요청 조회-->
+    <select id="findAll" resultType="first_project.recycle.domain.RewardExchange">
+        SELECT
+            re.exchange_id AS exchangeId,
+            re.member_id AS memberId,
+            re.reward_id AS rewardId,
+            re.point_used AS pointUsed,
+            re.status AS status,
+            re.exchanged_at AS exchangedAt,
+            re.processed_at AS processedAt,
+
+            r.reward_name AS rewardName,
+            r.reward_name_korean AS rewardNameKorean,
+            r.image_url AS imageUrl,
+
+            rr.name AS name,
+            rr.phone AS phone,
+            rr.address AS address,
+            rr.address_detail AS addressDetail
+
+        FROM reward_exchange re
+
+                 JOIN reward r
+                      ON re.reward_id = r.reward_id
+
+                 LEFT JOIN reward_request rr
+                           ON re.exchange_id = rr.exchange_id
+
+        ORDER BY re.exchange_id DESC
+    </select>
+
+    <!--관리자 > 교환 처리 완료-->
+    <update id="completeExchange">
+        UPDATE reward_exchange
+            SET status = 'COMPLETED',
+                processed_at = NOW()
+        WHERE exchange_id = #{exchangeId}
+            AND status = "REQUESTED"
+    </update>
+
+    <!--관리자 > 교환 요청 거절-->
+    <update id="rejectExchange">
+        UPDATE reward_exchange
+        SET status = 'REJECTED',
+            processed_at = NOW()
+        WHERE exchange_id = #{exchangeId}
+          AND status = "REQUESTED"
+    </update>
 </mapper>

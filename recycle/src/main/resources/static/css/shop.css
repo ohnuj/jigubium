@@ -41,7 +41,6 @@ input {
 
 /* =========================
    1. 상단 네비게이션
-   index.html 구조 유지
 ========================= */
 
 body > nav {
@@ -66,18 +65,12 @@ body > nav > div {
     gap: 18px;
 }
 
-
-/* 로고 */
-
 body > nav > div > a:first-child {
     margin-right: auto;
 
     font-size: 18px;
     font-weight: 700;
 }
-
-
-/* 가운데 메뉴 */
 
 .nav-center {
     position: absolute;
@@ -91,9 +84,6 @@ body > nav > div > a:first-child {
     gap: 36px;
 }
 
-
-/* 네비 링크 */
-
 body > nav a {
     font-size: 14px;
     font-weight: 600;
@@ -106,9 +96,6 @@ body > nav a {
 body > nav a:hover {
     color: #9bdd68;
 }
-
-
-/* 현재 페이지 */
 
 body > nav a.active {
     color: #9bdd68;
@@ -146,9 +133,6 @@ body > nav a.active {
     text-align: center;
 }
 
-
-/* Hero 배지 */
-
 .hero-badge {
     padding: 7px 14px;
 
@@ -162,9 +146,6 @@ body > nav a.active {
     font-size: 13px;
     font-weight: 700;
 }
-
-
-/* Hero 제목 */
 
 .hero-title {
     margin: 22px 0 16px;
@@ -180,9 +161,6 @@ body > nav a.active {
 .hero-title strong {
     color: #7ac943;
 }
-
-
-/* Hero 설명 */
 
 .hero-description {
     margin: 0;
@@ -222,9 +200,6 @@ body > nav a.active {
     text-align: left;
 }
 
-
-/* 포인트 아이콘 */
-
 .point-icon {
     flex-shrink: 0;
 
@@ -242,7 +217,6 @@ body > nav a.active {
     font-size: 22px;
 }
 
-
 .point-info {
     display: flex;
     flex-direction: column;
@@ -250,14 +224,12 @@ body > nav a.active {
     gap: 2px;
 }
 
-
 .point-label {
     color: #728277;
 
     font-size: 12px;
     font-weight: 600;
 }
-
 
 .point-value {
     display: flex;
@@ -268,12 +240,10 @@ body > nav a.active {
     color: #174d32;
 }
 
-
 .point-value strong {
     font-size: 29px;
     font-weight: 800;
 }
-
 
 .point-value span {
     color: #5b9850;
@@ -314,7 +284,6 @@ body > nav a.active {
     border-radius: 12px;
 }
 
-
 .reward-message p {
     margin: 0;
 
@@ -323,7 +292,6 @@ body > nav a.active {
 
     line-height: 1.6;
 }
-
 
 .reward-message .message-icon {
     flex-shrink: 0;
@@ -341,9 +309,6 @@ body > nav a.active {
     font-weight: 800;
 }
 
-
-/* 성공 */
-
 .success-message {
     background-color: #eff8eb;
 
@@ -357,9 +322,6 @@ body > nav a.active {
 
     color: white;
 }
-
-
-/* 실패 */
 
 .error-message {
     background-color: #fff4ed;
@@ -391,7 +353,6 @@ body > nav a.active {
     gap: 20px;
 }
 
-
 .section-label {
     display: block;
 
@@ -405,7 +366,6 @@ body > nav a.active {
     letter-spacing: 1px;
 }
 
-
 .reward-section-header h2 {
     margin: 0 0 7px;
 
@@ -415,7 +375,6 @@ body > nav a.active {
     font-weight: 800;
 }
 
-
 .reward-section-header p {
     margin: 0;
 
@@ -423,7 +382,6 @@ body > nav a.active {
 
     font-size: 14px;
 }
-
 
 .reward-count {
     flex-shrink: 0;
@@ -440,7 +398,6 @@ body > nav a.active {
     font-size: 12px;
     font-weight: 600;
 }
-
 
 .reward-count strong {
     color: #4d913a;
@@ -493,7 +450,6 @@ body > nav a.active {
             box-shadow 0.2s ease;
 }
 
-
 .reward-card:hover {
     transform: translateY(-4px);
 
@@ -523,7 +479,6 @@ body > nav a.active {
     border-bottom: 1px solid #e4ece1;
 }
 
-
 .reward-image-area img {
     display: block;
 
@@ -534,7 +489,6 @@ body > nav a.active {
 
     transition: transform 0.3s ease;
 }
-
 
 .reward-card:not(.sold-out):hover
 .reward-image-area img {
@@ -551,7 +505,6 @@ body > nav a.active {
     opacity: 0.55;
 }
 
-
 .sold-out-overlay {
     position: absolute;
 
@@ -563,7 +516,6 @@ body > nav a.active {
 
     background-color: rgba(19, 46, 31, 0.24);
 }
-
 
 .sold-out-overlay span {
     padding: 8px 14px;
@@ -595,9 +547,6 @@ body > nav a.active {
     flex-direction: column;
 }
 
-
-/* 상품명 */
-
 .reward-name {
     min-height: 52px;
 
@@ -626,13 +575,11 @@ body > nav a.active {
     color: #4f913d;
 }
 
-
 .point-leaf {
     margin-right: 2px;
 
     font-size: 15px;
 }
-
 
 .reward-point strong {
     color: #246132;
@@ -640,7 +587,6 @@ body > nav a.active {
     font-size: 22px;
     font-weight: 800;
 }
-
 
 .reward-point > span:last-child {
     font-size: 14px;
@@ -669,7 +615,6 @@ body > nav a.active {
     font-size: 13px;
 }
 
-
 .reward-stock strong {
     margin-left: auto;
 
@@ -688,7 +633,6 @@ body > nav a.active {
 .reward-card form {
     margin-top: 20px;
 }
-
 
 .reward-card button {
     width: 100%;
@@ -711,13 +655,11 @@ body > nav a.active {
             transform 0.2s ease;
 }
 
-
 .reward-card button:hover:not(:disabled) {
     background-color: #21633f;
 
     transform: translateY(-1px);
 }
-
 
 .reward-card button:disabled {
     background-color: #c5cec2;
@@ -744,7 +686,6 @@ body > nav a.active {
     text-align: center;
 }
 
-
 .empty-icon {
     width: 64px;
     height: 64px;
@@ -762,7 +703,6 @@ body > nav a.active {
     font-size: 27px;
 }
 
-
 .empty-reward h3 {
     margin: 0 0 9px;
 
@@ -771,7 +711,6 @@ body > nav a.active {
     font-size: 20px;
     font-weight: 800;
 }
-
 
 .empty-reward p {
     margin: 0;
@@ -785,7 +724,6 @@ body > nav a.active {
 
 /* =========================
    16. Footer
-   index와 동일
 ========================= */
 
 .footer {
@@ -794,7 +732,6 @@ body > nav a.active {
     background-color: #16492f;
     color: white;
 }
-
 
 .footer-container {
     max-width: 1120px;
@@ -808,18 +745,15 @@ body > nav a.active {
     gap: 48px;
 }
 
-
 .footer h3,
 .footer h4 {
     margin-top: 0;
     margin-bottom: 14px;
 }
 
-
 .footer-brand h3 {
     font-size: 18px;
 }
-
 
 .footer-brand p {
     margin: 0;
@@ -830,12 +764,10 @@ body > nav a.active {
     line-height: 1.7;
 }
 
-
 .footer-menu h4,
 .footer-info h4 {
     font-size: 14px;
 }
-
 
 .footer-menu ul {
     margin: 0;
@@ -844,11 +776,9 @@ body > nav a.active {
     list-style: none;
 }
 
-
 .footer-menu li {
     margin-bottom: 8px;
 }
-
 
 .footer-menu a {
     color: rgba(255, 255, 255, 0.7);
@@ -858,11 +788,9 @@ body > nav a.active {
     transition: color 0.2s ease;
 }
 
-
 .footer-menu a:hover {
     color: #9bdd68;
 }
-
 
 .footer-info p {
     margin: 0 0 8px;
@@ -872,7 +800,6 @@ body > nav a.active {
     font-size: 13px;
     line-height: 1.6;
 }
-
 
 .footer-bottom {
     max-width: 1120px;
@@ -895,15 +822,496 @@ body > nav a.active {
     font-size: 12px;
 }
 
-
 .footer-bottom p {
     margin: 0;
 }
 
 
 
+/* =========================================================
+   19. 리워드 교환 신청 페이지
+========================================================= */
+
+.exchange-page {
+    min-height: calc(100vh - 64px);
+
+    padding: 55px 20px 90px;
+
+    background-color: #f5f8f1;
+}
+
+.exchange-container {
+    max-width: 1050px;
+
+    margin: 0 auto;
+}
+
+
+
 /* =========================
-   17. 태블릿
+   교환 페이지 헤더
+========================= */
+
+.exchange-page-header {
+    margin-bottom: 28px;
+}
+
+.exchange-page-header h1 {
+    margin: 0 0 10px;
+
+    color: #153f2a;
+
+    font-size: 32px;
+    font-weight: 800;
+
+    letter-spacing: -0.6px;
+}
+
+.exchange-page-header p {
+    margin: 0;
+
+    color: #77887c;
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+
+/* =========================
+   교환 페이지 2열 레이아웃
+========================= */
+
+.exchange-layout {
+    display: grid;
+
+    grid-template-columns:
+            minmax(0, 0.9fr)
+            minmax(0, 1.35fr);
+
+    align-items: start;
+
+    gap: 24px;
+}
+
+
+
+/* =========================
+   공통 카드
+========================= */
+
+.exchange-product-card,
+.exchange-request-card {
+    background-color: #ffffff;
+
+    border: 1px solid #d5e4d1;
+    border-radius: 18px;
+
+    box-shadow:
+            0 6px 20px
+            rgba(31, 70, 45, 0.055);
+}
+
+.exchange-product-card {
+    padding: 26px;
+}
+
+.exchange-request-card {
+    padding: 30px;
+}
+
+
+
+/* =========================
+   카드 Header
+========================= */
+
+.exchange-card-header {
+    margin-bottom: 22px;
+}
+
+.exchange-card-label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #649154;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+.exchange-card-header h2 {
+    margin: 0;
+
+    color: #173f2a;
+
+    font-size: 22px;
+    font-weight: 800;
+
+    letter-spacing: -0.3px;
+}
+
+.exchange-card-header p {
+    margin: 7px 0 0;
+
+    color: #7b8a80;
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+
+/* =========================
+   교환 상품 이미지
+========================= */
+
+.exchange-product-image {
+    width: 100%;
+    height: 280px;
+
+    margin-bottom: 22px;
+
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #f5f8f3;
+
+    border: 1px solid #e1ebe0;
+    border-radius: 15px;
+}
+
+.exchange-product-image img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+
+
+
+/* =========================
+   상품명
+========================= */
+
+.exchange-product-name {
+    margin-bottom: 20px;
+
+    color: #153f2a;
+
+    font-size: 21px;
+    font-weight: 800;
+
+    text-align: center;
+}
+
+
+
+/* =========================
+   상품 포인트 요약
+========================= */
+
+.exchange-point-summary {
+    overflow: hidden;
+
+    border: 1px solid #dfe9dc;
+    border-radius: 13px;
+}
+
+.exchange-point-row {
+    min-height: 52px;
+
+    padding: 0 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    background-color: #ffffff;
+
+    border-bottom: 1px solid #edf2eb;
+}
+
+.exchange-point-row:last-child {
+    border-bottom: none;
+}
+
+.exchange-point-row span {
+    color: #738178;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.exchange-point-row strong {
+    color: #345844;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.exchange-point-result {
+    background-color: #eef7e9;
+}
+
+.exchange-point-result span {
+    color: #47684e;
+
+    font-weight: 700;
+}
+
+.exchange-point-result strong {
+    color: #3f8b35;
+
+    font-size: 18px;
+}
+
+
+
+/* =========================
+   상품 안내
+========================= */
+
+.exchange-product-guide {
+    margin-top: 18px;
+    padding: 14px 15px;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 10px;
+
+    background-color: #f7faf5;
+
+    border: 1px solid #e1ebe0;
+    border-radius: 12px;
+}
+
+.exchange-guide-icon {
+    flex-shrink: 0;
+
+    font-size: 17px;
+}
+
+.exchange-product-guide p {
+    margin: 0;
+
+    color: #728078;
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+
+/* =========================
+   신청 Form
+========================= */
+
+.exchange-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 19px;
+}
+
+.exchange-form-group {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.exchange-form-group label {
+    color: #284b36;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.required-mark {
+    margin-left: 2px;
+
+    color: #dc7654;
+}
+
+.exchange-form-group input {
+    width: 100%;
+    height: 48px;
+
+    padding: 0 15px;
+
+    outline: none;
+
+    background-color: #fafcf8;
+
+    border: 1px solid #d1dfcd;
+    border-radius: 10px;
+
+    color: #203f2c;
+
+    font-size: 14px;
+
+    transition:
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            box-shadow 0.2s ease;
+}
+
+.exchange-form-group input::placeholder {
+    color: #a2ada4;
+}
+
+.exchange-form-group input:hover {
+    border-color: #aecba7;
+}
+
+.exchange-form-group input:focus {
+    background-color: #ffffff;
+
+    border-color: #76a968;
+
+    box-shadow:
+            0 0 0 3px
+            rgba(118, 169, 104, 0.12);
+}
+
+
+
+/* =========================
+   신청 안내
+========================= */
+
+.exchange-notice {
+    margin-top: 4px;
+    padding: 16px 17px;
+
+    background-color: #f0f7ec;
+
+    border: 1px solid #cee2c7;
+    border-radius: 12px;
+}
+
+.exchange-notice-title {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+}
+
+.exchange-notice-title span {
+    width: 21px;
+    height: 21px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #67a953;
+
+    border-radius: 50%;
+
+    color: white;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.exchange-notice-title strong {
+    color: #3b663f;
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.exchange-notice p {
+    margin: 9px 0 0;
+
+    color: #68786d;
+
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+
+
+/* =========================
+   신청 버튼
+========================= */
+
+.exchange-actions {
+    margin-top: 5px;
+
+    display: grid;
+
+    grid-template-columns: 120px 1fr;
+
+    gap: 10px;
+}
+
+.exchange-cancel-button,
+.exchange-submit-button {
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    transition:
+            background-color 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease;
+}
+
+.exchange-cancel-button {
+    background-color: #ffffff;
+
+    border: 1px solid #cddac9;
+
+    color: #617367;
+}
+
+.exchange-cancel-button:hover {
+    background-color: #f4f8f2;
+
+    border-color: #aec7a7;
+}
+
+.exchange-submit-button {
+    border: none;
+
+    background-color: #174d32;
+
+    color: #ffffff;
+
+    cursor: pointer;
+}
+
+.exchange-submit-button:hover {
+    background-color: #21633f;
+
+    transform: translateY(-1px);
+}
+
+
+
+/* =========================
+   20. 태블릿
 ========================= */
 
 @media (max-width: 900px) {
@@ -912,27 +1320,38 @@ body > nav a.active {
         padding: 0 24px;
     }
 
-
     .reward-hero {
         padding: 50px 24px;
     }
-
 
     .hero-title {
         font-size: 39px;
     }
 
-
     .reward-content {
         padding: 42px 24px 70px;
     }
-
 
     .reward-grid {
         grid-template-columns:
                 repeat(2, minmax(0, 1fr));
     }
 
+    .exchange-page {
+        padding: 45px 24px 75px;
+    }
+
+    .exchange-layout {
+        grid-template-columns: 1fr;
+
+        max-width: 720px;
+
+        margin: 0 auto;
+    }
+
+    .exchange-product-image {
+        height: 320px;
+    }
 
     .footer-container {
         grid-template-columns:
@@ -944,7 +1363,6 @@ body > nav a.active {
         padding-right: 24px;
     }
 
-
     .footer-bottom {
         padding-left: 24px;
         padding-right: 24px;
@@ -954,17 +1372,14 @@ body > nav a.active {
 
 
 /* =========================
-   18. 모바일
+   21. 모바일
 ========================= */
 
 @media (max-width: 650px) {
 
-    /* ===== 네비게이션 ===== */
-
     body > nav {
         height: auto;
     }
-
 
     body > nav > div {
         min-height: 60px;
@@ -976,16 +1391,13 @@ body > nav a.active {
         gap: 12px;
     }
 
-
     body > nav > div > a:first-child {
         font-size: 16px;
     }
 
-
     body > nav a {
         font-size: 12px;
     }
-
 
     .nav-center {
         position: static;
@@ -1002,13 +1414,11 @@ body > nav a.active {
     }
 
 
-
-    /* ===== Hero ===== */
+    /* 상점 Hero */
 
     .reward-hero {
         padding: 43px 16px;
     }
-
 
     .hero-badge {
         padding: 6px 11px;
@@ -1016,26 +1426,22 @@ body > nav a.active {
         font-size: 11px;
     }
 
-
     .hero-title {
         margin: 18px 0 13px;
 
         font-size: 31px;
     }
 
-
     .hero-description {
         font-size: 13px;
     }
-
 
     .hero-description br {
         display: none;
     }
 
 
-
-    /* ===== 포인트 ===== */
+    /* 포인트 */
 
     .point-summary {
         width: 100%;
@@ -1046,7 +1452,6 @@ body > nav a.active {
         padding: 15px 18px;
     }
 
-
     .point-icon {
         width: 43px;
         height: 43px;
@@ -1054,34 +1459,28 @@ body > nav a.active {
         font-size: 19px;
     }
 
-
     .point-value strong {
         font-size: 24px;
     }
 
 
-
-    /* ===== 콘텐츠 ===== */
+    /* 상점 콘텐츠 */
 
     .reward-content {
         padding: 35px 16px 55px;
     }
 
-
     .reward-section-header {
         align-items: flex-start;
     }
-
 
     .reward-section-header h2 {
         font-size: 23px;
     }
 
-
     .reward-section-header p {
         font-size: 12px;
     }
-
 
     .reward-count {
         padding: 7px 10px;
@@ -1090,8 +1489,7 @@ body > nav a.active {
     }
 
 
-
-    /* ===== 상품 Grid ===== */
+    /* 상점 Grid */
 
     .reward-grid {
         grid-template-columns: 1fr;
@@ -1099,16 +1497,13 @@ body > nav a.active {
         gap: 20px;
     }
 
-
     .reward-image-area {
         height: 230px;
     }
 
-
     .reward-card-body {
         padding: 19px;
     }
-
 
     .reward-name {
         min-height: auto;
@@ -1116,19 +1511,94 @@ body > nav a.active {
         font-size: 17px;
     }
 
-
     .reward-point strong {
         font-size: 20px;
     }
 
 
+    /* 교환 신청 페이지 */
 
-    /* ===== Footer ===== */
+    .exchange-page {
+        padding: 34px 16px 55px;
+    }
+
+    .exchange-page-header {
+        margin-bottom: 22px;
+    }
+
+    .exchange-page-header h1 {
+        font-size: 25px;
+    }
+
+    .exchange-page-header p {
+        font-size: 13px;
+    }
+
+    .exchange-layout {
+        gap: 18px;
+    }
+
+    .exchange-product-card,
+    .exchange-request-card {
+        padding: 20px;
+
+        border-radius: 15px;
+    }
+
+    .exchange-card-header h2 {
+        font-size: 20px;
+    }
+
+    .exchange-product-image {
+        height: 245px;
+    }
+
+    .exchange-product-name {
+        font-size: 19px;
+    }
+
+    .exchange-point-row {
+        min-height: 48px;
+
+        padding: 0 13px;
+    }
+
+    .exchange-point-row span {
+        font-size: 12px;
+    }
+
+    .exchange-point-result strong {
+        font-size: 16px;
+    }
+
+    .exchange-form {
+        gap: 17px;
+    }
+
+    .exchange-form-group input {
+        height: 46px;
+
+        font-size: 13px;
+    }
+
+    .exchange-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .exchange-cancel-button {
+        order: 2;
+    }
+
+    .exchange-submit-button {
+        order: 1;
+    }
+
+
+    /* Footer */
 
     .footer {
         margin-top: 50px;
     }
-
 
     .footer-container {
         padding: 34px 20px 26px;
@@ -1137,7 +1607,6 @@ body > nav a.active {
 
         gap: 30px;
     }
-
 
     .footer-bottom {
         padding: 18px 20px 24px;

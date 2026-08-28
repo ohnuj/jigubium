@@ -17,6 +17,7 @@ public class EcoPointHistoryService {
         return ecoPointHistoryMapper.insertPointHistory(ecoPointHistory);
     }
 
+    // 에코포인트 획득 (회원가입, 게시글, 댓글, 게임)
     public void earnPoint(Long memberId,int point, String referenceType, Long referenceId){
 
         int exists = ecoPointHistoryMapper.existEarnPoint(memberId,referenceType,referenceId);
@@ -38,6 +39,27 @@ public class EcoPointHistoryService {
         insertPointHistory(history);
 
     }
+
+    // 에코포인트 환불 (reward 교환 거절)
+    public void refundPoint(Long memberId,int point, String referenceType, Long referenceId){
+        int currentPoint = findCurrentBalance(memberId);
+
+        EcoPointHistory history = new EcoPointHistory();
+
+        history.setMemberId(memberId);
+        history.setPointAmount(point);
+        history.setBalanceAfter(currentPoint + point);
+        history.setPointType("REFUND");
+        history.setReferenceType(referenceType);
+        history.setReferenceId(referenceId);
+
+        int result = insertPointHistory(history);
+
+        if (result == 0){
+            throw new IllegalStateException("에코포인트 환불 내역 저장에 실패했습니다.");
+        }
+    }
+
     //마이페이지용
     public int findCurrentBalance(Long memberId) {
         return ecoPointHistoryMapper.findCurrentBalance(memberId);

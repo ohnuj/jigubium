@@ -1,16 +1,19 @@
 package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
+import first_project.recycle.domain.RewardExchange;
 import first_project.recycle.domain.SessionUser;
 import first_project.recycle.dto.*;
 import first_project.recycle.service.AdminService;
 import first_project.recycle.service.BoardService;
+import first_project.recycle.service.RewardService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -20,6 +23,7 @@ import java.util.List;
 public class AdminController {
     private final BoardService boardService;
     private final AdminService adminService;
+    private final RewardService rewardService;
 
     // 관리자 메인페이지 > 전체 공지사항을 최신순으로 조회
     @GetMapping
@@ -34,6 +38,15 @@ public class AdminController {
         //전체 건의글 조회
         List<BoardListResponse> suggestions = boardService.getAllSuggestions();
         model.addAttribute("suggestions", suggestions);
+
+        //리워드 교환 요청 조회
+        List<RewardExchange> rewardExchanges = rewardService.findAllExchange();
+        model.addAttribute("rewardExchanges", rewardExchanges);
+
+        //대기중인 리워드 요청 개수
+        Long requestRewardCount = rewardExchanges.stream()
+                .filter(exchange -> "REQUESTED".equals(exchange.getStatus())).count();
+        model.addAttribute("requestRewardCount", requestRewardCount);
         return "admin/adminHome";
     }
 
@@ -79,4 +92,39 @@ public class AdminController {
         return "redirect:/admin";
     }
 
+
+    // 관리자 건의글 학인
+    @PostMapping("/suggestions/{boardId}/check")
+    public String checkSuggestion(@PathVariable Long boardId){
+        boardService.checkSuggestionByAdmin(boardId);
+        return "redirect:/boards/" + boardId;
+    }
+
+    // 관리자 > 리워드 교환 요청 완료
+    @PostMapping("/rewards/{exchangeId}/complete")
+    public String completeRewardExchange(
+            @PathVariable Long exchangeId,
+            RedirectAttributes redirectAttributes){
+
+        rewardService.completeExchange(exchangeId);
+
+        redirectAttributes.addFlashAttribute(
+                "message",
+                "리워드 교환 요청을 완료 처리했습니다.");
+        return "redirect:/admin";
+    }
+
+    // 관리자 > 리워드 교환 요청 거절
+    @PostMapping("/rewards/{exchangeId}/reject")
+    public String rejectRewardExchange(
+            @PathVariable Long exchangeId,
+            RedirectAttributes redirectAttributes){
+
+        rewardService.rejectExchange(exchangeId);
+
+        redirectAttributes.addFlashAttribute(
+                "message",
+                "리워드 교환 요청을 거절했습니다.");
+        return "redirect:/admin";
+    }
 }

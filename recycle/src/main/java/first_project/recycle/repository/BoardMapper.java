@@ -83,4 +83,6 @@ public interface BoardMapper {
     int deleteNotice(@Param("boardId") Long boardId);
 
     List<BoardListResponse> findAllSuggestions();
+
+    int checkSuggestionByAdmin(Long boarId);
 }
