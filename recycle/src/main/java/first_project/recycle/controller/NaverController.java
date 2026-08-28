@@ -1,6 +1,7 @@
 package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
+import first_project.recycle.domain.SessionUser;
 import first_project.recycle.domain.User;
 import first_project.recycle.service.NaverService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +35,6 @@ public class NaverController {
     public String naverLogin(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
 
-        // state 난수 생성 및 세션 저장 (CSRF 방어)
         SecureRandom secureRandom = new SecureRandom();
         byte[] randomBytes = new byte[32];
         secureRandom.nextBytes(randomBytes);
@@ -70,7 +70,6 @@ public class NaverController {
         String savedState = (String) session.getAttribute("NAVER_OAUTH_STATE");
         session.removeAttribute("NAVER_OAUTH_STATE");
 
-        // state 검증
         if (state == null || savedState == null || !savedState.equals(state)) {
             redirectAttributes.addFlashAttribute("error", "네이버 로그인 인증에 실패했습니다.");
             return "redirect:/login";
@@ -86,18 +85,28 @@ public class NaverController {
             return "redirect:/login";
         }
 
-        // 토큰 발급 및 회원 로그인/회원가입 처리
+        // 1. 토큰 발급 및 사용자 조회
         String accessToken = naverService.getAccessToken(code, state);
         User loginUser = naverService.naverLoginProcess(accessToken);
 
+        // 2. 신규 회원이면 추가 정보 입력 페이지로 리다이렉트
         if (loginUser.isNewUser()) {
-            redirectAttributes.addFlashAttribute("message", "회원가입을 축하합니다. 신규 가입 에코포인트 100p가 지급되었습니다.");
+            session.setAttribute("TEMP_OAUTH_USER", loginUser);
+            return "redirect:/oauth/signup";
         }
 
-        // 세션 고정 보호 및 로그인 세션 저장
+        // 3. 기존 회원이면 로그인 세션 발급 후 메인 이동
         request.changeSessionId();
+
+        SessionUser sessionUser = new SessionUser(
+                loginUser.getMemberId(),
+                loginUser.getNickname(),
+                loginUser.getProvider(),
+                loginUser.getRole()
+        );
+
         session.setAttribute("checkLogin", true);
-        session.setAttribute(SessionConst.LOGIN_MEMBER, loginUser);
+        session.setAttribute(SessionConst.LOGIN_MEMBER, sessionUser);
 
         return "redirect:/";
     }

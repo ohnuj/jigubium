@@ -20,7 +20,6 @@ import org.springframework.web.client.RestTemplate;
 public class NaverService {
 
     private final UserMapper userMapper;
-    private final EcoPointHistoryService ecoPointHistoryService;
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -57,7 +56,7 @@ public class NaverService {
         }
     }
 
-    // 2. Access Token으로 사용자 프로필 조회 및 DB 저장/로그인
+    // 2. Access Token으로 사용자 프로필 조회 및 신규/기존 회원 판별
     @Transactional
     public User naverLoginProcess(String accessToken) {
         String userInfoUrl = "https://openapi.naver.com/v1/nid/me";
@@ -82,19 +81,18 @@ public class NaverService {
             // DB 회원 조회
             User user = userMapper.findByProviderAndProviderId("NAVER", providerId);
 
-            // 신규 가입자 등록 및 에코포인트 100p 지급
+            // 신규 회원인 경우: DB 저장하지 않고 기본 정보만 담은 임시 객체 반환
             if (user == null) {
                 user = new User();
                 user.setEmail(email);
                 user.setName(name);
-                user.setNickname(nickname);
+                user.setNickname(nickname); // 폼 초기값으로 노출될 닉네임
                 user.setProvider("NAVER");
                 user.setProviderId(providerId);
                 user.setRole("USER");
-                user.setNewUser(true);
-
-                userMapper.insertOAuthUser(user);
-                ecoPointHistoryService.earnPoint(user.getMemberId(), 100, "SIGNUP", user.getMemberId());
+                user.setNewUser(true); // 신규 가입 플래그 설정
+            } else {
+                user.setNewUser(false); // 기존 회원 플래그 설정
             }
 
             return user;
