@@ -87,16 +87,17 @@ public class NaverController {
             return "redirect:/login";
         }
 
-        // 토큰 발급 및 회원 로그인/회원가입 처리
+        // 1. 토큰 발급 및 사용자 조회
         String accessToken = naverService.getAccessToken(code, state);
         User loginUser = naverService.naverLoginProcess(accessToken);
 
+        // 2. 신규 회원이면 추가 정보 입력 페이지로 리다이렉트
         if (loginUser.isNewUser()) {
-            redirectAttributes.addFlashAttribute("message", "회원가입을 축하합니다. 신규 가입 에코포인트 100p가 지급되었습니다.");
+            session.setAttribute("TEMP_OAUTH_USER", loginUser);
+            return "redirect:/oauth/signup";
         }
 
-
-        // 세션 고정 보호 및 로그인 세션 저장
+        // 3. 기존 회원이면 로그인 세션 발급 후 메인 이동
         request.changeSessionId();
 
         SessionUser sessionUser = new SessionUser(
@@ -105,6 +106,7 @@ public class NaverController {
                 loginUser.getProvider(),
                 loginUser.getRole()
         );
+
         session.setAttribute("checkLogin", true);
         session.setAttribute(SessionConst.LOGIN_MEMBER, sessionUser);
 

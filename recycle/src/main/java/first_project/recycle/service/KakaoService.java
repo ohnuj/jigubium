@@ -79,43 +79,36 @@ public class KakaoService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         HttpEntity<Void> request = new HttpEntity<>(headers);
-        // 카카오 사용자 정보 조회 API에 GET 요청 전송
         ResponseEntity<String> response = rt.exchange(userInfoUrl, HttpMethod.GET, request, String.class);
 
         try {
-            // 사용자 JSON 데이터 파싱
             ObjectMapper om = new ObjectMapper();
             JsonNode root = om.readTree(response.getBody());
 
-            // 카카오 고유 회원 ID 추출
             String providerId = root.get("id").asText();
             JsonNode kakaoAccount = root.path("kakao_account");
             JsonNode profile = kakaoAccount.path("profile");
 
-            // 닉네임 추출 (동의하지 않거나 없을 경우 기본값 세팅)
             String nickname = profile.path("nickname").asText("카카오회원");
-            // 이메일 추출 (이메일 권한이 없을 경우 가상 이메일 생성)
             String email = kakaoAccount.path("email").asText(providerId + "@kakao.user");
 
-            // DB에서 기존에 카카오로 가입한 이력이 있는지 확인
+            // DB에서 기존 가입 이력 확인
             User user = userMapper.findByProviderAndProviderId("KAKAO", providerId);
 
-            // 신규 카카오 가입자라면 DB에 회원 정보 저장
+            // 신규 회원인 경우: DB에 저장하지 않고 기본 정보만 담은 임시 객체 생성
             if (user == null) {
                 user = new User();
                 user.setEmail(email);
                 user.setName(nickname);
-                user.setNickname(nickname);
+                user.setNickname(nickname); // 가입 폼 초기값으로 사용할 기본 닉네임
                 user.setProvider("KAKAO");
                 user.setProviderId(providerId);
                 user.setRole("USER");
-                user.setNewUser(true);
-
-                userMapper.insertOAuthUser(user);
-                ecoPointHistoryService.earnPoint(user.getMemberId(), 100, "SIGNUP", user.getMemberId());
+                user.setNewUser(true); // 신규 가입자 플래그 설정
+            } else {
+                user.setNewUser(false); // 기존 회원 플래그 설정
             }
 
-            // 조회 또는 새로 생성된 회원 객체 반환
             return user;
         } catch (Exception e) {
             throw new RuntimeException("카카오 사용자 정보 조회 실패", e);

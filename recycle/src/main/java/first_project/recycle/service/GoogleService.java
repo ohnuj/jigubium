@@ -24,9 +24,7 @@ import java.nio.charset.StandardCharsets;
 public class GoogleService {
 
     private final UserMapper userMapper;
-    private final EcoPointHistoryService ecoPointHistoryService;
 
-    // 객체 재사용을 위한 필드 선언
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -70,7 +68,7 @@ public class GoogleService {
         }
     }
 
-    // 2. Access Token으로 사용자 정보 조회 및 회원가입/로그인
+    // 2. Access Token으로 사용자 정보 조회 및 신규/기존 회원 판별
     @Transactional
     public User googleLoginProcess(String accessToken) {
         String userInfoUrl = "https://www.googleapis.com/oauth2/v2/userinfo";
@@ -88,20 +86,21 @@ public class GoogleService {
             String name = root.hasNonNull("name") ? root.get("name").asText() : "구글회원";
             String email = root.hasNonNull("email") ? root.get("email").asText() : (providerId + "@google.user");
 
+            // DB 회원 조회
             User user = userMapper.findByProviderAndProviderId("GOOGLE", providerId);
 
+            // 신규 회원인 경우: DB 저장 없이 기본 정보만 담은 임시 객체 반환
             if (user == null) {
                 user = new User();
                 user.setEmail(email);
                 user.setName(name);
-                user.setNickname(name);
+                user.setNickname(name); // 폼 초기값으로 사용할 닉네임
                 user.setProvider("GOOGLE");
                 user.setProviderId(providerId);
                 user.setRole("USER");
-                user.setNewUser(true);
-
-                userMapper.insertOAuthUser(user);
-                ecoPointHistoryService.earnPoint(user.getMemberId(), 100, "SIGNUP", user.getMemberId());
+                user.setNewUser(true); // 신규 가입 플래그 설정
+            } else {
+                user.setNewUser(false); // 기존 회원 플래그 설정
             }
 
             return user;

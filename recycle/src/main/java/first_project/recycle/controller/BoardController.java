@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.HashSet;
@@ -126,14 +127,19 @@ public class BoardController {
             @ModelAttribute BoardCreateRequest boardRequest,
             @RequestParam(required = false) List<MultipartFile> images,
             HttpServletRequest request) {
+
         HttpSession session = request.getSession(false);
+
         SessionUser loginUser =
                 (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
-        Long boardId = boardService.write(loginUser.getMemberId(), boardRequest, images);
+        Long boardId = boardService.write(
+                loginUser.getMemberId(),
+                boardRequest,
+                images
+        );
 
-        // 등록한 게시글 상세 페이지로 이동
-        return "redirect:/boards/" + boardId;
+        return "redirect:/boards/" + boardId + "?created=true";
     }
 
     /**
