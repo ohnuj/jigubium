@@ -497,6 +497,14 @@
             }
         );
     }
+
+</script>
+<script th:if="${param.created != null and param.created[0] == 'true'}">
+    // 글 등록이 정상 완료되었다는 표시
+    sessionStorage.setItem("boardCreated", "true");
+
+    // 주소의 ?created=true 제거
+    history.replaceState(null, "", window.location.pathname);
 </script>
 </body>
 </html>
