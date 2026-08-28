@@ -59,7 +59,6 @@ public class LoginController {
         } else {
             session = request.getSession(true);
         }
-
         // 세션에 저장할 최소 로그인 정보만 별도 객체로 생성
         SessionUser sessionUser = new SessionUser(
                 loginUser.getMemberId(),

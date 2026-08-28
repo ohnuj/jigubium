@@ -20,6 +20,11 @@ public interface RewardExchangeMapper {
     // 관리자 > 전체 교환 요청 조회
     List<RewardExchange> findAll();
 
+    // 관리자 메인 - 리워드 요청 요약 5개
+    List<RewardExchange> findAdminSummary();
+
+    int countRequested();
+
     // 관리자 > 교환 요청 처리 완료
     int completeExchange(@Param("exchangeId") Long exchangeId);
 

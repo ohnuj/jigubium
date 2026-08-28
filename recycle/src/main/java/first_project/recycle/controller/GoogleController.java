@@ -12,9 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Base64;
 
@@ -53,15 +52,18 @@ public class GoogleController {
         // callBack 후 비교하기 위해 세션에 저장
         session.setAttribute("GOOGLE_OAUTH_STATE", state);
 
-        // 구글 인가 코드 요청을 위한 scope 인코딩 (openid, email, profile)
-        String scope = URLEncoder.encode("openid email profile", StandardCharsets.UTF_8);
-
-        String authUrl = "https://accounts.google.com/o/oauth2/v2/auth?response_type=code"
-                + "&client_id=" + clientId
-                + "&redirect_uri=" + redirectUri
-                + "&scope=" + scope
-                + "&state=" + state
-                + "&prompt=select_account";
+        // 구글 OAuth 인증 URL 생성
+        String authUrl = UriComponentsBuilder
+                .fromUriString("https://accounts.google.com/o/oauth2/v2/auth")
+                .queryParam("response_type", "code")
+                .queryParam("client_id", clientId)
+                .queryParam("redirect_uri", redirectUri)
+                .queryParam("scope", "openid email profile")
+                .queryParam("state", state)
+                .queryParam("prompt", "select_account")
+                .build()
+                .encode()
+                .toUriString();
 
         // 조합된 구글 인증 URL로 사용자 브라우저 강제 이동
         return "redirect:" + authUrl;

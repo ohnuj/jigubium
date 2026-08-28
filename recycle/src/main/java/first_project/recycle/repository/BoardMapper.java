@@ -85,4 +85,8 @@ public interface BoardMapper {
     List<BoardListResponse> findAllSuggestions();
 
     int checkSuggestionByAdmin(Long boarId);
+
+    int countNotices();
+
+    int countSuggestions();
 }

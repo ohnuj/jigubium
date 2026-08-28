@@ -77,12 +77,14 @@ public class MypageController {
         HttpSession session = request.getSession(false);
         SessionUser loginUser =
                 (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        // 카카오 회원은 인증 없이 회원정보 수정 화면 (닉네임만 수정 가능)
-        if ("KAKAO".equals(loginUser.getProvider())) {
+
+        // 소셜 회원은 인증 없이 회원정보 수정 화면 (닉네임만 수정 가능)
+        if (!"LOCAL".equals(loginUser.getProvider())) {
             return "redirect:/mypage/updateMemberInfo";
         }
         session.removeAttribute("mypageVerified");
         model.addAttribute("currentTab", "info");
+
         return "mypage/checkPassword";
     }
 
@@ -95,7 +97,8 @@ public class MypageController {
 
         // 이메일 대신 memberId 추출
         SessionUser loginUser =
-                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);        Long memberId = loginUser.getMemberId();
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        Long memberId = loginUser.getMemberId();
 
         // 서비스 계층을 통해 DB 비밀번화와 일치하는지 비교 검증
         boolean isMatch = mypageService.verifyPassword(memberId, password);
@@ -123,7 +126,7 @@ public class MypageController {
         HttpSession session = request.getSession(false);
         SessionUser loginUser =
                 (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        if (!"KAKAO".equals(loginUser.getProvider())) {
+        if ("LOCAL".equals(loginUser.getProvider())) {
             //pw check을 하고 넘어왔는지 확인, 브라우저를 통해 바로 update하러 오는 것을 방지하기 위함
             Boolean verified = (Boolean) session.getAttribute("mypageVerified");
             if (!Boolean.TRUE.equals(verified)) {
@@ -154,7 +157,7 @@ public class MypageController {
         SessionUser loginUser =
                 (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
         // LOCAL 회원만 비밀번호 검증
-        if (!"KAKAO".equals(loginUser.getProvider())) {
+        if ("LOCAL".equals(loginUser.getProvider())) {
             Boolean verified =
                     (Boolean) session.getAttribute(
                             "mypageVerified");
@@ -170,7 +173,7 @@ public class MypageController {
          * LOCAL 회원이 새 비밀번호를 입력한 경우에만
          * 새 비밀번호와 확인 비밀번호 일치 여부 검증
          */
-        if (!"KAKAO".equals(loginUser.getProvider())
+        if ("LOCAL".equals(loginUser.getProvider())
                 && memberinfo.getNewpassword() != null
                 && !memberinfo.getNewpassword().isBlank()) {
 
@@ -237,8 +240,8 @@ public class MypageController {
 
         // 비밀번호 불일치로 삭제 실패시
         if (!isDeleted) {
-            // 카카오 유저
-            if ("KAKAO".equals(loginUser.getProvider())) {
+            // 소셜 유저
+            if (!"LOCAL".equals(loginUser.getProvider())) {
                 redirectAttributes.addFlashAttribute(
                         "errorMsg",
                         "회원 탈퇴에 실패했습니다.");

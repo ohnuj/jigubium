@@ -42,7 +42,7 @@ public class MypageService {
             );
         }
 
-        if ("KAKAO".equals(member.getProvider())) {
+        if (!"LOCAL".equals(member.getProvider())) {
             memberinfo.setNewpassword(null);
         } else {
             if (memberinfo.getNewpassword() != null
@@ -73,8 +73,8 @@ public class MypageService {
         if (member == null){
             return false;
         }
-        //카카오 유저가 아닌 사용자만 비밀번호 체크
-        if (!"KAKAO".equals(member.getProvider())) {
+        //로컬 사용자만 비밀번호 체크
+        if ("LOCAL".equals(member.getProvider())) {
             if (member.getPassword() == null || password == null) {
                 return false;
             }

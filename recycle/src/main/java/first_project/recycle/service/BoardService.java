@@ -145,7 +145,13 @@ public class BoardService {
         }
         return true;
     }
+    public int getNoticeCount() {
+        return boardMapper.countNotices();
+    }
 
+    public int getSuggestionCount() {
+        return boardMapper.countSuggestions();
+    }
     // 게시글 목록 + 검색 + 타입 + 페이징 + 내 글 보기
     public BoardPageResponse getBoards(
             int page,

@@ -4,12 +4,11 @@ import first_project.recycle.config.SessionConst;
 import first_project.recycle.domain.SessionUser;
 import first_project.recycle.domain.User;
 import first_project.recycle.mapper.UserMapper;
-import first_project.recycle.service.EcoPointHistoryService;
+import first_project.recycle.service.OAuthSignupService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,13 +19,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class OAuthSignupController {
 
     private final UserMapper userMapper;
-    private final EcoPointHistoryService ecoPointHistoryService;
+    private final OAuthSignupService oauthSignupService;
+
 
     /**
      * 추가 정보 입력 화면 노출
      */
     @GetMapping("/oauth/signup")
-    public String oauthSignupForm(HttpSession session, Model model) {
+    public String oauthSignupForm(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return "redirect:/login";
+        }
+
         User tempUser = (User) session.getAttribute("TEMP_OAUTH_USER");
 
         // 임시 세션이 없으면 비정상 접근이므로 로그인 화면으로 리다이렉트
@@ -34,8 +39,6 @@ public class OAuthSignupController {
             return "redirect:/login";
         }
 
-        // 소셜에서 전달받은 기본 닉네임 바인딩
-        model.addAttribute("defaultNickname", tempUser.getNickname());
         return "oauth-signup";
     }
 
@@ -58,6 +61,17 @@ public class OAuthSignupController {
             return "redirect:/login";
         }
 
+        // 이메일 중복 검사
+        if (userMapper.countByEmail(tempUser.getEmail()) > 0) {
+            session.removeAttribute("TEMP_OAUTH_USER");
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "이미 가입된 이메일입니다. 기존 로그인 방식을 이용해주세요.");
+
+            return "redirect:/login";
+        }
+
         // 닉네임 유효성 검사 (2~12자리 한글/영문/숫자)
         String nicknamePattern = "^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ]{2,12}$";
         if (nickname == null || !nickname.matches(nicknamePattern)) {
@@ -74,13 +88,11 @@ public class OAuthSignupController {
         // 2. 사용자가 수정한 닉네임만 세팅 (성별은 DB 미저장이므로 제외)
         tempUser.setNickname(nickname);
 
-        // 3. DB에 최종 회원 데이터 저장
-        userMapper.insertOAuthUser(tempUser);
 
-        // 4. 신규 가입 에코포인트 지급
-        ecoPointHistoryService.earnPoint(tempUser.getMemberId(), 100, "SIGNUP", tempUser.getMemberId());
+        // 3. 회원 저장 + 신규 가입 포인트 지급
+        oauthSignupService.signup(tempUser);
 
-        // 5. 임시 세션 제거 및 정식 로그인 세션 등록
+        // 4. 임시 세션 제거 및 정식 로그인 세션 등록
         session.removeAttribute("TEMP_OAUTH_USER");
         request.changeSessionId();
 
