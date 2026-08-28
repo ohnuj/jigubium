@@ -37,13 +37,9 @@ textarea {
 }
 
 
-
 /* =========================================================
    ADMIN HERO
 ========================================================= */
-/* ========================================
-   관리자 상단 Hero + Dashboard
-======================================== */
 
 .admin-hero {
     background: #236742;
@@ -66,9 +62,9 @@ textarea {
 }
 
 
-/* ========================================
+/* =========================================================
    왼쪽 관리자 소개
-======================================== */
+========================================================= */
 
 .admin-hero-content {
     min-width: 0;
@@ -104,31 +100,31 @@ textarea {
 }
 
 
-/* ========================================
-   Dashboard 영역
-======================================== */
+/* =========================================================
+   DASHBOARD
+========================================================= */
 
 .admin-dashboard {
     width: 66%;
+
     justify-self: end;
 
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 
     gap: 10px;
 }
 
-
-/* 통계 카드 */
-
 .dashboard-card {
-    min-height: 58px;
+    min-height: 66px;
 
-    padding: 12px 20px;
+    padding: 12px 16px;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    gap: 12px;
 
     background: rgba(255, 255, 255, 0.10);
 
@@ -142,49 +138,101 @@ textarea {
 
 .dashboard-card:hover {
     background: rgba(255, 255, 255, 0.15);
+
     transform: translateY(-2px);
 }
 
-
-/* 이름 */
-
 .dashboard-label {
-    font-size: 13px;
+    color: rgba(255, 255, 255, 0.82);
+
+    font-size: 12px;
     font-weight: 600;
 
-    color: rgba(255, 255, 255, 0.82);
+    line-height: 1.35;
 }
 
-
-/* 숫자 */
-
 .dashboard-value {
+    flex-shrink: 0;
+
     display: flex;
     align-items: baseline;
 
-    gap: 5px;
+    gap: 4px;
 }
 
 .dashboard-value strong {
-    font-size: 26px;
+    color: #ffffff;
+
+    font-size: 24px;
     font-weight: 800;
     line-height: 1;
-
-    color: #ffffff;
 }
 
 .dashboard-value span {
-    font-size: 13px;
-    font-weight: 600;
-
     color: #c7ff76;
+
+    font-size: 12px;
+    font-weight: 600;
 }
-
-
-/* 오늘 현황은 살짝 강조 */
 
 .dashboard-card-today {
     background: rgba(190, 255, 101, 0.10);
+}
+
+
+/* 미확인 건의글 */
+
+.dashboard-card-alert {
+    background: rgba(220, 70, 70, 0.42);
+
+    border: 1px solid rgba(255, 170, 160, 0.85);
+
+    box-shadow:
+            0 0 0 1px rgba(255, 120, 110, 0.10),
+            0 5px 14px rgba(120, 20, 20, 0.12);
+}
+
+.dashboard-card-alert:hover {
+    background: rgba(225, 70, 70, 0.52);
+
+    border-color: rgba(255, 190, 180, 0.95);
+}
+
+.dashboard-card-alert .dashboard-label {
+    color: #fff0ed;
+
+    font-weight: 700;
+}
+
+.dashboard-card-alert .dashboard-value strong {
+    color: #ffffff;
+}
+
+.dashboard-card-alert .dashboard-value span {
+    color: #ffd2ca;
+}
+
+
+/* 리워드 대기 요청 */
+
+.dashboard-card-reward-alert {
+    background: rgba(213, 166, 61, 0.28);
+
+    border-color: rgba(255, 221, 139, 0.62);
+}
+
+.dashboard-card-reward-alert:hover {
+    background: rgba(213, 166, 61, 0.38);
+}
+
+.dashboard-card-reward-alert .dashboard-label {
+    color: #fff4cf;
+
+    font-weight: 700;
+}
+
+.dashboard-card-reward-alert .dashboard-value span {
+    color: #ffe598;
 }
 
 
@@ -245,6 +293,51 @@ textarea {
     color: #78857b;
 
     font-size: 13px;
+}
+
+
+/* =========================================================
+   ADMIN FLASH MESSAGE
+========================================================= */
+
+.admin-flash-message {
+    margin-bottom: 28px;
+    padding: 14px 17px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    border: 1px solid #cce0c4;
+    border-radius: 11px;
+
+    background: #eff7e9;
+
+    color: #39683c;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.admin-flash-icon {
+    width: 24px;
+    height: 24px;
+
+    flex-shrink: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #67a953;
+
+    color: #ffffff;
+
+    font-size: 11px;
+    font-weight: 800;
 }
 
 
@@ -358,6 +451,7 @@ textarea {
     padding: 19px 22px;
 
     display: flex;
+
     gap: 14px;
 
     border: 1px solid #dce7d4;
@@ -389,10 +483,10 @@ textarea {
 .admin-back-area {
     margin-top: 28px;
 
+    color: #53735b;
+
     font-size: 13px;
     font-weight: 700;
-
-    color: #53735b;
 }
 
 
@@ -549,23 +643,22 @@ textarea {
     background: #f4f7f1;
 }
 
+
 /* =========================================================
    ECO LOCATION SELECT
 ========================================================= */
 
-
-/* 상단 종류 필터 영역 */
 .location-search-box .admin-filter-select {
     position: relative;
+
     flex: 0 0 190px;
 }
 
-
-/* 직접 화살표 */
 .location-search-box .admin-filter-select::after {
     content: "";
 
     position: absolute;
+
     top: 50%;
     right: 16px;
 
@@ -581,12 +674,7 @@ textarea {
     pointer-events: none;
 }
 
-
-/* 상단 종류 select */
-.location-search-box,
-.admin-filter-select,
-select[name="locationType"] {
-
+.location-search-box .admin-filter-select select[name="locationType"] {
     display: block;
 
     width: 100%;
@@ -619,20 +707,13 @@ select[name="locationType"] {
             box-shadow 0.2s;
 }
 
-
-.location-search-box,
-.admin-filter-select,
-select[name="locationType"]:hover {
-
+.location-search-box .admin-filter-select select[name="locationType"]:hover {
     background-color: #ffffff;
+
     border-color: #abc4a3;
 }
 
-
-.location-search-box,
-.admin-filter-select,
-select[name="locationType"]:focus {
-
+.location-search-box .admin-filter-select select[name="locationType"]:focus {
     background-color: #ffffff;
 
     border-color: #74a46c;
@@ -643,12 +724,10 @@ select[name="locationType"]:focus {
 
 
 /* =========================================================
-   수정폼 select
+   수정폼 SELECT
 ========================================================= */
 
-.admin-edit-form,
-select[name="locationType"] {
-
+.admin-edit-form select[name="locationType"] {
     display: block;
 
     width: 100%;
@@ -671,22 +750,18 @@ select[name="locationType"] {
 
     outline: none;
 
-    appearance: auto;
-
     transition:
             border-color 0.2s,
             box-shadow 0.2s;
 }
 
-
-.admin-edit-form,
-select[name="locationType"]:focus {
-
+.admin-edit-form select[name="locationType"]:focus {
     border-color: #79a971;
 
     box-shadow:
             0 0 0 3px rgba(121, 169, 113, 0.1);
 }
+
 
 /* =========================================================
    TABLE
@@ -922,8 +997,6 @@ select[name="locationType"]:focus {
             transform 0.15s;
 }
 
-
-/* 수정 - 녹색 */
 .edit-button {
     border: 1px solid #c8ddbe;
 
@@ -938,8 +1011,6 @@ select[name="locationType"]:focus {
     background: #e4f2dc;
 }
 
-
-/* 삭제 - 2번 화면 스타일 */
 .delete-button {
     border: 1px solid #efc6ba;
 
@@ -1281,7 +1352,7 @@ select[name="locationType"]:focus {
     display: flex;
     justify-content: space-between;
 
-    border-top: 1px solid rgba(255,255,255,0.09);
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
 }
 
 .footer-bottom p {
@@ -1291,6 +1362,8 @@ select[name="locationType"]:focus {
 
     font-size: 11px;
 }
+
+
 /* =========================================================
    NOTICE MANAGEMENT
 ========================================================= */
@@ -1301,16 +1374,22 @@ select[name="locationType"]:focus {
 
 .notice-management-grid {
     display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 
     gap: 22px;
+
+    align-items: stretch;
 }
 
-
-/* 공통 카드 */
 .notice-write-card,
 .notice-list-card {
+    height: 100%;
+
     padding: 28px;
+
+    display: flex;
+    flex-direction: column;
 
     border: 1px solid #dce7d7;
     border-radius: 18px;
@@ -1321,7 +1400,6 @@ select[name="locationType"]:focus {
             0 8px 24px rgba(35, 72, 44, 0.05);
 }
 
-
 .notice-card-header {
     margin-bottom: 24px;
 
@@ -1331,7 +1409,6 @@ select[name="locationType"]:focus {
 
     gap: 20px;
 }
-
 
 .notice-card-label {
     display: block;
@@ -1346,16 +1423,15 @@ select[name="locationType"]:focus {
     letter-spacing: 0.07em;
 }
 
-
 .notice-card-header h3 {
     margin: 0;
 
     color: #173f2a;
 
     font-size: 20px;
+
     letter-spacing: -0.03em;
 }
-
 
 .notice-card-icon {
     width: 46px;
@@ -1380,11 +1456,14 @@ select[name="locationType"]:focus {
 ========================================================= */
 
 .notice-write-form {
-    display: grid;
+    flex: 1;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
 
     gap: 18px;
 }
-
 
 .notice-form-group {
     display: grid;
@@ -1392,14 +1471,12 @@ select[name="locationType"]:focus {
     gap: 8px;
 }
 
-
 .notice-form-group label {
     color: #425649;
 
     font-size: 13px;
     font-weight: 800;
 }
-
 
 .notice-form-group input,
 .notice-form-group textarea {
@@ -1425,18 +1502,26 @@ select[name="locationType"]:focus {
             background 0.2s;
 }
 
-
 .notice-form-group input {
     height: 46px;
 }
 
+.notice-content-group {
+    flex: 1;
+    min-height: 0;
 
-.notice-form-group textarea {
-    min-height: 190px;
-
-    resize: vertical;
+    display: flex;
+    flex-direction: column;
 }
 
+.notice-content-group textarea {
+    flex: 1;
+
+    width: 100%;
+    min-height: 300px;
+
+    resize: none;
+}
 
 .notice-form-group input:focus,
 .notice-form-group textarea:focus {
@@ -1448,19 +1533,19 @@ select[name="locationType"]:focus {
             0 0 0 3px rgba(121, 169, 113, 0.1);
 }
 
-
 .notice-form-group input::placeholder,
 .notice-form-group textarea::placeholder {
     color: #9aa59c;
 }
 
-
 .notice-form-actions {
+    margin-top: 0;
+
     display: flex;
-
     justify-content: flex-end;
-}
 
+    flex-shrink: 0;
+}
 
 .notice-submit-button {
     min-width: 110px;
@@ -1484,11 +1569,9 @@ select[name="locationType"]:focus {
             transform 0.15s;
 }
 
-
 .notice-submit-button:hover {
     background: #123f29;
 }
-
 
 .notice-submit-button:active {
     transform: translateY(1px);
@@ -1515,11 +1598,9 @@ select[name="locationType"]:focus {
     white-space: nowrap;
 }
 
-
 .notice-admin-list {
     border-top: 1px solid #e2e9de;
 }
-
 
 .notice-admin-item {
     padding: 18px 2px;
@@ -1533,18 +1614,15 @@ select[name="locationType"]:focus {
     border-bottom: 1px solid #e8ede5;
 }
 
-
 .notice-admin-item:last-child {
     border-bottom: none;
 }
-
 
 .notice-admin-main {
     flex: 1;
 
     min-width: 0;
 }
-
 
 .notice-title-row {
     display: flex;
@@ -1554,7 +1632,6 @@ select[name="locationType"]:focus {
 
     min-width: 0;
 }
-
 
 .notice-badge-small {
     flex-shrink: 0;
@@ -1572,7 +1649,6 @@ select[name="locationType"]:focus {
     font-weight: 800;
 }
 
-
 .notice-admin-title {
     min-width: 0;
 
@@ -1587,11 +1663,9 @@ select[name="locationType"]:focus {
     text-overflow: ellipsis;
 }
 
-
 .notice-admin-title:hover {
     color: #4e894d;
 }
-
 
 .notice-admin-meta {
     margin-top: 8px;
@@ -1606,11 +1680,9 @@ select[name="locationType"]:focus {
     font-size: 11px;
 }
 
-
 .notice-meta-divider {
     color: #c1cac0;
 }
-
 
 .notice-admin-actions {
     flex-shrink: 0;
@@ -1632,13 +1704,11 @@ select[name="locationType"]:focus {
     text-align: center;
 }
 
-
 .notice-empty-icon {
     margin-bottom: 10px;
 
     font-size: 25px;
 }
-
 
 .notice-empty strong {
     display: block;
@@ -1647,7 +1717,6 @@ select[name="locationType"]:focus {
 
     font-size: 13px;
 }
-
 
 .notice-empty p {
     margin: 7px 0 0;
@@ -1659,10 +1728,615 @@ select[name="locationType"]:focus {
 }
 
 
-/* 데이터 관리와 간격 */
+/* =========================================================
+   SUGGESTION LIST
+========================================================= */
+
+.suggestion-section {
+    margin-top: 18px;
+    padding-top: 20px;
+
+    border-top: 1px solid #dfe8da;
+}
+
+.suggestion-section-header {
+    margin-bottom: 18px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.suggestion-section-header h3 {
+    margin: 0;
+
+    color: #173f2a;
+
+    font-size: 20px;
+
+    letter-spacing: -0.03em;
+}
+
+.suggestion-admin-list {
+    border-top: 1px solid #e2e9de;
+}
+
+.suggestion-admin-item {
+    padding: 17px 2px;
+
+    border-bottom: 1px solid #e8ede5;
+}
+
+.suggestion-admin-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-title-row {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    min-width: 0;
+}
+
+.suggestion-badge {
+    min-width: 48px;
+
+    flex-shrink: 0;
+
+    padding: 5px 8px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.suggestion-badge.unchecked {
+    border: 1px solid #efc6ba;
+
+    background: #fff2ee;
+
+    color: #b5523c;
+}
+
+.suggestion-badge.checked {
+    border: 1px solid #cbdac5;
+
+    background: #f1f6ee;
+
+    color: #637c66;
+}
+
+.suggestion-check-form {
+    flex: 1;
+    min-width: 0;
+
+    margin: 0;
+
+    display: flex;
+}
+
+.suggestion-title-button {
+    width: 100%;
+    min-width: 0;
+
+    padding: 0;
+
+    overflow: hidden;
+
+    border: 0;
+
+    background: transparent;
+
+    color: #264332;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 800;
+
+    text-align: left;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    cursor: pointer;
+
+    transition: color 0.2s;
+}
+
+.suggestion-title-button:hover {
+    color: #4e894d;
+}
+
+.suggestion-meta {
+    margin-top: 7px;
+    padding-left: 57px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    color: #98a39b;
+
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.suggestion-meta > span:first-child {
+    color: #66766b;
+
+    font-weight: 700;
+}
+
+.suggestion-meta-divider {
+    color: #c1cac0;
+}
+
+
+/* =========================================================
+   COMMUNITY BUTTON
+========================================================= */
+
+.admin-community-link {
+    margin-top: auto;
+    padding-top: 20px;
+
+    display: flex;
+    justify-content: flex-end;
+
+    border-top: 1px solid #e6ece2;
+}
+
+.admin-community-btn {
+    min-width: 170px;
+
+    padding: 11px 15px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 18px;
+
+    border: 1px solid #c9dcc2;
+    border-radius: 9px;
+
+    background: #f1f7ed;
+
+    color: #3d7041;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    transition:
+            background 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.15s ease;
+}
+
+.admin-community-btn:hover {
+    background: #e7f2e1;
+
+    border-color: #afd09f;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   REWARD MANAGEMENT
+========================================================= */
+
+.admin-reward-management {
+    margin-bottom: 48px;
+}
+
+.reward-request-card {
+    overflow: hidden;
+
+    border: 1px solid #dce7d7;
+    border-radius: 18px;
+
+    background: #ffffff;
+
+    box-shadow:
+            0 8px 24px rgba(35, 72, 44, 0.05);
+}
+
+.reward-request-card-header {
+    padding: 25px 28px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border-bottom: 1px solid #e1e9dd;
+
+    background: #fbfcfa;
+}
+
+.reward-request-card-header h3 {
+    margin: 0;
+
+    color: #173f2a;
+
+    font-size: 20px;
+
+    letter-spacing: -0.03em;
+}
+
+
+/* =========================================================
+   REWARD EMPTY
+========================================================= */
+
+.reward-request-empty {
+    padding: 68px 20px;
+
+    text-align: center;
+}
+
+.reward-request-empty-icon {
+    width: 58px;
+    height: 58px;
+
+    margin: 0 auto 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #eff7e9;
+
+    font-size: 25px;
+}
+
+.reward-request-empty strong {
+    display: block;
+
+    color: #425849;
+
+    font-size: 14px;
+}
+
+.reward-request-empty p {
+    margin: 8px 0 0;
+
+    color: #8b978e;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   REWARD REQUEST LIST
+========================================================= */
+
+.reward-request-list {
+    padding: 0 28px;
+}
+
+.reward-request-item {
+    min-height: 154px;
+
+    padding: 24px 0;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+
+    align-items: center;
+
+    gap: 28px;
+
+    border-bottom: 1px solid #e7ede4;
+}
+
+.reward-request-item:last-child {
+    border-bottom: none;
+}
+
+.reward-request-main {
+    min-width: 0;
+}
+
+.reward-request-title-row {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.reward-request-title {
+    color: #203f2c;
+
+    font-size: 16px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   REWARD STATUS
+========================================================= */
+
+.reward-status {
+    min-width: 48px;
+
+    padding: 5px 9px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.reward-status.pending {
+    border: 1px solid #e8d49b;
+
+    background: #fff8df;
+
+    color: #9a7423;
+}
+
+.reward-status.completed {
+    border: 1px solid #c7ddbe;
+
+    background: #eff7e9;
+
+    color: #39753d;
+}
+
+.reward-status.rejected {
+    border: 1px solid #efc6ba;
+
+    background: #fff2ee;
+
+    color: #b5523c;
+}
+
+
+/* =========================================================
+   REWARD META
+========================================================= */
+
+.reward-request-meta {
+    margin-top: 9px;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    color: #89958c;
+
+    font-size: 11px;
+}
+
+.reward-request-meta strong {
+    color: #4f7d48;
+
+    font-size: 12px;
+}
+
+.reward-meta-divider {
+    color: #c2cac0;
+}
+
+
+/* =========================================================
+   REWARD USER INFO
+========================================================= */
+
+.reward-request-user-info {
+    margin-top: 18px;
+    padding: 15px 17px;
+
+    display: grid;
+    grid-template-columns: 0.7fr 1fr 2.3fr;
+
+    gap: 18px;
+
+    border: 1px solid #e0e9dc;
+    border-radius: 11px;
+
+    background: #f8faf6;
+}
+
+.reward-user-info-item {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+.reward-info-label {
+    color: #859187;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.reward-user-info-item > strong,
+.reward-address-value strong {
+    color: #405347;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    word-break: break-word;
+}
+
+.reward-address-value {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.reward-address-value span {
+    color: #68776d;
+
+    font-size: 11px;
+    line-height: 1.5;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   REWARD PROCESSED
+========================================================= */
+
+.reward-request-processed {
+    margin-top: 11px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    color: #939e96;
+
+    font-size: 10px;
+}
+
+.reward-request-processed strong {
+    color: #6b796f;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   REWARD ACTIONS
+========================================================= */
+
+.reward-request-actions {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+.reward-request-actions form {
+    margin: 0;
+}
+
+.reward-complete-button,
+.reward-reject-button {
+    min-width: 66px;
+
+    padding: 9px 14px;
+
+    border-radius: 9px;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+            background 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.15s ease;
+}
+
+.reward-complete-button {
+    border: 1px solid #bed8b4;
+
+    background: #edf7e8;
+
+    color: #39743d;
+}
+
+.reward-complete-button:hover {
+    border-color: #a5ca96;
+
+    background: #e1f1da;
+
+    transform: translateY(-1px);
+}
+
+.reward-reject-button {
+    border: 1px solid #edc2b7;
+
+    background: #fff1ed;
+
+    color: #b6533d;
+}
+
+.reward-reject-button:hover {
+    border-color: #dfa594;
+
+    background: #ffe5de;
+
+    transform: translateY(-1px);
+}
+
+.reward-processed-text {
+    min-width: 78px;
+
+    padding: 8px 11px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.reward-processed-text.completed {
+    border: 1px solid #ceddc8;
+
+    background: #f1f6ee;
+
+    color: #647c66;
+}
+
+.reward-processed-text.rejected {
+    border: 1px solid #ead4cc;
+
+    background: #fbf2ef;
+
+    color: #a36a5c;
+}
+
+
+/* =========================================================
+   DATA MANAGEMENT
+========================================================= */
+
 .data-management-header {
     margin-top: 0;
 }
+
 
 /* =========================================================
    NOTICE EDIT
@@ -1684,14 +2358,12 @@ select[name="locationType"]:focus {
             0 8px 24px rgba(35, 72, 44, 0.05);
 }
 
-
 .notice-edit-card-header {
     margin-bottom: 28px;
     padding-bottom: 22px;
 
     border-bottom: 1px solid #e2e9de;
 }
-
 
 .notice-edit-card-header h3 {
     margin: 14px 0 8px;
@@ -1704,7 +2376,6 @@ select[name="locationType"]:focus {
     letter-spacing: -0.03em;
 }
 
-
 .notice-edit-card-header p {
     margin: 0;
 
@@ -1713,18 +2384,15 @@ select[name="locationType"]:focus {
     font-size: 12px;
 }
 
-
 .notice-edit-form {
     display: grid;
 
     gap: 22px;
 }
 
-
 .notice-edit-form .notice-form-group textarea {
     min-height: 300px;
 }
-
 
 .notice-edit-actions {
     display: flex;
@@ -1736,15 +2404,16 @@ select[name="locationType"]:focus {
     margin-top: 4px;
 }
 
-
 .notice-edit-actions .cancel-button,
 .notice-edit-actions .save-button {
+    min-width: 90px;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    min-width: 90px;
 }
+
+
 /* =========================================================
    RESPONSIVE
 ========================================================= */
@@ -1754,18 +2423,29 @@ select[name="locationType"]:focus {
     .nav-center {
         display: none;
     }
+
     .admin-hero-inner {
         grid-template-columns: 1fr;
+
         gap: 30px;
     }
 
+    .admin-dashboard {
+        width: 100%;
+
+        justify-self: stretch;
+
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 
     .admin-card-grid {
         grid-template-columns: 1fr;
     }
+
     .notice-management-grid {
         grid-template-columns: 1fr;
     }
+
     .location-search-box form {
         flex-wrap: wrap;
     }
@@ -1790,10 +2470,21 @@ select[name="locationType"]:focus {
         width: 20%;
     }
 
+
+    /* 리워드 */
+
+    .reward-request-user-info {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .reward-address-item {
+        grid-column: 1 / -1;
+    }
+
+
     .footer-container {
         grid-template-columns: 1fr 1fr;
     }
-
 }
 
 
@@ -1831,7 +2522,10 @@ select[name="locationType"]:focus {
     .footer-bottom {
         width: calc(100% - 28px);
     }
+
     .admin-dashboard {
+        width: 100%;
+
         grid-template-columns: 1fr;
     }
 
@@ -1840,9 +2534,10 @@ select[name="locationType"]:focus {
     }
 
     .dashboard-card {
-        min-height: 78px;
-    }
+        min-height: 70px;
 
+        padding: 14px 18px;
+    }
 
     .admin-list-header,
     .admin-section-header {
@@ -1864,6 +2559,84 @@ select[name="locationType"]:focus {
         flex: 1;
     }
 
+
+    /* 공지 */
+
+    .notice-content-group textarea {
+        min-height: 240px;
+    }
+
+
+    /* 건의 */
+
+    .suggestion-title-row {
+        align-items: flex-start;
+    }
+
+    .suggestion-title-button {
+        white-space: normal;
+
+        line-height: 1.5;
+    }
+
+    .suggestion-meta {
+        padding-left: 57px;
+
+        flex-wrap: wrap;
+
+        font-size: 10px;
+    }
+
+
+    /* 커뮤니티 이동 */
+
+    .admin-community-btn {
+        width: 100%;
+    }
+
+
+    /* 리워드 */
+
+    .reward-request-card-header {
+        padding: 21px 18px;
+    }
+
+    .reward-request-list {
+        padding: 0 18px;
+    }
+
+    .reward-request-item {
+        padding: 22px 0;
+
+        grid-template-columns: 1fr;
+
+        gap: 18px;
+    }
+
+    .reward-request-user-info {
+        grid-template-columns: 1fr;
+
+        gap: 12px;
+    }
+
+    .reward-address-item {
+        grid-column: auto;
+    }
+
+    .reward-request-actions {
+        width: 100%;
+
+        justify-content: flex-end;
+    }
+
+    .reward-complete-button,
+    .reward-reject-button {
+        min-width: 74px;
+    }
+
+
+    /* Footer */
+
     .footer-container {
         grid-template-columns: 1fr;
     }
@@ -1873,5 +2646,4 @@ select[name="locationType"]:focus {
 
         gap: 6px;
     }
-
 }

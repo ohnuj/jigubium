@@ -85,7 +85,7 @@
             <span class="message-icon">✓</span>
 
             <p th:text="${message}">
-                교환이 완료되었습니다.
+                교환 요청이 완료되었습니다.
             </p>
 
         </div>
@@ -100,7 +100,7 @@
             <span class="message-icon">!</span>
 
             <p th:text="${eMessage}">
-                교환에 실패했습니다.
+                교환 요청에 실패했습니다.
             </p>
 
         </div>
@@ -223,12 +223,11 @@
 
                     <!-- 리워드 교환 -->
                     <form th:action="@{/reward/exchange}"
-                          method="post">
+                          method="get">
 
                         <input type="hidden"
                                name="rewardId"
                                th:value="${reward.rewardId}">
-
 
                         <button type="submit"
                                 th:disabled="${reward.stockQuantity <= 0}"

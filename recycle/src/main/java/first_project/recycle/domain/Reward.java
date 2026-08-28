@@ -10,5 +10,6 @@ public class Reward {
     private Integer requiredPoint;
     private Integer stockQuantity;
     private String imageUrl;
+    private Boolean active;
 
 }

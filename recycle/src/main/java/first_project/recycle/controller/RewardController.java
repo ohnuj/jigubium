@@ -2,6 +2,7 @@ package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
 import first_project.recycle.domain.Reward;
+import first_project.recycle.domain.RewardRequest;
 import first_project.recycle.domain.SessionUser;
 import first_project.recycle.service.EcoPointHistoryService;
 import first_project.recycle.service.RewardService;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -33,6 +35,7 @@ public class RewardController {
 
         //리워드 목록
         List<Reward> rewards = rewardService.findAll();
+
         //현재 에코포인트
         int currentPoint = ecoPointHistoryService.findCurrentBalance(memberId);
         model.addAttribute("rewards",rewards);
@@ -40,23 +43,49 @@ public class RewardController {
         return "reward/shop";
     }
 
+    //교환 정보 입력 화면
+    @GetMapping("/reward/exchange")
+    public String exchangeForm(@RequestParam("rewardId") Long rewardId,
+                               HttpServletRequest request,
+                               Model model){
+        HttpSession session = request.getSession(false);
+        SessionUser loginUser =
+                (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        Long memberId = loginUser.getMemberId();
+
+        //교환할 리워드
+        Reward reward = rewardService.findById(rewardId);
+
+        //현재 에코포인트
+        int currentPoint = ecoPointHistoryService.findCurrentBalance(memberId);
+
+        model.addAttribute("reward",reward);
+        model.addAttribute("currentPoint",currentPoint);
+
+        return "reward/exchangeForm";
+    }
+
+    //리워드 교환 요청
     @PostMapping("/reward/exchange")
     public String exchange(@RequestParam("rewardId") Long rewardId,
-                           HttpServletRequest request, RedirectAttributes redirectAttributes){
+                           @ModelAttribute RewardRequest rewardRequest,
+                           HttpServletRequest request,
+                           RedirectAttributes redirectAttributes){
         HttpSession session = request.getSession(false);
 
         SessionUser loginUser =
                 (SessionUser) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Long memberId = loginUser.getMemberId();
         try {
-                rewardService.exchangeReward(memberId,rewardId);
+                rewardService.exchangeReward(memberId,rewardId,rewardRequest);
                 redirectAttributes.addFlashAttribute(
-                        "message","리워드 교환이 완료되었습니다");
+                        "message","리워드 교환 요청이 완료되었습니다");
+                return "redirect:/reward";
 
-        }catch (IllegalStateException e){
+        }catch (IllegalStateException | IllegalArgumentException e){
             redirectAttributes.addFlashAttribute("eMessage",e.getMessage());
         }
-        return "redirect:/reward";
+        return "redirect:/reward/exchange?rewardId=" + rewardId;
 
     }
 }

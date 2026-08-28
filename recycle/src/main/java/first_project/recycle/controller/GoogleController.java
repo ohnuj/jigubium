@@ -19,33 +19,41 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 @Controller
+// final 필드(googleService) 생성자 주입
 @RequiredArgsConstructor
 public class GoogleController {
 
+    // 구글 OAuth API 통신 및 DB 처리를 담당하는 서비스 객체 의존성 주입
     private final GoogleService googleService;
 
+    // application.properties에 설정된 구글 클라이언트 ID 주입
     @Value("${google.client-id}")
     private String clientId;
 
+    // application.properties에 설정된 인가 코드 수신용 콜백 URL 주입
     @Value("${google.redirect-uri}")
     private String redirectUri;
 
     /**
      * 구글 로그인 시작 엔드포인트
+     * 브라우저를 구글 인증 서버의 로그인/동의 요청 페이지로 리다이렉트
      */
     @GetMapping("/oauth/google")
     public String googleLogin(HttpServletRequest request) {
 
         HttpSession session = request.getSession(true);
 
+        // OAuth state 생성
         SecureRandom secureRandom = new SecureRandom();
         byte[] randomBytes = new byte[32];
         secureRandom.nextBytes(randomBytes);
 
         String state = Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
 
+        // callBack 후 비교하기 위해 세션에 저장
         session.setAttribute("GOOGLE_OAUTH_STATE", state);
 
+        // 구글 인가 코드 요청을 위한 scope 인코딩 (openid, email, profile)
         String scope = URLEncoder.encode("openid email profile", StandardCharsets.UTF_8);
 
         String authUrl = "https://accounts.google.com/o/oauth2/v2/auth?response_type=code"
@@ -55,11 +63,13 @@ public class GoogleController {
                 + "&state=" + state
                 + "&prompt=select_account";
 
+        // 조합된 구글 인증 URL로 사용자 브라우저 강제 이동
         return "redirect:" + authUrl;
     }
 
     /**
      * 구글 로그인 콜백 엔드포인트
+     * 사용자가 구글 로그인을 완료했을 때 구글 인증 서버가 인가 코드(code)를 담아 호출
      */
     @GetMapping("/oauth/google/callback")
     public String googleCallback(@RequestParam(required = false) String code,
@@ -80,8 +90,11 @@ public class GoogleController {
 
         // 2. state 검증
         String savedState = (String) session.getAttribute("GOOGLE_OAUTH_STATE");
+
+        // state 일회용 폐기
         session.removeAttribute("GOOGLE_OAUTH_STATE");
 
+        // 3. state 검증
         if (state == null || savedState == null || !savedState.equals(state)) {
             redirectAttributes.addFlashAttribute(
                     "error",
@@ -126,7 +139,7 @@ public class GoogleController {
                 loginUser.getProvider(),
                 loginUser.getRole()
         );
-
+        // 9. 일반 로그인과 동일한 세션 구조
         session.setAttribute("checkLogin", true);
         session.setAttribute(SessionConst.LOGIN_MEMBER, sessionUser);
 

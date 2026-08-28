@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="first_project.recycle.repository.RewardRequestMapper">
+    <insert id="insertRequest"
+            parameterType="first_project.recycle.domain.RewardRequest"
+            useGeneratedKeys="true"
+            keyProperty="requestId"
+            keyColumn="request_id">
+        INSERT INTO reward_request
+                (exchange_id,name,phone,address,address_detail)
+        VALUES
+            ( #{exchangeId}, #{name}, #{phone}, #{address}, #{addressDetail})
+    </insert>
+
+    <select id="findByExchangeId" resultType="first_project.recycle.domain.RewardRequest">
+        SELECT
+            request_id AS requestId,
+            exchange_id AS exchangeId,
+            name,
+            phone,
+            address,
+            address_detail AS addressDetail
+        FROM reward_request
+        WHERE exchange_id = #{exchangeId}
+    </select>
+
+</mapper>

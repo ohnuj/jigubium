@@ -161,6 +161,19 @@
 
     </select>
 
+    <!-- 관리자 건의글 확인 처리 -->
+    <update id="checkSuggestionByAdmin">
+
+        UPDATE board
+
+        SET admin_checked = 1,
+            updated_at = updated_at
+
+        WHERE board_id = #{boardId}
+          AND board_type = 'SUGGESTION'
+          AND admin_checked = 0
+
+    </update>
 
     <select id="countBoards" resultType="int">
         SELECT COUNT(*)
