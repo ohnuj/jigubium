@@ -74,7 +74,7 @@ public class NaverService {
             JsonNode naverAccount = root.path("response");
 
             String providerId = naverAccount.get("id").asText();
-            String name = naverAccount.hasNonNull("name") ? naverAccount.get("name").asText() : "네이버회원";
+            String name = naverAccount.hasNonNull("name") ? naverAccount.get("name").asText() : "회원";
             String nickname = naverAccount.hasNonNull("nickname") ? naverAccount.get("nickname").asText() : name;
             String email = naverAccount.hasNonNull("email") ? naverAccount.get("email").asText() : (providerId + "@naver.user");
 
