@@ -39,10 +39,17 @@
           AND provider_id = #{providerId}
     </select>
 
-    <!-- [소셜 신규 가입] 비밀번호 없이 소셜 연동 정보 저장 (role='USER', point=100은 DB 기본값 자동 적용) -->
+    <!-- [소셜 신규 가입] 성별(gender)을 포함하여 회원 정보 등록 -->
     <insert id="insertOAuthUser" parameterType="first_project.recycle.domain.User" useGeneratedKeys="true" keyProperty="memberId">
         INSERT INTO member (email, name, nickname, provider, provider_id)
         VALUES (#{email}, #{name}, #{nickname}, #{provider}, #{providerId})
     </insert>
+
+    <!-- [닉네임 중복 체크] 소셜 추가 정보 입력 시 닉네임 유니크 검증 (0: 사용 가능, 1 이상: 중복) -->
+    <select id="countByNickname" resultType="int">
+        SELECT COUNT(*)
+        FROM member
+        WHERE nickname = #{nickname}
+    </select>
 
 </mapper>

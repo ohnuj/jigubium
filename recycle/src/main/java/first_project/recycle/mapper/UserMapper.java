@@ -27,4 +27,7 @@ public interface UserMapper {
     // 소셜 로그인 전용 회원 정보 등록 (비밀번호 제외)
     void insertOAuthUser(User user);
 
+    // 닉네임 중복 검사용 메서드 (0이면 사용 가능, 1 이상이면 중복)
+    int countByNickname(@Param("nickname") String nickname);
 }
+
