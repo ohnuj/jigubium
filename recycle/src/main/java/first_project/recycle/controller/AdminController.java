@@ -42,6 +42,11 @@ public class AdminController {
         //리워드 교환 요청 조회
         List<RewardExchange> rewardExchanges = rewardService.findAllExchange();
         model.addAttribute("rewardExchanges", rewardExchanges);
+
+        //대기중인 리워드 요청 개수
+        Long requestRewardCount = rewardExchanges.stream()
+                .filter(exchange -> "REQUESTED".equals(exchange.getStatus())).count();
+        model.addAttribute("requestRewardCount", requestRewardCount);
         return "admin/adminHome";
     }
 

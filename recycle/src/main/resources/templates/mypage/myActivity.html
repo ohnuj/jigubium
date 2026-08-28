@@ -101,6 +101,7 @@
                         <td style="text-align: center; padding: 11px 12px; font-size: 12px; font-weight: 400; border-bottom: 1px solid #edf2eb;">
                             <span th:if="${history.pointType == 'EARN'}" style="color: #28a745;">적립</span>
                             <span th:if="${history.pointType == 'USE'}" style="color: #dc3545;">사용</span>
+                            <span th:if="${history.pointType == 'REFUND'}" style="color: #3b82f6;">환불</span>
                         </td>
 
                         <!-- 활동 내용 -->
@@ -109,8 +110,14 @@
                             <span th:if="${history.referenceType == 'BOARD' or history.referenceType == 'RECYCLE' or history.referenceType == 'POST'}">커뮤니티 게시글 작성</span>
                             <span th:if="${history.referenceType == 'JOIN' or history.referenceType == 'SIGNUP' or history.referenceType == 'WELCOME' or history.referenceType == 'MEMBER'}">회원가입 축하 적립</span>
                             <span th:if="${history.referenceType == 'GAME' or history.referenceType == 'QUIZ'}">미니게임 참여보상</span>
-                            <span th:if="${history.referenceType == 'SHOP' or history.referenceType == 'REWARD'}">에코 리워드 상품 교환</span>
-                            <span th:if="${history.referenceType == null or (history.referenceType != 'COMMENT' and history.referenceType != 'REPLY' and history.referenceType != 'BOARD' and history.referenceType != 'RECYCLE' and history.referenceType != 'POST' and history.referenceType != 'JOIN' and history.referenceType != 'SIGNUP' and history.referenceType != 'WELCOME' and history.referenceType != 'MEMBER' and history.referenceType != 'QUIZ' and history.referenceType != 'GAME' and history.referenceType != 'SHOP' and history.referenceType != 'REWARD')}">포인트 적립/사용</span>
+                            <span th:if="${history.referenceType == 'SHOP' or history.referenceType == 'REWARD'
+                                            and history.pointType == 'USE'}">에코 리워드 상품 교환</span>
+                            <span th:if="${history.referenceType == 'REWARD' and history.pointType == 'REFUND'}"> 리워드 교환 거절 환불</span>
+                            <span th:if="${history.referenceType == null or (history.referenceType != 'COMMENT' and history.referenceType != 'REPLY'
+                                              and history.referenceType != 'BOARD' and history.referenceType != 'RECYCLE' and history.referenceType != 'POST'
+                                                and history.referenceType != 'JOIN' and history.referenceType != 'SIGNUP' and history.referenceType != 'WELCOME'
+                                                and history.referenceType != 'MEMBER' and history.referenceType != 'QUIZ' and history.referenceType != 'GAME'
+                                                and history.referenceType != 'SHOP' and history.referenceType != 'REWARD')}">포인트 적립/사용</span>
                         </td>
 
                         <td style="text-align: right; padding: 11px 12px; font-size: 12px; font-weight: 400; border-bottom: 1px solid #edf2eb;">
@@ -118,6 +125,8 @@
                                   th:text="'+' + ${#numbers.formatInteger(history.pointAmount, 0, 'COMMA')} + ' P'">+50 P</span>
                             <span th:if="${history.pointType == 'USE'}" style="color: #dc3545;"
                                   th:text="'-' + ${#numbers.formatInteger(history.pointAmount, 0, 'COMMA')} + ' P'">-1,000 P</span>
+                            <span th:if="${history.pointType == 'REFUND'}" style="color: #3b82f6;"
+                                  th:text="'+' + ${#numbers.formatInteger(history.pointAmount, 0, 'COMMA')} + ' P'">+1,000 P</span>
                         </td>
 
                         <td style="text-align: right; padding: 11px 12px; font-size: 12px; color: #536359; font-weight: 400; border-bottom: 1px solid #edf2eb;"

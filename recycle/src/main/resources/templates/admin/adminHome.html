@@ -7,7 +7,7 @@
 
     <title>관리자 페이지</title>
 
-    <link rel="stylesheet" th:href="@{/css/admin.css(v=13)}">
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=15)}">
     <link rel="stylesheet" th:href="@{/css/common.css(v=2)}">
 </head>
 
@@ -167,11 +167,12 @@
                 </div>
 
 
-                <!-- =================================================
-                     리워드 요청
-                     TODO : 내일 requestedReward 백엔드 연결
-                ================================================== -->
-                <div class="dashboard-card">
+                <!-- 리워드 요청 -->
+                <div class="dashboard-card"
+                     th:classappend="${requestRewardCount != null
+                        and requestRewardCount > 0}
+                        ? 'dashboard-card-reward-alert'
+                        : ''">
 
                     <span class="dashboard-label">
                         리워드 요청
@@ -179,7 +180,7 @@
 
                     <div class="dashboard-value">
 
-                        <strong>
+                        <strong th:text="${requestRewardCount}">
                             0
                         </strong>
 
@@ -202,6 +203,23 @@
          관리자 콘텐츠
     ===================================================== -->
     <section class="admin-content">
+
+
+        <!-- =================================================
+             처리 완료 메시지
+        ================================================== -->
+        <div class="admin-flash-message"
+             th:if="${message != null}">
+
+            <span class="admin-flash-icon">
+                ✓
+            </span>
+
+            <span th:text="${message}">
+                처리가 완료되었습니다.
+            </span>
+
+        </div>
 
 
         <!-- =====================================================
@@ -369,7 +387,6 @@
 
                             <div class="notice-admin-main">
 
-                                <!-- 제목 -->
                                 <div class="notice-title-row">
 
                                     <span class="notice-badge-small">
@@ -385,7 +402,6 @@
                                 </div>
 
 
-                                <!-- 메타 -->
                                 <div class="notice-admin-meta">
 
                                     <span>
@@ -405,7 +421,6 @@
                             </div>
 
 
-                            <!-- 수정 / 삭제 -->
                             <div class="notice-admin-actions">
 
                                 <a th:href="@{/admin/notices/{boardId}/edit(boardId=${notice.boardId})}"
@@ -438,7 +453,6 @@
                     ================================================== -->
                     <div class="suggestion-section">
 
-                        <!-- 헤더 -->
                         <div class="suggestion-section-header">
 
                             <div>
@@ -487,24 +501,20 @@
                             <div class="suggestion-admin-item"
                                  th:each="suggestion : ${suggestions}">
 
-                                <!-- 상태 + 제목 -->
                                 <div class="suggestion-title-row">
 
-                                    <!-- 미확인 -->
                                     <span class="suggestion-badge unchecked"
                                           th:if="${!suggestion.adminChecked}">
                                         미확인
                                     </span>
 
 
-                                    <!-- 확인 -->
                                     <span class="suggestion-badge checked"
                                           th:if="${suggestion.adminChecked}">
                                         확인
                                     </span>
 
 
-                                    <!-- 제목 클릭 -> 확인 처리 후 상세 이동 -->
                                     <form th:action="@{/admin/suggestions/{boardId}/check(boardId=${suggestion.boardId})}"
                                           method="post"
                                           class="suggestion-check-form">
@@ -520,7 +530,6 @@
                                 </div>
 
 
-                                <!-- 작성자 + 작성일 -->
                                 <div class="suggestion-meta">
 
                                     <span th:text="${suggestion.nickname}">
@@ -542,11 +551,24 @@
                         </div>
 
                     </div>
-                    <!-- 커뮤니티 이동 버튼 -->
+
+
+                    <!-- 커뮤니티 이동 -->
                     <div class="admin-community-link">
-                        <a th:href="@{/boards}" class="admin-community-btn">
-                            커뮤니티로 이동 →
+
+                        <a th:href="@{/boards}"
+                           class="admin-community-btn">
+
+                            <span>
+                                커뮤니티로 이동
+                            </span>
+
+                            <span>
+                                →
+                            </span>
+
                         </a>
+
                     </div>
 
                 </div>
@@ -582,9 +604,6 @@
             </div>
 
 
-            <!-- =================================================
-                 리워드 교환 요청 카드
-            ================================================== -->
             <div class="reward-request-card">
 
                 <!-- 카드 헤더 -->
@@ -603,29 +622,24 @@
                     </div>
 
 
-                    <!--
-                        TODO
-                        내일 백엔드 연결 후
-                        대기 요청 개수 표시
-                    -->
-                    <span class="notice-count">
+                    <span class="notice-count"
+                          th:text="|대기 ${requestRewardCount}건|">
                         대기 0건
                     </span>
 
                 </div>
 
 
-                <!-- =================================================
-                     현재는 백엔드 미연동 상태
-                ================================================== -->
-                <div class="reward-request-empty">
+                <!-- 요청 없음 -->
+                <div class="reward-request-empty"
+                     th:if="${rewardExchanges == null or #lists.isEmpty(rewardExchanges)}">
 
-                    <div class="notice-empty-icon">
+                    <div class="reward-request-empty-icon">
                         🎁
                     </div>
 
                     <strong>
-                        대기 중인 리워드 교환 요청이 없습니다.
+                        리워드 교환 요청이 없습니다.
                     </strong>
 
                     <p>
@@ -635,72 +649,205 @@
                 </div>
 
 
-                <!-- =================================================
-                     TODO : 내일 실제 요청 목록 연결 시 사용할 구조 예시
+                <!-- 요청 목록 -->
+                <div class="reward-request-list"
+                     th:if="${rewardExchanges != null and !#lists.isEmpty(rewardExchanges)}">
 
-                     아래는 현재 주석 상태이므로 화면에는 출력되지 않음
-                ================================================== -->
 
-                <!--
-                <div class="reward-request-list">
+                    <div class="reward-request-item"
+                         th:each="exchange : ${rewardExchanges}">
 
-                    <div class="reward-request-item">
 
+                        <!-- 요청 본문 -->
                         <div class="reward-request-main">
 
+
+                            <!-- 상태 + 상품 -->
                             <div class="reward-request-title-row">
 
-                                <span class="reward-status pending">
+                                <span class="reward-status pending"
+                                      th:if="${exchange.status == 'REQUESTED'}">
                                     대기
                                 </span>
 
-                                <strong class="reward-request-title">
-                                    친환경 텀블러
+                                <span class="reward-status completed"
+                                      th:if="${exchange.status == 'COMPLETED'}">
+                                    완료
+                                </span>
+
+                                <span class="reward-status rejected"
+                                      th:if="${exchange.status == 'REJECTED'}">
+                                    거절
+                                </span>
+
+
+                                <strong class="reward-request-title"
+                                        th:text="${exchange.rewardNameKorean != null
+                                            ? exchange.rewardNameKorean
+                                            : exchange.rewardName}">
+                                    리워드 상품
                                 </strong>
 
                             </div>
 
 
+                            <!-- 포인트 + 요청 시간 -->
                             <div class="reward-request-meta">
 
                                 <span>
-                                    홍길동
+                                    사용 포인트
                                 </span>
 
-                                <span>
+                                <strong th:text="|${#numbers.formatInteger(exchange.pointUsed, 0, 'COMMA')}P|">
+                                    300P
+                                </strong>
+
+                                <span class="reward-meta-divider">
                                     ·
                                 </span>
 
-                                <span>
-                                    3,000P
+                                <span th:text="${#temporals.format(
+                                        exchange.exchangedAt,
+                                        'yyyy-MM-dd HH:mm'
+                                )}">
+                                    2026-08-28 13:30
                                 </span>
 
-                                <span>
-                                    ·
-                                </span>
+                            </div>
+
+
+                            <!-- 신청자 정보 -->
+                            <div class="reward-request-user-info">
+
+                                <div class="reward-user-info-item">
+
+                                    <span class="reward-info-label">
+                                        이름
+                                    </span>
+
+                                    <strong th:text="${exchange.name != null ? exchange.name : '-'}">
+                                        홍길동
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="reward-user-info-item">
+
+                                    <span class="reward-info-label">
+                                        전화번호
+                                    </span>
+
+                                    <strong th:text="${exchange.phone != null ? exchange.phone : '-'}">
+                                        010-1234-5678
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="reward-user-info-item reward-address-item">
+
+                                    <span class="reward-info-label">
+                                        주소
+                                    </span>
+
+                                    <div class="reward-address-value">
+
+                                        <strong th:text="${exchange.address != null ? exchange.address : '-'}">
+                                            서울특별시 강남구
+                                        </strong>
+
+                                        <span th:if="${exchange.addressDetail != null
+                                                    and !#strings.isEmpty(exchange.addressDetail)}"
+                                              th:text="${exchange.addressDetail}">
+                                            101동 202호
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- 처리 시간 -->
+                            <div class="reward-request-processed"
+                                 th:if="${exchange.processedAt != null}">
 
                                 <span>
-                                    2026-08-27 19:30
+                                    처리일
                                 </span>
+
+                                <strong th:text="${#temporals.format(
+                                        exchange.processedAt,
+                                        'yyyy-MM-dd HH:mm'
+                                )}">
+                                    2026-08-28 14:00
+                                </strong>
 
                             </div>
 
                         </div>
 
 
-                        <div class="reward-request-actions">
+                        <!-- REQUESTED -->
+                        <div class="reward-request-actions"
+                             th:if="${exchange.status == 'REQUESTED'}">
 
-                            <button type="button"
-                                    class="edit-button">
-                                상세보기
-                            </button>
+                            <form th:action="@{/admin/rewards/{exchangeId}/complete(
+                                        exchangeId=${exchange.exchangeId}
+                                    )}"
+                                  method="post"
+                                  onsubmit="return confirm('이 리워드 요청을 완료 처리하시겠습니까?');">
+
+                                <button type="submit"
+                                        class="reward-complete-button">
+                                    완료
+                                </button>
+
+                            </form>
+
+
+                            <form th:action="@{/admin/rewards/{exchangeId}/reject(
+                                        exchangeId=${exchange.exchangeId}
+                                    )}"
+                                  method="post"
+                                  onsubmit="return confirm('이 요청을 거절하시겠습니까? 사용 포인트와 재고가 복구됩니다.');">
+
+                                <button type="submit"
+                                        class="reward-reject-button">
+                                    거절
+                                </button>
+
+                            </form>
+
+                        </div>
+
+
+                        <!-- COMPLETED -->
+                        <div class="reward-request-actions"
+                             th:if="${exchange.status == 'COMPLETED'}">
+
+                            <span class="reward-processed-text completed">
+                                처리 완료
+                            </span>
+
+                        </div>
+
+
+                        <!-- REJECTED -->
+                        <div class="reward-request-actions"
+                             th:if="${exchange.status == 'REJECTED'}">
+
+                            <span class="reward-processed-text rejected">
+                                거절 완료
+                            </span>
 
                         </div>
 
                     </div>
 
                 </div>
-                -->
 
             </div>
 
@@ -737,9 +884,7 @@
         <div class="admin-card-grid">
 
 
-            <!-- =================================================
-                 재활용 품목
-            ================================================== -->
+            <!-- 재활용 품목 -->
             <article class="admin-card">
 
                 <div class="admin-card-icon">
@@ -784,9 +929,7 @@
             </article>
 
 
-            <!-- =================================================
-                 수거함 위치
-            ================================================== -->
+            <!-- 수거함 위치 -->
             <article class="admin-card">
 
                 <div class="admin-card-icon">

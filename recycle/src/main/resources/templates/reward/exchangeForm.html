@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>리워드 교환 신청</title>
+
+    <link rel="stylesheet" th:href="@{/css/shop.css(v=4)}">
+    <link rel="stylesheet" th:href="@{/css/common.css(v=2)}">
+</head>
+
+<body>
+
+<!-- =========================
+     상단 네비게이션
+========================= -->
+<th:block th:replace="~{fragments/common :: nav}">
+</th:block>
+
+
+<main class="exchange-page">
+
+    <div class="exchange-container">
+
+
+        <!-- =========================
+             페이지 헤더
+        ========================= -->
+        <div class="exchange-page-header">
+
+            <span class="section-label">
+                REWARD EXCHANGE
+            </span>
+
+            <h1>
+                리워드 교환 신청
+            </h1>
+
+            <p>
+                교환할 리워드와 신청 정보를 확인해주세요.
+            </p>
+
+        </div>
+
+
+        <!-- =========================
+             오류 메시지
+        ========================= -->
+        <div class="reward-message error-message"
+             th:if="${eMessage != null}">
+
+            <span class="message-icon">
+                !
+            </span>
+
+            <p th:text="${eMessage}">
+                오류 메시지
+            </p>
+
+        </div>
+
+
+        <!-- =========================
+             교환 영역
+        ========================= -->
+        <div class="exchange-layout">
+
+
+            <!-- =========================
+                 왼쪽 : 상품 정보
+            ========================= -->
+            <section class="exchange-product-card">
+
+                <div class="exchange-card-header">
+
+                    <span class="exchange-card-label">
+                        SELECTED REWARD
+                    </span>
+
+                    <h2>
+                        교환 상품
+                    </h2>
+
+                </div>
+
+
+                <!-- 상품 이미지 -->
+                <div class="exchange-product-image"
+                     th:if="${reward.imageUrl != null}">
+
+                    <img th:src="${reward.imageUrl}"
+                         th:alt="${reward.rewardNameKorean}">
+
+                </div>
+
+
+                <!-- 상품명 -->
+                <div class="exchange-product-name"
+                     th:text="${reward.rewardNameKorean != null
+                              ? reward.rewardNameKorean
+                              : reward.rewardName}">
+                    리워드 상품
+                </div>
+
+
+                <!-- 포인트 정보 -->
+                <div class="exchange-point-summary">
+
+
+                    <!-- 필요 포인트 -->
+                    <div class="exchange-point-row">
+
+                        <span>
+                            필요 포인트
+                        </span>
+
+                        <strong th:text="|${#numbers.formatInteger(
+                                reward.requiredPoint,
+                                0,
+                                'COMMA')}P|">
+                            1,000P
+                        </strong>
+
+                    </div>
+
+
+                    <!-- 현재 보유 포인트 -->
+                    <div class="exchange-point-row">
+
+                        <span>
+                            현재 보유 포인트
+                        </span>
+
+                        <strong th:text="|${#numbers.formatInteger(
+                                currentPoint,
+                                0,
+                                'COMMA')}P|">
+                            2,000P
+                        </strong>
+
+                    </div>
+
+
+                    <!-- 교환 후 포인트 -->
+                    <div class="exchange-point-row exchange-point-result">
+
+                        <span>
+                            교환 후 포인트
+                        </span>
+
+                        <strong th:text="|${#numbers.formatInteger(
+                                currentPoint - reward.requiredPoint,
+                                0,
+                                'COMMA')}P|">
+                            1,000P
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- 상품 안내 -->
+                <div class="exchange-product-guide">
+
+                    <span class="exchange-guide-icon">
+                        🌱
+                    </span>
+
+                    <p>
+                        교환 요청 시 필요한 에코포인트와
+                        상품 재고가 즉시 차감됩니다.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =========================
+                 오른쪽 : 신청 정보
+            ========================= -->
+            <section class="exchange-request-card">
+
+                <div class="exchange-card-header">
+
+                    <span class="exchange-card-label">
+                        REQUEST INFORMATION
+                    </span>
+
+                    <h2>
+                        신청 정보
+                    </h2>
+
+                    <p>
+                        리워드 교환 요청에 필요한 정보를 입력해주세요.
+                    </p>
+
+                </div>
+
+
+                <form th:action="@{/reward/exchange}"
+                      method="post"
+                      class="exchange-form">
+
+                    <!-- 서버에는 rewardId만 전달 -->
+                    <input type="hidden"
+                           name="rewardId"
+                           th:value="${reward.rewardId}">
+
+
+                    <!-- 이름 -->
+                    <div class="exchange-form-group">
+
+                        <label for="name">
+                            이름
+                            <span class="required-mark">*</span>
+                        </label>
+
+                        <input type="text"
+                               id="name"
+                               name="name"
+                               maxlength="50"
+                               placeholder="이름을 입력해주세요."
+                               required>
+
+                    </div>
+
+
+                    <!-- 전화번호 -->
+                    <div class="exchange-form-group">
+
+                        <label for="phone">
+                            전화번호
+                            <span class="required-mark">*</span>
+                        </label>
+
+                        <input type="tel"
+                               id="phone"
+                               name="phone"
+                               maxlength="20"
+                               placeholder="010-1234-5678"
+                               required>
+
+                    </div>
+
+
+                    <!-- 주소 -->
+                    <div class="exchange-form-group">
+
+                        <label for="address">
+                            주소
+                            <span class="required-mark">*</span>
+                        </label>
+
+                        <input type="text"
+                               id="address"
+                               name="address"
+                               maxlength="255"
+                               placeholder="주소를 입력해주세요."
+                               required>
+
+                    </div>
+
+
+                    <!-- 상세주소 -->
+                    <div class="exchange-form-group">
+
+                        <label for="addressDetail">
+                            상세주소
+                        </label>
+
+                        <input type="text"
+                               id="addressDetail"
+                               name="addressDetail"
+                               maxlength="255"
+                               placeholder="상세주소를 입력해주세요.">
+
+                    </div>
+
+
+                    <!-- 교환 안내 -->
+                    <div class="exchange-notice">
+
+                        <div class="exchange-notice-title">
+
+                            <span>
+                                ✓
+                            </span>
+
+                            <strong>
+                                교환 전 확인해주세요
+                            </strong>
+
+                        </div>
+
+                        <p>
+                            교환 요청 시 포인트와 상품 재고가 차감됩니다.
+                            관리자가 요청을 거절할 경우 사용한 포인트와
+                            상품 재고는 다시 복구됩니다.
+                        </p>
+
+                    </div>
+
+
+                    <!-- 버튼 -->
+                    <div class="exchange-actions">
+
+                        <a th:href="@{/reward}"
+                           class="exchange-cancel-button">
+                            취소
+                        </a>
+
+                        <button type="submit"
+                                class="exchange-submit-button">
+                            교환 요청하기
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- =========================
+     Footer
+========================= -->
+<th:block th:replace="~{fragments/common :: footer}">
+</th:block>
+
+</body>
+</html>

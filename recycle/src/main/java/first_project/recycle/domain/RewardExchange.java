@@ -17,4 +17,9 @@ public class RewardExchange {
     private String rewardName;
     private String rewardNameKorean;
     private String imageUrl;
+
+    private String name;
+    private String phone;
+    private String address;
+    private String addressDetail;
 }

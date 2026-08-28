@@ -65,9 +65,21 @@
 
             r.reward_name AS rewardName,
             r.reward_name_korean AS rewardNameKorean,
-            r.image_url AS imageUrl
+            r.image_url AS imageUrl,
+
+            rr.name AS name,
+            rr.phone AS phone,
+            rr.address AS address,
+            rr.address_detail AS addressDetail
+
         FROM reward_exchange re
-                 JOIN reward r ON re.reward_id = r.reward_id
+
+                 JOIN reward r
+                      ON re.reward_id = r.reward_id
+
+                 LEFT JOIN reward_request rr
+                           ON re.exchange_id = rr.exchange_id
+
         ORDER BY re.exchange_id DESC
     </select>
 

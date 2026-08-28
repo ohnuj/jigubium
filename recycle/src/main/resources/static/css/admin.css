@@ -178,9 +178,13 @@ textarea {
 .dashboard-card-today {
     background: rgba(190, 255, 101, 0.10);
 }
-/* 미확인 건의글이 1개 이상일 때 강조 */
+
+
+/* 미확인 건의글 */
+
 .dashboard-card-alert {
     background: rgba(220, 70, 70, 0.42);
+
     border: 1px solid rgba(255, 170, 160, 0.85);
 
     box-shadow:
@@ -196,6 +200,7 @@ textarea {
 
 .dashboard-card-alert .dashboard-label {
     color: #fff0ed;
+
     font-weight: 700;
 }
 
@@ -205,6 +210,29 @@ textarea {
 
 .dashboard-card-alert .dashboard-value span {
     color: #ffd2ca;
+}
+
+
+/* 리워드 대기 요청 */
+
+.dashboard-card-reward-alert {
+    background: rgba(213, 166, 61, 0.28);
+
+    border-color: rgba(255, 221, 139, 0.62);
+}
+
+.dashboard-card-reward-alert:hover {
+    background: rgba(213, 166, 61, 0.38);
+}
+
+.dashboard-card-reward-alert .dashboard-label {
+    color: #fff4cf;
+
+    font-weight: 700;
+}
+
+.dashboard-card-reward-alert .dashboard-value span {
+    color: #ffe598;
 }
 
 
@@ -265,6 +293,51 @@ textarea {
     color: #78857b;
 
     font-size: 13px;
+}
+
+
+/* =========================================================
+   ADMIN FLASH MESSAGE
+========================================================= */
+
+.admin-flash-message {
+    margin-bottom: 28px;
+    padding: 14px 17px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    border: 1px solid #cce0c4;
+    border-radius: 11px;
+
+    background: #eff7e9;
+
+    color: #39683c;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.admin-flash-icon {
+    width: 24px;
+    height: 24px;
+
+    flex-shrink: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #67a953;
+
+    color: #ffffff;
+
+    font-size: 11px;
+    font-weight: 800;
 }
 
 
@@ -1306,12 +1379,9 @@ textarea {
 
     gap: 22px;
 
-    /* 좌우 카드 높이를 동일하게 */
     align-items: stretch;
 }
 
-
-/* 공지사항 작성 / 목록 카드 */
 .notice-write-card,
 .notice-list-card {
     height: 100%;
@@ -1329,7 +1399,6 @@ textarea {
     box-shadow:
             0 8px 24px rgba(35, 72, 44, 0.05);
 }
-
 
 .notice-card-header {
     margin-bottom: 24px;
@@ -1437,12 +1506,6 @@ textarea {
     height: 46px;
 }
 
-
-/*
-   HTML의 내용 그룹에
-   class="notice-form-group notice-content-group"
-   형태로 사용
-*/
 .notice-content-group {
     flex: 1;
     min-height: 0;
@@ -1676,8 +1739,6 @@ textarea {
     border-top: 1px solid #dfe8da;
 }
 
-
-/* 건의글 헤더 */
 .suggestion-section-header {
     margin-bottom: 18px;
 
@@ -1698,14 +1759,10 @@ textarea {
     letter-spacing: -0.03em;
 }
 
-
-/* 건의글 목록 */
 .suggestion-admin-list {
     border-top: 1px solid #e2e9de;
 }
 
-
-/* 건의글 한 건 */
 .suggestion-admin-item {
     padding: 17px 2px;
 
@@ -1716,8 +1773,6 @@ textarea {
     border-bottom: none;
 }
 
-
-/* 상태 + 제목 */
 .suggestion-title-row {
     display: flex;
     align-items: center;
@@ -1727,8 +1782,6 @@ textarea {
     min-width: 0;
 }
 
-
-/* 확인 상태 배지 */
 .suggestion-badge {
     min-width: 48px;
 
@@ -1747,8 +1800,6 @@ textarea {
     line-height: 1;
 }
 
-
-/* 미확인 */
 .suggestion-badge.unchecked {
     border: 1px solid #efc6ba;
 
@@ -1757,8 +1808,6 @@ textarea {
     color: #b5523c;
 }
 
-
-/* 확인 */
 .suggestion-badge.checked {
     border: 1px solid #cbdac5;
 
@@ -1767,8 +1816,6 @@ textarea {
     color: #637c66;
 }
 
-
-/* 확인 처리 form */
 .suggestion-check-form {
     flex: 1;
     min-width: 0;
@@ -1778,8 +1825,6 @@ textarea {
     display: flex;
 }
 
-
-/* 제목 버튼 */
 .suggestion-title-button {
     width: 100%;
     min-width: 0;
@@ -1812,13 +1857,6 @@ textarea {
     color: #4e894d;
 }
 
-
-/*
-   건의글 작성자 + 작성일
-
-   예)
-   a · 2026-08-27 17:04
-*/
 .suggestion-meta {
     margin-top: 7px;
     padding-left: 57px;
@@ -1834,18 +1872,460 @@ textarea {
     line-height: 1.4;
 }
 
-
-/* 작성자 닉네임 */
 .suggestion-meta > span:first-child {
     color: #66766b;
 
     font-weight: 700;
 }
 
-
-/* 작성자 / 날짜 사이 점 */
 .suggestion-meta-divider {
     color: #c1cac0;
+}
+
+
+/* =========================================================
+   COMMUNITY BUTTON
+========================================================= */
+
+.admin-community-link {
+    margin-top: auto;
+    padding-top: 20px;
+
+    display: flex;
+    justify-content: flex-end;
+
+    border-top: 1px solid #e6ece2;
+}
+
+.admin-community-btn {
+    min-width: 170px;
+
+    padding: 11px 15px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 18px;
+
+    border: 1px solid #c9dcc2;
+    border-radius: 9px;
+
+    background: #f1f7ed;
+
+    color: #3d7041;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    transition:
+            background 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.15s ease;
+}
+
+.admin-community-btn:hover {
+    background: #e7f2e1;
+
+    border-color: #afd09f;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   REWARD MANAGEMENT
+========================================================= */
+
+.admin-reward-management {
+    margin-bottom: 48px;
+}
+
+.reward-request-card {
+    overflow: hidden;
+
+    border: 1px solid #dce7d7;
+    border-radius: 18px;
+
+    background: #ffffff;
+
+    box-shadow:
+            0 8px 24px rgba(35, 72, 44, 0.05);
+}
+
+.reward-request-card-header {
+    padding: 25px 28px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border-bottom: 1px solid #e1e9dd;
+
+    background: #fbfcfa;
+}
+
+.reward-request-card-header h3 {
+    margin: 0;
+
+    color: #173f2a;
+
+    font-size: 20px;
+
+    letter-spacing: -0.03em;
+}
+
+
+/* =========================================================
+   REWARD EMPTY
+========================================================= */
+
+.reward-request-empty {
+    padding: 68px 20px;
+
+    text-align: center;
+}
+
+.reward-request-empty-icon {
+    width: 58px;
+    height: 58px;
+
+    margin: 0 auto 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #eff7e9;
+
+    font-size: 25px;
+}
+
+.reward-request-empty strong {
+    display: block;
+
+    color: #425849;
+
+    font-size: 14px;
+}
+
+.reward-request-empty p {
+    margin: 8px 0 0;
+
+    color: #8b978e;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   REWARD REQUEST LIST
+========================================================= */
+
+.reward-request-list {
+    padding: 0 28px;
+}
+
+.reward-request-item {
+    min-height: 154px;
+
+    padding: 24px 0;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+
+    align-items: center;
+
+    gap: 28px;
+
+    border-bottom: 1px solid #e7ede4;
+}
+
+.reward-request-item:last-child {
+    border-bottom: none;
+}
+
+.reward-request-main {
+    min-width: 0;
+}
+
+.reward-request-title-row {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.reward-request-title {
+    color: #203f2c;
+
+    font-size: 16px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   REWARD STATUS
+========================================================= */
+
+.reward-status {
+    min-width: 48px;
+
+    padding: 5px 9px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.reward-status.pending {
+    border: 1px solid #e8d49b;
+
+    background: #fff8df;
+
+    color: #9a7423;
+}
+
+.reward-status.completed {
+    border: 1px solid #c7ddbe;
+
+    background: #eff7e9;
+
+    color: #39753d;
+}
+
+.reward-status.rejected {
+    border: 1px solid #efc6ba;
+
+    background: #fff2ee;
+
+    color: #b5523c;
+}
+
+
+/* =========================================================
+   REWARD META
+========================================================= */
+
+.reward-request-meta {
+    margin-top: 9px;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    color: #89958c;
+
+    font-size: 11px;
+}
+
+.reward-request-meta strong {
+    color: #4f7d48;
+
+    font-size: 12px;
+}
+
+.reward-meta-divider {
+    color: #c2cac0;
+}
+
+
+/* =========================================================
+   REWARD USER INFO
+========================================================= */
+
+.reward-request-user-info {
+    margin-top: 18px;
+    padding: 15px 17px;
+
+    display: grid;
+    grid-template-columns: 0.7fr 1fr 2.3fr;
+
+    gap: 18px;
+
+    border: 1px solid #e0e9dc;
+    border-radius: 11px;
+
+    background: #f8faf6;
+}
+
+.reward-user-info-item {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+.reward-info-label {
+    color: #859187;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.reward-user-info-item > strong,
+.reward-address-value strong {
+    color: #405347;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    word-break: break-word;
+}
+
+.reward-address-value {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.reward-address-value span {
+    color: #68776d;
+
+    font-size: 11px;
+    line-height: 1.5;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   REWARD PROCESSED
+========================================================= */
+
+.reward-request-processed {
+    margin-top: 11px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    color: #939e96;
+
+    font-size: 10px;
+}
+
+.reward-request-processed strong {
+    color: #6b796f;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   REWARD ACTIONS
+========================================================= */
+
+.reward-request-actions {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+.reward-request-actions form {
+    margin: 0;
+}
+
+.reward-complete-button,
+.reward-reject-button {
+    min-width: 66px;
+
+    padding: 9px 14px;
+
+    border-radius: 9px;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+            background 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.15s ease;
+}
+
+.reward-complete-button {
+    border: 1px solid #bed8b4;
+
+    background: #edf7e8;
+
+    color: #39743d;
+}
+
+.reward-complete-button:hover {
+    border-color: #a5ca96;
+
+    background: #e1f1da;
+
+    transform: translateY(-1px);
+}
+
+.reward-reject-button {
+    border: 1px solid #edc2b7;
+
+    background: #fff1ed;
+
+    color: #b6533d;
+}
+
+.reward-reject-button:hover {
+    border-color: #dfa594;
+
+    background: #ffe5de;
+
+    transform: translateY(-1px);
+}
+
+.reward-processed-text {
+    min-width: 78px;
+
+    padding: 8px 11px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.reward-processed-text.completed {
+    border: 1px solid #ceddc8;
+
+    background: #f1f6ee;
+
+    color: #647c66;
+}
+
+.reward-processed-text.rejected {
+    border: 1px solid #ead4cc;
+
+    background: #fbf2ef;
+
+    color: #a36a5c;
 }
 
 
@@ -1990,6 +2470,18 @@ textarea {
         width: 20%;
     }
 
+
+    /* 리워드 */
+
+    .reward-request-user-info {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .reward-address-item {
+        grid-column: 1 / -1;
+    }
+
+
     .footer-container {
         grid-template-columns: 1fr 1fr;
     }
@@ -2068,13 +2560,15 @@ textarea {
     }
 
 
-    /* 모바일에서는 textarea 최소 높이 */
+    /* 공지 */
+
     .notice-content-group textarea {
         min-height: 240px;
     }
 
 
-    /* 건의글 모바일 */
+    /* 건의 */
+
     .suggestion-title-row {
         align-items: flex-start;
     }
@@ -2092,6 +2586,56 @@ textarea {
 
         font-size: 10px;
     }
+
+
+    /* 커뮤니티 이동 */
+
+    .admin-community-btn {
+        width: 100%;
+    }
+
+
+    /* 리워드 */
+
+    .reward-request-card-header {
+        padding: 21px 18px;
+    }
+
+    .reward-request-list {
+        padding: 0 18px;
+    }
+
+    .reward-request-item {
+        padding: 22px 0;
+
+        grid-template-columns: 1fr;
+
+        gap: 18px;
+    }
+
+    .reward-request-user-info {
+        grid-template-columns: 1fr;
+
+        gap: 12px;
+    }
+
+    .reward-address-item {
+        grid-column: auto;
+    }
+
+    .reward-request-actions {
+        width: 100%;
+
+        justify-content: flex-end;
+    }
+
+    .reward-complete-button,
+    .reward-reject-button {
+        min-width: 74px;
+    }
+
+
+    /* Footer */
 
     .footer-container {
         grid-template-columns: 1fr;
