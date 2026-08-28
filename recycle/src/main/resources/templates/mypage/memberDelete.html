@@ -47,7 +47,7 @@
 
             <!-- LOCAL 회원 안내 -->
             <p class="info-help-text"
-               th:if="${member != null and member.provider != 'KAKAO'}">
+               th:if="${member != null and member.provider == 'LOCAL'}">
 
                 ⚠️ 탈퇴 시 보유하고 계신 모든
                 <strong>에코포인트와 활동 이력 데이터가 영구 삭제</strong>되며
@@ -59,7 +59,7 @@
 
             <!-- KAKAO 회원 안내 -->
             <p class="info-help-text"
-               th:if="${member != null and member.provider == 'KAKAO'}">
+               th:if="${member != null and member.provider != 'LOCAL'}">
 
                 ⚠️ 탈퇴 시 보유하고 계신 모든
                 <strong>에코포인트와 활동 이력 데이터가 영구 삭제</strong>되며
@@ -76,7 +76,7 @@
 
                 <!-- LOCAL 회원에게만 비밀번호 입력 표시 -->
                 <div class="form-group"
-                     th:if="${member != null and member.provider != 'KAKAO'}">
+                     th:if="${member != null and member.provider == 'LOCAL'}">
 
                     <label for="password">
                         비밀번호 확인

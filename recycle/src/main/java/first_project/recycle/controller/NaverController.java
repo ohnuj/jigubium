@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -43,10 +44,15 @@ public class NaverController {
 
         session.setAttribute("NAVER_OAUTH_STATE", state);
 
-        String authUrl = "https://nid.naver.com/oauth2.0/authorize?response_type=code"
-                + "&client_id=" + clientId
-                + "&redirect_uri=" + redirectUri
-                + "&state=" + state;
+        String authUrl = UriComponentsBuilder
+                .fromUriString("https://nid.naver.com/oauth2.0/authorize")
+                .queryParam("response_type", "code")
+                .queryParam("client_id", clientId)
+                .queryParam("redirect_uri", redirectUri)
+                .queryParam("state", state)
+                .build()
+                .encode()
+                .toUriString();
 
         return "redirect:" + authUrl;
     }

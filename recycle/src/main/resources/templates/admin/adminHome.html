@@ -7,7 +7,7 @@
 
     <title>관리자 페이지</title>
 
-    <link rel="stylesheet" th:href="@{/css/admin.css(v=15)}">
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=16)}">
     <link rel="stylesheet" th:href="@{/css/common.css(v=2)}">
 </head>
 
@@ -169,8 +169,8 @@
 
                 <!-- 리워드 요청 -->
                 <div class="dashboard-card"
-                     th:classappend="${requestRewardCount != null
-                        and requestRewardCount > 0}
+                     th:classappend="${requestedCount != null
+                        and requestedCount > 0}
                         ? 'dashboard-card-reward-alert'
                         : ''">
 
@@ -180,7 +180,7 @@
 
                     <div class="dashboard-value">
 
-                        <strong th:text="${requestRewardCount}">
+                        <strong th:text="${requestedCount}">
                             0
                         </strong>
 
@@ -353,7 +353,7 @@
                         </div>
 
                         <span class="notice-count"
-                              th:text="|총 ${#lists.size(notices)}개|">
+                              th:text="|총 ${noticeCount}개|">
                             총 0개
                         </span>
 
@@ -469,7 +469,7 @@
 
 
                             <span class="notice-count"
-                                  th:text="|미확인 ${dashBoard.uncheckedSuggestion}개 / 총 ${#lists.size(suggestions)}개|">
+                                  th:text="|미확인 ${dashBoard.uncheckedSuggestion}개 / 총 ${suggestionCount}개|">
                                 미확인 0개 / 총 0개
                             </span>
 
@@ -623,10 +623,13 @@
 
 
                     <span class="notice-count"
-                          th:text="|대기 ${requestRewardCount}건|">
+                          th:text="|대기 ${requestedCount}건|">
                         대기 0건
                     </span>
-
+                    <a th:href="@{/admin/rewards}"
+                       class="reward-list-link">
+                        리워드 목록 가기 →
+                    </a>
                 </div>
 
 
@@ -846,7 +849,14 @@
                         </div>
 
                     </div>
+                    <div class="reward-request-bottom-link">
 
+                        <a th:href="@{/admin/rewards}"
+                           class="reward-list-link">
+                            리워드 목록 가기 →
+                        </a>
+
+                    </div>
                 </div>
 
             </div>

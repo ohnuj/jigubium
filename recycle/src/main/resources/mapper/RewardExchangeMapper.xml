@@ -80,16 +80,64 @@
                  LEFT JOIN reward_request rr
                            ON re.exchange_id = rr.exchange_id
 
-        ORDER BY re.exchange_id DESC
+        ORDER BY
+            CASE
+                WHEN re.status = 'REQUESTED' THEN 0
+                ELSE 1
+                END,
+            re.exchanged_at DESC,
+            re.exchange_id DESC
     </select>
 
+    <!--관리자 > 리워드 교환 요청 5개 조회-->
+    <select id="findAdminSummary" resultType="first_project.recycle.domain.RewardExchange">
+        SELECT
+            re.exchange_id AS exchangeId,
+            re.member_id AS memberId,
+            re.reward_id AS rewardId,
+            re.point_used AS pointUsed,
+            re.status AS status,
+            re.exchanged_at AS exchangedAt,
+            re.processed_at AS processedAt,
+
+            r.reward_name AS rewardName,
+            r.reward_name_korean AS rewardNameKorean,
+            r.image_url AS imageUrl,
+
+            rr.name AS name,
+            rr.phone AS phone,
+            rr.address AS address,
+            rr.address_detail AS addressDetail
+
+        FROM reward_exchange re
+
+                 JOIN reward r
+                      ON re.reward_id = r.reward_id
+
+                 LEFT JOIN reward_request rr
+                           ON re.exchange_id = rr.exchange_id
+
+        ORDER BY CASE
+                     WHEN re.status = 'REQUESTED' THEN 0
+                     ELSE 1
+                     END,
+                 re.exchanged_at DESC,
+                 re.exchange_id DESC
+        LIMIT 5
+    </select>
+    <!-- 관리자 > 대기 중인 리워드 요청 수 -->
+    <select id="countRequested" resultType="int">
+        SELECT COUNT(*)
+        FROM reward_exchange
+        WHERE status = 'REQUESTED'
+    </select>
     <!--관리자 > 교환 처리 완료-->
     <update id="completeExchange">
         UPDATE reward_exchange
             SET status = 'COMPLETED',
                 processed_at = NOW()
         WHERE exchange_id = #{exchangeId}
-            AND status = "REQUESTED"
+            AND status = 'REQUESTED'
     </update>
 
     <!--관리자 > 교환 요청 거절-->
@@ -98,6 +146,6 @@
         SET status = 'REJECTED',
             processed_at = NOW()
         WHERE exchange_id = #{exchangeId}
-          AND status = "REQUESTED"
+          AND status = 'REQUESTED'
     </update>
 </mapper>

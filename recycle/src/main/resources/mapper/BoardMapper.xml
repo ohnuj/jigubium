@@ -108,6 +108,7 @@
 
         ORDER BY b.created_at DESC,
                  b.board_id DESC
+        LIMIT 3
 
     </select>
 
@@ -158,6 +159,7 @@
             b.admin_checked ASC,
             b.created_at DESC,
             b.board_id DESC
+        LIMIT 3
 
     </select>
 
@@ -228,7 +230,18 @@
         </if>
         </where>
     </select>
-
+    <!--공지글 수-->
+    <select id="countNotices" resultType="int">
+        SELECT COUNT(*)
+        FROM board
+        WHERE board_type = 'NOTICE'
+    </select>
+    <!--건의글 수-->
+    <select id="countSuggestions" resultType="int">
+        SELECT COUNT(*)
+        FROM board
+        WHERE board_type = 'SUGGESTION'
+    </select>
     <select id="findBoards" resultType="first_project.recycle.dto.BoardListResponse">
             SELECT
                 b.board_id,

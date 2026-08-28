@@ -13,7 +13,7 @@
 
     <!-- [일반 로그인] 이메일 일치 회원 조회 (비밀번호 검증 및 세션 정보/보유 포인트 확인용) -->
     <select id="findByEmail" resultType="first_project.recycle.domain.User">
-        SELECT member_id, password, nickname, role
+        SELECT member_id, password, nickname, role, provider
         FROM member
         WHERE email = #{email}
     </select>
@@ -40,7 +40,11 @@
     </select>
 
     <!-- [소셜 신규 가입] 성별(gender)을 포함하여 회원 정보 등록 -->
-    <insert id="insertOAuthUser" parameterType="first_project.recycle.domain.User" useGeneratedKeys="true" keyProperty="memberId">
+    <insert id="insertOAuthUser"
+            parameterType="first_project.recycle.domain.User"
+            useGeneratedKeys="true"
+            keyProperty="memberId"
+            keyColumn="member_id">
         INSERT INTO member (email, name, nickname, provider, provider_id)
         VALUES (#{email}, #{name}, #{nickname}, #{provider}, #{providerId})
     </insert>

@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -47,17 +46,31 @@ public class NaverService {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
         try {
-            ResponseEntity<String> response = restTemplate.postForEntity(tokenUrl, request, String.class);
+            ResponseEntity<String> response =
+                    restTemplate.postForEntity(
+                            tokenUrl,
+                            request,
+                            String.class);
+
             JsonNode jsonNode = objectMapper.readTree(response.getBody());
-            return jsonNode.get("access_token").asText();
+
+            JsonNode accessToken = jsonNode.get("access_token");
+
+            if (accessToken == null || accessToken.asText().isBlank()) {
+                throw new IllegalStateException("네이버 ACCESS TOKEN을 발급받지 못했습니다.");
+            }
+
+            return accessToken.asText();
+
         } catch (Exception e) {
+
             log.error("네이버 토큰 발급 실패", e);
+
             throw new RuntimeException("네이버 토큰 발급 실패", e);
         }
     }
 
     // 2. Access Token으로 사용자 프로필 조회 및 신규/기존 회원 판별
-    @Transactional
     public User naverLoginProcess(String accessToken) {
         String userInfoUrl = "https://openapi.naver.com/v1/nid/me";
 
@@ -73,7 +86,13 @@ public class NaverService {
             // 네이버 응답은 response 객체 내부에 프로필 정보가 위치
             JsonNode naverAccount = root.path("response");
 
-            String providerId = naverAccount.get("id").asText();
+            JsonNode idNode = naverAccount.get("id");
+
+            if (idNode == null || idNode.asText().isBlank()) {
+                throw new IllegalStateException("네이버 회원 식별자를 조회하지 못했습니다.");
+            }
+
+            String providerId = idNode.asText();
             String name = naverAccount.hasNonNull("name") ? naverAccount.get("name").asText() : "회원";
             String nickname = naverAccount.hasNonNull("nickname") ? naverAccount.get("nickname").asText() : name;
             String email = naverAccount.hasNonNull("email") ? naverAccount.get("email").asText() : (providerId + "@naver.user");

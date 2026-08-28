@@ -9,14 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Service
@@ -41,13 +38,11 @@ public class GoogleService {
     public String getAccessToken(String code) {
         String tokenUrl = "https://oauth2.googleapis.com/token";
 
-        String decodedCode = URLDecoder.decode(code, StandardCharsets.UTF_8);
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("code", decodedCode);
+        params.add("code", code);
         params.add("client_id", clientId.trim());
         params.add("client_secret", clientSecret.trim());
         params.add("redirect_uri", redirectUri.trim());
@@ -58,18 +53,22 @@ public class GoogleService {
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(tokenUrl, request, String.class);
             JsonNode jsonNode = objectMapper.readTree(response.getBody());
-            return jsonNode.get("access_token").asText();
+            JsonNode accessToken = jsonNode.get("access_token");
+
+            if (accessToken == null || accessToken.asText().isBlank()) {
+                throw new IllegalStateException("구글 ACCESS TOKEN을 발급받지 못했습니다.");
+            }
+            return accessToken.asText();
         } catch (HttpStatusCodeException e) {
-            log.error("Google Token API Error Status: {}", e.getStatusCode());
-            log.error("Google Token API Error Body: {}", e.getResponseBodyAsString());
-            throw new RuntimeException("구글 토큰 발급 실패 (" + e.getStatusCode() + "): " + e.getResponseBodyAsString(), e);
+            log.error("Google Token API 요청 실패. status={}", e.getStatusCode());
+            throw new RuntimeException("구글 토큰 발급에 실패했습니다.", e);
         } catch (Exception e) {
-            throw new RuntimeException("구글 토큰 파싱 실패", e);
+            log.error("구글 토큰 응답 처리 실패", e);
+            throw new RuntimeException("구글 토큰 응답 처리에 실패하였습니다.", e);
         }
     }
 
     // 2. Access Token으로 사용자 정보 조회 및 신규/기존 회원 판별
-    @Transactional
     public User googleLoginProcess(String accessToken) {
         String userInfoUrl = "https://www.googleapis.com/oauth2/v2/userinfo";
 
@@ -82,7 +81,15 @@ public class GoogleService {
             ResponseEntity<String> response = restTemplate.exchange(userInfoUrl, HttpMethod.GET, request, String.class);
             JsonNode root = objectMapper.readTree(response.getBody());
 
-            String providerId = root.hasNonNull("id") ? root.get("id").asText() : root.get("sub").asText();
+            JsonNode idNode = root.get("id");
+
+            if (idNode == null || idNode.asText().isBlank()) {
+                throw new IllegalStateException(
+                        "구글 회원 식별자를 조회하지 못했습니다."
+                );
+            }
+
+            String providerId = idNode.asText();
             String name = root.hasNonNull("name") ? root.get("name").asText() : "구글회원";
             String email = root.hasNonNull("email") ? root.get("email").asText() : (providerId + "@google.user");
 

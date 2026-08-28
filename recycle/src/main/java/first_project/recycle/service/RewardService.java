@@ -47,6 +47,15 @@ public class RewardService {
         return rewardExchangeMapper.findAll();
     }
 
+    // 관리자 메인 - 리워드 요청 요약 5개
+    public List<RewardExchange> findAdminRewardSummary() {
+        return rewardExchangeMapper.findAdminSummary();
+    }
+
+    public int countRequested(){
+        return rewardExchangeMapper.countRequested();
+    }
+
     // 리워드 교환 요청
     @Transactional
     public void exchangeReward(Long memberId, Long rewardId, RewardRequest rewardRequest){

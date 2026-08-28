@@ -40,13 +40,15 @@ public class AdminController {
         model.addAttribute("suggestions", suggestions);
 
         //리워드 교환 요청 조회
-        List<RewardExchange> rewardExchanges = rewardService.findAllExchange();
+        List<RewardExchange> rewardExchanges = rewardService.findAdminRewardSummary();
         model.addAttribute("rewardExchanges", rewardExchanges);
 
-        //대기중인 리워드 요청 개수
-        Long requestRewardCount = rewardExchanges.stream()
-                .filter(exchange -> "REQUESTED".equals(exchange.getStatus())).count();
-        model.addAttribute("requestRewardCount", requestRewardCount);
+        // 개수
+        model.addAttribute("noticeCount", boardService.getNoticeCount());
+
+        model.addAttribute("suggestionCount", boardService.getSuggestionCount());
+
+        model.addAttribute("requestedCount", rewardService.countRequested());
         return "admin/adminHome";
     }
 
@@ -111,7 +113,7 @@ public class AdminController {
         redirectAttributes.addFlashAttribute(
                 "message",
                 "리워드 교환 요청을 완료 처리했습니다.");
-        return "redirect:/admin";
+        return "redirect:/admin/rewards";
     }
 
     // 관리자 > 리워드 교환 요청 거절
@@ -125,6 +127,14 @@ public class AdminController {
         redirectAttributes.addFlashAttribute(
                 "message",
                 "리워드 교환 요청을 거절했습니다.");
-        return "redirect:/admin";
+        return "redirect:/admin/rewards";
+    }
+
+    @GetMapping("/rewards")
+    public String rewardManagement(Model model){
+        List<RewardExchange> rewardExchanges = rewardService.findAllExchange();
+        model.addAttribute("rewardExchanges", rewardExchanges);
+        model.addAttribute("requestedRewardCount", rewardService.countRequested());
+        return "admin/rewards";
     }
 }

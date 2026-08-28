@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>관리자 - 리워드 요청 관리</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin.css(v=2)}">
+
+    <link rel="stylesheet"
+          th:href="@{/css/common.css(v=2)}">
+</head>
+
+<body>
+
+<!-- =====================================================
+     상단 네비게이션
+===================================================== -->
+<th:block th:replace="~{fragments/common :: nav}">
+</th:block>
+
+
+<main>
+
+    <!-- =====================================================
+         관리자 리워드 요청 관리
+    ===================================================== -->
+    <section class="admin-list-content">
+
+
+        <!-- =================================================
+             페이지 헤더
+        ================================================== -->
+        <div class="admin-list-header">
+
+            <div>
+
+                <span class="section-label">
+                    REWARD MANAGEMENT
+                </span>
+
+                <h2>
+                    리워드 요청 관리
+                </h2>
+
+                <p>
+                    회원이 신청한 리워드 교환 요청을 확인하고
+                    완료 또는 거절 처리할 수 있습니다.
+                </p>
+
+            </div>
+
+
+            <!-- 관리자 메인 이동 -->
+            <a th:href="@{/admin}"
+               class="admin-home-button">
+
+                ← 관리자 메인
+
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
+             처리 완료 메시지
+        ================================================== -->
+        <div class="admin-flash-message"
+             th:if="${message != null}">
+
+            <span class="admin-flash-icon">
+                ✓
+            </span>
+
+            <span th:text="${message}">
+                처리가 완료되었습니다.
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             리워드 요청 카드
+        ================================================== -->
+        <div class="reward-request-card">
+
+
+            <!-- =================================================
+                 카드 헤더
+            ================================================== -->
+            <div class="reward-request-card-header">
+
+                <div>
+
+                    <span class="notice-card-label">
+                        EXCHANGE REQUEST
+                    </span>
+
+                    <h3>
+                        전체 교환 요청
+                    </h3>
+
+                </div>
+
+
+                <!-- 요청 개수 -->
+                <div style="
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                ">
+
+                    <!-- 전체 개수 -->
+                    <span class="notice-count"
+                          th:text="|전체 ${rewardExchanges != null
+                          ? #lists.size(rewardExchanges)
+                          : 0}건|">
+                        전체 0건
+                    </span>
+
+
+                    <!-- 대기 개수 -->
+                    <span class="notice-count"
+                          th:text="|대기 ${requestedRewardCount}건|">
+                        대기 0건
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 요청 없음
+            ================================================== -->
+            <div class="reward-request-empty"
+                 th:if="${rewardExchanges == null
+                 or #lists.isEmpty(rewardExchanges)}">
+
+                <div class="reward-request-empty-icon">
+                    🎁
+                </div>
+
+                <strong>
+                    리워드 교환 요청이 없습니다.
+                </strong>
+
+                <p>
+                    회원이 리워드 교환을 신청하면
+                    이곳에서 확인할 수 있습니다.
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 전체 요청 목록
+            ================================================== -->
+            <div class="reward-request-list"
+                 th:if="${rewardExchanges != null
+                 and !#lists.isEmpty(rewardExchanges)}">
+
+
+                <!-- =================================================
+                     요청 한 건
+                ================================================== -->
+                <div class="reward-request-item"
+                     th:each="exchange : ${rewardExchanges}">
+
+
+                    <!-- =================================================
+                         왼쪽 : 요청 정보
+                    ================================================== -->
+                    <div class="reward-request-main">
+
+
+                        <!-- =============================================
+                             상태 + 상품명
+                        ============================================== -->
+                        <div class="reward-request-title-row">
+
+
+                            <!-- 대기 -->
+                            <span class="reward-status pending"
+                                  th:if="${exchange.status == 'REQUESTED'}">
+
+                                대기
+
+                            </span>
+
+
+                            <!-- 완료 -->
+                            <span class="reward-status completed"
+                                  th:if="${exchange.status == 'COMPLETED'}">
+
+                                완료
+
+                            </span>
+
+
+                            <!-- 거절 -->
+                            <span class="reward-status rejected"
+                                  th:if="${exchange.status == 'REJECTED'}">
+
+                                거절
+
+                            </span>
+
+
+                            <!-- 상품명 -->
+                            <strong class="reward-request-title"
+                                    th:text="${exchange.rewardNameKorean != null
+                                    ? exchange.rewardNameKorean
+                                    : exchange.rewardName}">
+
+                                리워드 상품
+
+                            </strong>
+
+                        </div>
+
+
+                        <!-- =============================================
+                             사용 포인트 + 신청일
+                        ============================================== -->
+                        <div class="reward-request-meta">
+
+                            <span>
+                                사용 포인트
+                            </span>
+
+                            <strong th:text="|${#numbers.formatInteger(
+                                    exchange.pointUsed,
+                                    0,
+                                    'COMMA'
+                            )}P|">
+
+                                300P
+
+                            </strong>
+
+
+                            <span class="reward-meta-divider">
+                                ·
+                            </span>
+
+
+                            <span>
+                                신청일
+                            </span>
+
+                            <span th:text="${#temporals.format(
+                                    exchange.exchangedAt,
+                                    'yyyy-MM-dd HH:mm'
+                            )}">
+
+                                2026-08-28 13:30
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- =============================================
+                             신청자 정보
+                        ============================================== -->
+                        <div class="reward-request-user-info">
+
+
+                            <!-- 이름 -->
+                            <div class="reward-user-info-item">
+
+                                <span class="reward-info-label">
+                                    이름
+                                </span>
+
+                                <strong th:text="${exchange.name != null
+                                        ? exchange.name
+                                        : '-'}">
+
+                                    홍길동
+
+                                </strong>
+
+                            </div>
+
+
+                            <!-- 전화번호 -->
+                            <div class="reward-user-info-item">
+
+                                <span class="reward-info-label">
+                                    전화번호
+                                </span>
+
+                                <strong th:text="${exchange.phone != null
+                                        ? exchange.phone
+                                        : '-'}">
+
+                                    010-1234-5678
+
+                                </strong>
+
+                            </div>
+
+
+                            <!-- 주소 -->
+                            <div class="reward-user-info-item reward-address-item">
+
+                                <span class="reward-info-label">
+                                    주소
+                                </span>
+
+
+                                <div class="reward-address-value">
+
+                                    <!-- 기본 주소 -->
+                                    <strong th:text="${exchange.address != null
+                                            ? exchange.address
+                                            : '-'}">
+
+                                        서울특별시 강남구
+
+                                    </strong>
+
+
+                                    <!-- 상세 주소 -->
+                                    <span th:if="${exchange.addressDetail != null
+                                            and !#strings.isEmpty(
+                                                exchange.addressDetail
+                                            )}"
+                                          th:text="${exchange.addressDetail}">
+
+                                        101동 202호
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =============================================
+                             처리일
+                        ============================================== -->
+                        <div class="reward-request-processed"
+                             th:if="${exchange.processedAt != null}">
+
+                            <span>
+                                처리일
+                            </span>
+
+                            <strong th:text="${#temporals.format(
+                                    exchange.processedAt,
+                                    'yyyy-MM-dd HH:mm'
+                            )}">
+
+                                2026-08-28 14:00
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         오른쪽 : 상태별 처리 버튼
+                    ================================================== -->
+
+
+                    <!-- REQUESTED -->
+                    <div class="reward-request-actions"
+                         th:if="${exchange.status == 'REQUESTED'}">
+
+
+                        <!-- 완료 -->
+                        <form th:action="@{/admin/rewards/{exchangeId}/complete(
+                                exchangeId=${exchange.exchangeId}
+                        )}"
+                              method="post"
+                              onsubmit="return confirm(
+                              '이 리워드 요청을 완료 처리하시겠습니까?'
+                              );">
+
+                            <button type="submit"
+                                    class="reward-complete-button">
+
+                                완료
+
+                            </button>
+
+                        </form>
+
+
+                        <!-- 거절 -->
+                        <form th:action="@{/admin/rewards/{exchangeId}/reject(
+                                exchangeId=${exchange.exchangeId}
+                        )}"
+                              method="post"
+                              onsubmit="return confirm(
+                              '이 요청을 거절하시겠습니까? 사용 포인트와 재고가 복구됩니다.'
+                              );">
+
+                            <button type="submit"
+                                    class="reward-reject-button">
+
+                                거절
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         COMPLETED
+                    ================================================== -->
+                    <div class="reward-request-actions"
+                         th:if="${exchange.status == 'COMPLETED'}">
+
+                        <span class="reward-processed-text completed">
+
+                            처리 완료
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         REJECTED
+                    ================================================== -->
+                    <div class="reward-request-actions"
+                         th:if="${exchange.status == 'REJECTED'}">
+
+                        <span class="reward-processed-text rejected">
+
+                            거절 완료
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             하단 이동
+        ================================================== -->
+        <div class="back-area">
+
+            <a th:href="@{/admin}">
+                ← 관리자 메인으로 돌아가기
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =====================================================
+     Footer
+===================================================== -->
+<th:block th:replace="~{fragments/common :: footer}">
+</th:block>
+
+</body>
+
+</html>
