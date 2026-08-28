@@ -1,6 +1,7 @@
 package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
+import first_project.recycle.domain.SessionUser;
 import first_project.recycle.domain.User;
 import first_project.recycle.service.NaverService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -94,10 +95,18 @@ public class NaverController {
             redirectAttributes.addFlashAttribute("message", "회원가입을 축하합니다. 신규 가입 에코포인트 100p가 지급되었습니다.");
         }
 
+
         // 세션 고정 보호 및 로그인 세션 저장
         request.changeSessionId();
+
+        SessionUser sessionUser = new SessionUser(
+                loginUser.getMemberId(),
+                loginUser.getNickname(),
+                loginUser.getProvider(),
+                loginUser.getRole()
+        );
         session.setAttribute("checkLogin", true);
-        session.setAttribute(SessionConst.LOGIN_MEMBER, loginUser);
+        session.setAttribute(SessionConst.LOGIN_MEMBER, sessionUser);
 
         return "redirect:/";
     }

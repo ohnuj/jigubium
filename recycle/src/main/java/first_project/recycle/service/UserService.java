@@ -29,11 +29,13 @@ public class UserService {
     @Transactional
     public boolean signup(User user) {
 
-        // 0. 회원정보 정규화 - 모든 공백 제거
-        user.setName(user.getName().replaceAll("\\s+", ""));
-        user.setNickname(user.getNickname().replaceAll("\\s+", ""));
-        user.setEmail(user.getEmail().replaceAll("\\s+", "").toLowerCase());
-
+        // 회원정보 정규화
+        user.setName(
+                user.getName().trim().replaceAll("\\s+", " "));
+        user.setNickname(
+                user.getNickname().trim().replaceAll("\\s+", " "));
+        user.setEmail(
+                user.getEmail().replaceAll("\\s+", "").toLowerCase());
 
         // 1. 동일한 이메일로 가입된 회원이 있는지 중복 검증
         if (userMapper.countByEmail(user.getEmail()) > 0) {
@@ -48,7 +50,7 @@ public class UserService {
         userMapper.insert(user);
 
         // 4. 회원가입시 에코포인트 100p 제공
-        ecoPointHistoryService.earnPoint(user.getMemberId(),100,"SIGNUP",user.getMemberId());
+        ecoPointHistoryService.earnPoint(user.getMemberId(), 100, "SIGNUP", user.getMemberId());
         return true; // 가입 성공 반환
     }
 

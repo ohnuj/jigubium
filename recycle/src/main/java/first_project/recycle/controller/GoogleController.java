@@ -1,6 +1,7 @@
 package first_project.recycle.controller;
 
 import first_project.recycle.config.SessionConst;
+import first_project.recycle.domain.SessionUser;
 import first_project.recycle.domain.User;
 import first_project.recycle.service.GoogleService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -134,10 +135,15 @@ public class GoogleController {
 
         // 8. login 성공 후 세션 ID 변경
         request.changeSessionId();
-
+        SessionUser sessionUser = new SessionUser(
+                loginUser.getMemberId(),
+                loginUser.getNickname(),
+                loginUser.getProvider(),
+                loginUser.getRole()
+        );
         // 9. 일반 로그인과 동일한 세션 구조
         session.setAttribute("checkLogin", true);
-        session.setAttribute(SessionConst.LOGIN_MEMBER, loginUser);
+        session.setAttribute(SessionConst.LOGIN_MEMBER, sessionUser);
         return "redirect:/";
     }
 }

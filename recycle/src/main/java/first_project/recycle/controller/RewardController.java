@@ -33,6 +33,7 @@ public class RewardController {
 
         //리워드 목록
         List<Reward> rewards = rewardService.findAll();
+
         //현재 에코포인트
         int currentPoint = ecoPointHistoryService.findCurrentBalance(memberId);
         model.addAttribute("rewards",rewards);
@@ -40,6 +41,8 @@ public class RewardController {
         return "reward/shop";
     }
 
+
+    //리워드 교환 요청
     @PostMapping("/reward/exchange")
     public String exchange(@RequestParam("rewardId") Long rewardId,
                            HttpServletRequest request, RedirectAttributes redirectAttributes){
@@ -51,7 +54,7 @@ public class RewardController {
         try {
                 rewardService.exchangeReward(memberId,rewardId);
                 redirectAttributes.addFlashAttribute(
-                        "message","리워드 교환이 완료되었습니다");
+                        "message","리워드 교환 요청이 완료되었습니다");
 
         }catch (IllegalStateException e){
             redirectAttributes.addFlashAttribute("eMessage",e.getMessage());

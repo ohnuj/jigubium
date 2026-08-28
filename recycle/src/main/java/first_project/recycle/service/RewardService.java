@@ -24,6 +24,17 @@ public class RewardService {
         return rewardMapper.findAll();
     }
 
+    // 회원별 리워드 교환 내역
+    public List<RewardExchange> findByMemberId(Long memberId){
+        return rewardExchangeMapper.findByMemberId(memberId);
+    }
+
+    // 관리자 > 전체 리워드 교환 요청 조회
+    public List<RewardExchange> findAllExchange(){
+        return rewardExchangeMapper.findAll();
+    }
+
+    // 리워드 교환 요청
     @Transactional
     public void exchangeReward(Long memberId, Long rewardId){
         //1. 교환하려는 리워드 조회
@@ -48,13 +59,16 @@ public class RewardService {
         if(stockResult == 0){
             throw new IllegalStateException("리워드 재고가 없습니다");
         }
-        //6. 리워드 교환 내역
+        //6. 리워드 교환 요청 저장
         RewardExchange rewardExchange = new RewardExchange();
         rewardExchange.setMemberId(memberId);
         rewardExchange.setRewardId(rewardId);
         rewardExchange.setPointUsed(requiredPoint);
 
-        rewardExchangeMapper.insertExchange(rewardExchange);
+        int exchangeResult = rewardExchangeMapper.insertExchange(rewardExchange);
+        if (exchangeResult == 0 || rewardExchange.getExchangeId() == null){
+            throw new IllegalStateException("리워드 교환 요청 저장에 실패했습니다.");
+        }
         //7. 남은 포인트
         int balanceAfter = currentPoint - requiredPoint;
         //8. 에코포인트 사용 내역
@@ -68,9 +82,59 @@ public class RewardService {
         ecoPointHistory.setReferenceId(rewardExchange.getExchangeId());
 
         //9. 에코포인트 내역 저장
-        ecoPointHistoryService.insertPointHistory(ecoPointHistory);
+        int pointResult = ecoPointHistoryService.insertPointHistory(ecoPointHistory);
 
+        if(pointResult == 0){
+            throw new IllegalStateException("에코포인트 사용 내역 저장에 실패했습니다.");
+        }
+    }
 
+    // 관리자 > 교환 요청 완료
+    @Transactional
+    public void completeExchange(Long exchangeId){
+
+        RewardExchange exchange = rewardExchangeMapper.findById(exchangeId);
+
+        if (exchange == null){
+            throw new NotFoundException("존재하지 않는 리워드 교환 요청입니다.");
+        }
+
+        int result = rewardExchangeMapper.completeExchange(exchangeId);
+
+        if (result == 0){
+            throw new IllegalStateException("이미 처리된 리워드 교환 요청입니다.");
+        }
+    }
+
+    // 관리자 > 교환 요청 거절
+    @Transactional
+    public void rejectExchange(Long exchangeId){
+
+        RewardExchange exchange = rewardExchangeMapper.findById(exchangeId);
+
+        if (exchange == null){
+            throw new NotFoundException("존재하지 않는 리워드 교환 요청입니다.");
+        }
+
+        int result = rewardExchangeMapper.rejectExchange(exchangeId);
+
+        if (result == 0){
+            throw new IllegalStateException("이미 처리된 리워드 교환 요청입니다.");
+        }
+
+        // 재고 복구
+        int stockResult = rewardMapper.plusStock(exchange.getRewardId());
+
+        if(stockResult == 0){
+            throw new IllegalStateException("리워드 재고 복구에 실패했습니다.");
+        }
+
+        ecoPointHistoryService.refundPoint(
+                exchange.getMemberId(),
+                exchange.getPointUsed(),
+                "REWARD",
+                exchange.getExchangeId()
+        );
     }
 
 
