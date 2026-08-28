@@ -117,8 +117,30 @@
     const submitBtn = document.getElementById("submitBtn");
 
     writeForm.addEventListener("submit", function () {
+
         submitBtn.disabled = true;
         submitBtn.textContent = "등록 중...";
+    });
+
+    window.addEventListener("pageshow", function (event) {
+
+        const boardCreated =
+            sessionStorage.getItem("boardCreated");
+
+        const navigation =
+            performance.getEntriesByType("navigation")[0];
+
+        const isBackNavigation =
+            event.persisted ||
+            (navigation && navigation.type === "back_forward");
+
+        // 글 등록 완료 후 뒤로가기로 작성 페이지에 돌아온 경우
+        if (boardCreated === "true" && isBackNavigation) {
+
+            sessionStorage.removeItem("boardCreated");
+
+            window.location.replace("/boards");
+        }
     });
 </script>
 </body>
