@@ -7,7 +7,7 @@
 
     <title>관리자 페이지</title>
 
-    <link rel="stylesheet" th:href="@{/css/admin.css(v=5)}">
+    <link rel="stylesheet" th:href="@{/css/admin.css(v=13)}">
     <link rel="stylesheet" th:href="@{/css/common.css(v=2)}">
 </head>
 
@@ -36,7 +36,9 @@
                     ADMIN CONSOLE
                 </span>
 
-                <h1>관리자 페이지</h1>
+                <h1>
+                    관리자 페이지
+                </h1>
 
                 <p>
                     지구비우기 서비스의 재활용 품목과<br>
@@ -46,7 +48,9 @@
             </div>
 
 
-            <!-- 오른쪽 : 대시보드 -->
+            <!-- =================================================
+                 오른쪽 : 대시보드
+            ================================================== -->
             <div class="admin-dashboard">
 
                 <!-- 전체 회원 -->
@@ -57,10 +61,15 @@
                     </span>
 
                     <div class="dashboard-value">
+
                         <strong th:text="${dashBoard.totalMember}">
                             152
                         </strong>
-                        <span>명</span>
+
+                        <span>
+                            명
+                        </span>
+
                     </div>
 
                 </div>
@@ -74,27 +83,41 @@
                     </span>
 
                     <div class="dashboard-value">
+
                         <strong th:text="${dashBoard.totalBoard}">
                             384
                         </strong>
-                        <span>개</span>
+
+                        <span>
+                            개
+                        </span>
+
                     </div>
 
                 </div>
 
 
                 <!-- 미확인 건의글 -->
-                <div class="dashboard-card">
+                <div class="dashboard-card"
+                     th:classappend="${dashBoard.uncheckedSuggestion != null
+                        and dashBoard.uncheckedSuggestion > 0}
+                        ? 'dashboard-card-alert'
+                        : ''">
 
                     <span class="dashboard-label">
                         미확인 건의글
                     </span>
 
                     <div class="dashboard-value">
+
                         <strong th:text="${dashBoard.uncheckedSuggestion}">
-                            10
+                            0
                         </strong>
-                        <span>개</span>
+
+                        <span>
+                            개
+                        </span>
+
                     </div>
 
                 </div>
@@ -108,10 +131,15 @@
                     </span>
 
                     <div class="dashboard-value">
+
                         <strong th:text="${dashBoard.todayMember}">
                             8
                         </strong>
-                        <span>명</span>
+
+                        <span>
+                            명
+                        </span>
+
                     </div>
 
                 </div>
@@ -125,10 +153,40 @@
                     </span>
 
                     <div class="dashboard-value">
+
                         <strong th:text="${dashBoard.todayBoard}">
                             12
                         </strong>
-                        <span>개</span>
+
+                        <span>
+                            개
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     리워드 요청
+                     TODO : 내일 requestedReward 백엔드 연결
+                ================================================== -->
+                <div class="dashboard-card">
+
+                    <span class="dashboard-label">
+                        리워드 요청
+                    </span>
+
+                    <div class="dashboard-value">
+
+                        <strong>
+                            0
+                        </strong>
+
+                        <span>
+                            개
+                        </span>
+
                     </div>
 
                 </div>
@@ -147,7 +205,7 @@
 
 
         <!-- =====================================================
-             공지사항 관리
+             게시판 관리
         ===================================================== -->
         <section class="admin-notice-management">
 
@@ -156,15 +214,16 @@
                 <div>
 
                     <span class="section-label">
-                        NOTICE MANAGEMENT
+                        BOARD MANAGEMENT
                     </span>
 
                     <h2>
-                        공지사항 관리
+                        공지사항 및 건의사항 관리
                     </h2>
 
                     <p>
-                        서비스에 표시할 공지사항을 작성하고 관리할 수 있습니다.
+                        서비스에 표시할 공지사항을 작성하고,
+                        회원이 등록한 건의사항을 관리할 수 있습니다.
                     </p>
 
                 </div>
@@ -176,7 +235,7 @@
 
 
                 <!-- =================================================
-                     공지사항 작성
+                     왼쪽 : 공지사항 작성
                 ================================================== -->
                 <div class="notice-write-card">
 
@@ -205,6 +264,7 @@
                           method="post"
                           class="notice-write-form">
 
+                        <!-- 제목 -->
                         <div class="notice-form-group">
 
                             <label for="noticeTitle">
@@ -221,7 +281,8 @@
                         </div>
 
 
-                        <div class="notice-form-group">
+                        <!-- 내용 -->
+                        <div class="notice-form-group notice-content-group">
 
                             <label for="noticeContent">
                                 내용
@@ -229,13 +290,13 @@
 
                             <textarea id="noticeContent"
                                       name="content"
-                                      rows="8"
                                       placeholder="공지사항 내용을 입력하세요."
                                       required></textarea>
 
                         </div>
 
 
+                        <!-- 등록 버튼 -->
                         <div class="notice-form-actions">
 
                             <button type="submit"
@@ -251,7 +312,7 @@
 
 
                 <!-- =================================================
-                     오른쪽 : 공지사항 + 건의글
+                     오른쪽 : 공지사항 + 건의사항
                 ================================================== -->
                 <div class="notice-list-card">
 
@@ -308,6 +369,7 @@
 
                             <div class="notice-admin-main">
 
+                                <!-- 제목 -->
                                 <div class="notice-title-row">
 
                                     <span class="notice-badge-small">
@@ -323,6 +385,7 @@
                                 </div>
 
 
+                                <!-- 메타 -->
                                 <div class="notice-admin-meta">
 
                                     <span>
@@ -342,6 +405,7 @@
                             </div>
 
 
+                            <!-- 수정 / 삭제 -->
                             <div class="notice-admin-actions">
 
                                 <a th:href="@{/admin/notices/{boardId}/edit(boardId=${notice.boardId})}"
@@ -370,10 +434,11 @@
 
 
                     <!-- =================================================
-                         건의글 목록
+                         건의사항 목록
                     ================================================== -->
                     <div class="suggestion-section">
 
+                        <!-- 헤더 -->
                         <div class="suggestion-section-header">
 
                             <div>
@@ -383,14 +448,15 @@
                                 </span>
 
                                 <h3>
-                                    건의글
+                                    등록된 건의사항
                                 </h3>
 
                             </div>
 
+
                             <span class="notice-count"
-                                  th:text="|총 ${#lists.size(suggestions)}개|">
-                                총 0개
+                                  th:text="|미확인 ${dashBoard.uncheckedSuggestion}개 / 총 ${#lists.size(suggestions)}개|">
+                                미확인 0개 / 총 0개
                             </span>
 
                         </div>
@@ -398,7 +464,7 @@
 
                         <div class="suggestion-admin-list">
 
-                            <!-- 건의글이 없을 때 -->
+                            <!-- 건의사항 없음 -->
                             <div class="notice-empty"
                                  th:if="${#lists.isEmpty(suggestions)}">
 
@@ -407,61 +473,67 @@
                                 </div>
 
                                 <strong>
-                                    등록된 건의글이 없습니다.
+                                    등록된 건의사항이 없습니다.
                                 </strong>
 
                                 <p>
-                                    회원이 작성한 건의글이 여기에 표시됩니다.
+                                    회원이 작성한 건의사항이 여기에 표시됩니다.
                                 </p>
 
                             </div>
 
 
-                            <!-- 건의글이 있을 때 -->
+                            <!-- 건의사항 있음 -->
                             <div class="suggestion-admin-item"
                                  th:each="suggestion : ${suggestions}">
 
-                                <div class="notice-admin-main">
+                                <!-- 상태 + 제목 -->
+                                <div class="suggestion-title-row">
 
-                                    <div class="notice-title-row">
-
-                                        <!-- 미확인 -->
-                                        <span class="suggestion-badge unchecked"
-                                              th:if="${!suggestion.adminChecked}">
-                                            미확인
-                                        </span>
-
-                                        <!-- 확인 -->
-                                        <span class="suggestion-badge checked"
-                                              th:if="${suggestion.adminChecked}">
-                                            확인
-                                        </span>
+                                    <!-- 미확인 -->
+                                    <span class="suggestion-badge unchecked"
+                                          th:if="${!suggestion.adminChecked}">
+                                        미확인
+                                    </span>
 
 
-                                        <a th:href="@{/boards/{boardId}(boardId=${suggestion.boardId})}"
-                                           th:text="${suggestion.title}"
-                                           class="notice-admin-title">
-                                            건의글 제목
-                                        </a>
-
-                                    </div>
+                                    <!-- 확인 -->
+                                    <span class="suggestion-badge checked"
+                                          th:if="${suggestion.adminChecked}">
+                                        확인
+                                    </span>
 
 
-                                    <div class="notice-admin-meta">
+                                    <!-- 제목 클릭 -> 확인 처리 후 상세 이동 -->
+                                    <form th:action="@{/admin/suggestions/{boardId}/check(boardId=${suggestion.boardId})}"
+                                          method="post"
+                                          class="suggestion-check-form">
 
-                                        <span th:text="${suggestion.nickname}">
-                                            작성자
-                                        </span>
+                                        <button type="submit"
+                                                class="suggestion-title-button"
+                                                th:text="${suggestion.title}">
+                                            건의사항 제목
+                                        </button>
 
-                                        <span class="notice-meta-divider">
-                                            ·
-                                        </span>
+                                    </form>
 
-                                        <span th:text="${#temporals.format(suggestion.createdAt, 'yyyy-MM-dd HH:mm')}">
-                                            2026-08-27 16:30
-                                        </span>
+                                </div>
 
-                                    </div>
+
+                                <!-- 작성자 + 작성일 -->
+                                <div class="suggestion-meta">
+
+                                    <span th:text="${suggestion.nickname}">
+                                        닉네임
+                                    </span>
+
+                                    <span class="suggestion-meta-divider">
+                                        ·
+                                    </span>
+
+                                    <span th:text="${#temporals.format(suggestion.createdAt, 'yyyy-MM-dd HH:mm')}">
+                                        2026-08-27 17:04
+                                    </span>
 
                                 </div>
 
@@ -472,6 +544,157 @@
                     </div>
 
                 </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             리워드 요청 관리
+        ===================================================== -->
+        <section class="admin-reward-management">
+
+            <div class="admin-section-header">
+
+                <div>
+
+                    <span class="section-label">
+                        REWARD MANAGEMENT
+                    </span>
+
+                    <h2>
+                        리워드 요청 관리
+                    </h2>
+
+                    <p>
+                        회원이 신청한 리워드 교환 요청을 확인하고 관리할 수 있습니다.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 리워드 교환 요청 카드
+            ================================================== -->
+            <div class="reward-request-card">
+
+                <!-- 카드 헤더 -->
+                <div class="reward-request-card-header">
+
+                    <div>
+
+                        <span class="notice-card-label">
+                            EXCHANGE REQUEST
+                        </span>
+
+                        <h3>
+                            교환 요청 목록
+                        </h3>
+
+                    </div>
+
+
+                    <!--
+                        TODO
+                        내일 백엔드 연결 후
+                        대기 요청 개수 표시
+                    -->
+                    <span class="notice-count">
+                        대기 0건
+                    </span>
+
+                </div>
+
+
+                <!-- =================================================
+                     현재는 백엔드 미연동 상태
+                ================================================== -->
+                <div class="reward-request-empty">
+
+                    <div class="notice-empty-icon">
+                        🎁
+                    </div>
+
+                    <strong>
+                        대기 중인 리워드 교환 요청이 없습니다.
+                    </strong>
+
+                    <p>
+                        회원이 리워드 교환을 신청하면 이곳에서 확인할 수 있습니다.
+                    </p>
+
+                </div>
+
+
+                <!-- =================================================
+                     TODO : 내일 실제 요청 목록 연결 시 사용할 구조 예시
+
+                     아래는 현재 주석 상태이므로 화면에는 출력되지 않음
+                ================================================== -->
+
+                <!--
+                <div class="reward-request-list">
+
+                    <div class="reward-request-item">
+
+                        <div class="reward-request-main">
+
+                            <div class="reward-request-title-row">
+
+                                <span class="reward-status pending">
+                                    대기
+                                </span>
+
+                                <strong class="reward-request-title">
+                                    친환경 텀블러
+                                </strong>
+
+                            </div>
+
+
+                            <div class="reward-request-meta">
+
+                                <span>
+                                    홍길동
+                                </span>
+
+                                <span>
+                                    ·
+                                </span>
+
+                                <span>
+                                    3,000P
+                                </span>
+
+                                <span>
+                                    ·
+                                </span>
+
+                                <span>
+                                    2026-08-27 19:30
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="reward-request-actions">
+
+                            <button type="button"
+                                    class="edit-button">
+                                상세보기
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                -->
 
             </div>
 
@@ -508,12 +731,15 @@
         <div class="admin-card-grid">
 
 
-            <!-- 재활용 품목 -->
+            <!-- =================================================
+                 재활용 품목
+            ================================================== -->
             <article class="admin-card">
 
                 <div class="admin-card-icon">
                     ♻️
                 </div>
+
 
                 <div class="admin-card-content">
 
@@ -533,6 +759,7 @@
 
                 </div>
 
+
                 <div class="admin-card-bottom">
 
                     <a class="admin-button"
@@ -551,12 +778,15 @@
             </article>
 
 
-            <!-- 수거함 위치 -->
+            <!-- =================================================
+                 수거함 위치
+            ================================================== -->
             <article class="admin-card">
 
                 <div class="admin-card-icon">
                     📍
                 </div>
+
 
                 <div class="admin-card-content">
 
@@ -575,6 +805,7 @@
                     </p>
 
                 </div>
+
 
                 <div class="admin-card-bottom">
 
@@ -605,6 +836,7 @@
                 💡
             </div>
 
+
             <div>
 
                 <strong>
@@ -621,6 +853,9 @@
         </div>
 
 
+        <!-- =================================================
+             메인 페이지 이동
+        ================================================== -->
         <div class="back-area">
 
             <a th:href="@{/}">
@@ -641,4 +876,5 @@
 </th:block>
 
 </body>
+
 </html>

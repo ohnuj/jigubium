@@ -37,13 +37,9 @@ textarea {
 }
 
 
-
 /* =========================================================
    ADMIN HERO
 ========================================================= */
-/* ========================================
-   관리자 상단 Hero + Dashboard
-======================================== */
 
 .admin-hero {
     background: #236742;
@@ -66,9 +62,9 @@ textarea {
 }
 
 
-/* ========================================
+/* =========================================================
    왼쪽 관리자 소개
-======================================== */
+========================================================= */
 
 .admin-hero-content {
     min-width: 0;
@@ -104,31 +100,31 @@ textarea {
 }
 
 
-/* ========================================
-   Dashboard 영역
-======================================== */
+/* =========================================================
+   DASHBOARD
+========================================================= */
 
 .admin-dashboard {
     width: 66%;
+
     justify-self: end;
 
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 
     gap: 10px;
 }
 
-
-/* 통계 카드 */
-
 .dashboard-card {
-    min-height: 58px;
+    min-height: 66px;
 
-    padding: 12px 20px;
+    padding: 12px 16px;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    gap: 12px;
 
     background: rgba(255, 255, 255, 0.10);
 
@@ -142,49 +138,73 @@ textarea {
 
 .dashboard-card:hover {
     background: rgba(255, 255, 255, 0.15);
+
     transform: translateY(-2px);
 }
 
-
-/* 이름 */
-
 .dashboard-label {
-    font-size: 13px;
+    color: rgba(255, 255, 255, 0.82);
+
+    font-size: 12px;
     font-weight: 600;
 
-    color: rgba(255, 255, 255, 0.82);
+    line-height: 1.35;
 }
 
-
-/* 숫자 */
-
 .dashboard-value {
+    flex-shrink: 0;
+
     display: flex;
     align-items: baseline;
 
-    gap: 5px;
+    gap: 4px;
 }
 
 .dashboard-value strong {
-    font-size: 26px;
+    color: #ffffff;
+
+    font-size: 24px;
     font-weight: 800;
     line-height: 1;
-
-    color: #ffffff;
 }
 
 .dashboard-value span {
-    font-size: 13px;
-    font-weight: 600;
-
     color: #c7ff76;
+
+    font-size: 12px;
+    font-weight: 600;
 }
-
-
-/* 오늘 현황은 살짝 강조 */
 
 .dashboard-card-today {
     background: rgba(190, 255, 101, 0.10);
+}
+/* 미확인 건의글이 1개 이상일 때 강조 */
+.dashboard-card-alert {
+    background: rgba(220, 70, 70, 0.42);
+    border: 1px solid rgba(255, 170, 160, 0.85);
+
+    box-shadow:
+            0 0 0 1px rgba(255, 120, 110, 0.10),
+            0 5px 14px rgba(120, 20, 20, 0.12);
+}
+
+.dashboard-card-alert:hover {
+    background: rgba(225, 70, 70, 0.52);
+
+    border-color: rgba(255, 190, 180, 0.95);
+}
+
+.dashboard-card-alert .dashboard-label {
+    color: #fff0ed;
+    font-weight: 700;
+}
+
+.dashboard-card-alert .dashboard-value strong {
+    color: #ffffff;
+}
+
+.dashboard-card-alert .dashboard-value span {
+    color: #ffd2ca;
 }
 
 
@@ -358,6 +378,7 @@ textarea {
     padding: 19px 22px;
 
     display: flex;
+
     gap: 14px;
 
     border: 1px solid #dce7d4;
@@ -389,10 +410,10 @@ textarea {
 .admin-back-area {
     margin-top: 28px;
 
+    color: #53735b;
+
     font-size: 13px;
     font-weight: 700;
-
-    color: #53735b;
 }
 
 
@@ -549,23 +570,22 @@ textarea {
     background: #f4f7f1;
 }
 
+
 /* =========================================================
    ECO LOCATION SELECT
 ========================================================= */
 
-
-/* 상단 종류 필터 영역 */
 .location-search-box .admin-filter-select {
     position: relative;
+
     flex: 0 0 190px;
 }
 
-
-/* 직접 화살표 */
 .location-search-box .admin-filter-select::after {
     content: "";
 
     position: absolute;
+
     top: 50%;
     right: 16px;
 
@@ -581,12 +601,7 @@ textarea {
     pointer-events: none;
 }
 
-
-/* 상단 종류 select */
-.location-search-box,
-.admin-filter-select,
-select[name="locationType"] {
-
+.location-search-box .admin-filter-select select[name="locationType"] {
     display: block;
 
     width: 100%;
@@ -619,20 +634,13 @@ select[name="locationType"] {
             box-shadow 0.2s;
 }
 
-
-.location-search-box,
-.admin-filter-select,
-select[name="locationType"]:hover {
-
+.location-search-box .admin-filter-select select[name="locationType"]:hover {
     background-color: #ffffff;
+
     border-color: #abc4a3;
 }
 
-
-.location-search-box,
-.admin-filter-select,
-select[name="locationType"]:focus {
-
+.location-search-box .admin-filter-select select[name="locationType"]:focus {
     background-color: #ffffff;
 
     border-color: #74a46c;
@@ -643,12 +651,10 @@ select[name="locationType"]:focus {
 
 
 /* =========================================================
-   수정폼 select
+   수정폼 SELECT
 ========================================================= */
 
-.admin-edit-form,
-select[name="locationType"] {
-
+.admin-edit-form select[name="locationType"] {
     display: block;
 
     width: 100%;
@@ -671,22 +677,18 @@ select[name="locationType"] {
 
     outline: none;
 
-    appearance: auto;
-
     transition:
             border-color 0.2s,
             box-shadow 0.2s;
 }
 
-
-.admin-edit-form,
-select[name="locationType"]:focus {
-
+.admin-edit-form select[name="locationType"]:focus {
     border-color: #79a971;
 
     box-shadow:
             0 0 0 3px rgba(121, 169, 113, 0.1);
 }
+
 
 /* =========================================================
    TABLE
@@ -922,8 +924,6 @@ select[name="locationType"]:focus {
             transform 0.15s;
 }
 
-
-/* 수정 - 녹색 */
 .edit-button {
     border: 1px solid #c8ddbe;
 
@@ -938,8 +938,6 @@ select[name="locationType"]:focus {
     background: #e4f2dc;
 }
 
-
-/* 삭제 - 2번 화면 스타일 */
 .delete-button {
     border: 1px solid #efc6ba;
 
@@ -1281,7 +1279,7 @@ select[name="locationType"]:focus {
     display: flex;
     justify-content: space-between;
 
-    border-top: 1px solid rgba(255,255,255,0.09);
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
 }
 
 .footer-bottom p {
@@ -1291,6 +1289,8 @@ select[name="locationType"]:focus {
 
     font-size: 11px;
 }
+
+
 /* =========================================================
    NOTICE MANAGEMENT
 ========================================================= */
@@ -1301,16 +1301,25 @@ select[name="locationType"]:focus {
 
 .notice-management-grid {
     display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 
     gap: 22px;
+
+    /* 좌우 카드 높이를 동일하게 */
+    align-items: stretch;
 }
 
 
-/* 공통 카드 */
+/* 공지사항 작성 / 목록 카드 */
 .notice-write-card,
 .notice-list-card {
+    height: 100%;
+
     padding: 28px;
+
+    display: flex;
+    flex-direction: column;
 
     border: 1px solid #dce7d7;
     border-radius: 18px;
@@ -1332,7 +1341,6 @@ select[name="locationType"]:focus {
     gap: 20px;
 }
 
-
 .notice-card-label {
     display: block;
 
@@ -1346,16 +1354,15 @@ select[name="locationType"]:focus {
     letter-spacing: 0.07em;
 }
 
-
 .notice-card-header h3 {
     margin: 0;
 
     color: #173f2a;
 
     font-size: 20px;
+
     letter-spacing: -0.03em;
 }
-
 
 .notice-card-icon {
     width: 46px;
@@ -1380,11 +1387,14 @@ select[name="locationType"]:focus {
 ========================================================= */
 
 .notice-write-form {
-    display: grid;
+    flex: 1;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
 
     gap: 18px;
 }
-
 
 .notice-form-group {
     display: grid;
@@ -1392,14 +1402,12 @@ select[name="locationType"]:focus {
     gap: 8px;
 }
 
-
 .notice-form-group label {
     color: #425649;
 
     font-size: 13px;
     font-weight: 800;
 }
-
 
 .notice-form-group input,
 .notice-form-group textarea {
@@ -1425,18 +1433,32 @@ select[name="locationType"]:focus {
             background 0.2s;
 }
 
-
 .notice-form-group input {
     height: 46px;
 }
 
 
-.notice-form-group textarea {
-    min-height: 190px;
+/*
+   HTML의 내용 그룹에
+   class="notice-form-group notice-content-group"
+   형태로 사용
+*/
+.notice-content-group {
+    flex: 1;
+    min-height: 0;
 
-    resize: vertical;
+    display: flex;
+    flex-direction: column;
 }
 
+.notice-content-group textarea {
+    flex: 1;
+
+    width: 100%;
+    min-height: 300px;
+
+    resize: none;
+}
 
 .notice-form-group input:focus,
 .notice-form-group textarea:focus {
@@ -1448,19 +1470,19 @@ select[name="locationType"]:focus {
             0 0 0 3px rgba(121, 169, 113, 0.1);
 }
 
-
 .notice-form-group input::placeholder,
 .notice-form-group textarea::placeholder {
     color: #9aa59c;
 }
 
-
 .notice-form-actions {
+    margin-top: 0;
+
     display: flex;
-
     justify-content: flex-end;
-}
 
+    flex-shrink: 0;
+}
 
 .notice-submit-button {
     min-width: 110px;
@@ -1484,11 +1506,9 @@ select[name="locationType"]:focus {
             transform 0.15s;
 }
 
-
 .notice-submit-button:hover {
     background: #123f29;
 }
-
 
 .notice-submit-button:active {
     transform: translateY(1px);
@@ -1515,11 +1535,9 @@ select[name="locationType"]:focus {
     white-space: nowrap;
 }
 
-
 .notice-admin-list {
     border-top: 1px solid #e2e9de;
 }
-
 
 .notice-admin-item {
     padding: 18px 2px;
@@ -1533,18 +1551,15 @@ select[name="locationType"]:focus {
     border-bottom: 1px solid #e8ede5;
 }
 
-
 .notice-admin-item:last-child {
     border-bottom: none;
 }
-
 
 .notice-admin-main {
     flex: 1;
 
     min-width: 0;
 }
-
 
 .notice-title-row {
     display: flex;
@@ -1554,7 +1569,6 @@ select[name="locationType"]:focus {
 
     min-width: 0;
 }
-
 
 .notice-badge-small {
     flex-shrink: 0;
@@ -1572,7 +1586,6 @@ select[name="locationType"]:focus {
     font-weight: 800;
 }
 
-
 .notice-admin-title {
     min-width: 0;
 
@@ -1587,11 +1600,9 @@ select[name="locationType"]:focus {
     text-overflow: ellipsis;
 }
 
-
 .notice-admin-title:hover {
     color: #4e894d;
 }
-
 
 .notice-admin-meta {
     margin-top: 8px;
@@ -1606,11 +1617,9 @@ select[name="locationType"]:focus {
     font-size: 11px;
 }
 
-
 .notice-meta-divider {
     color: #c1cac0;
 }
-
 
 .notice-admin-actions {
     flex-shrink: 0;
@@ -1632,13 +1641,11 @@ select[name="locationType"]:focus {
     text-align: center;
 }
 
-
 .notice-empty-icon {
     margin-bottom: 10px;
 
     font-size: 25px;
 }
-
 
 .notice-empty strong {
     display: block;
@@ -1647,7 +1654,6 @@ select[name="locationType"]:focus {
 
     font-size: 13px;
 }
-
 
 .notice-empty p {
     margin: 7px 0 0;
@@ -1659,10 +1665,198 @@ select[name="locationType"]:focus {
 }
 
 
-/* 데이터 관리와 간격 */
+/* =========================================================
+   SUGGESTION LIST
+========================================================= */
+
+.suggestion-section {
+    margin-top: 18px;
+    padding-top: 20px;
+
+    border-top: 1px solid #dfe8da;
+}
+
+
+/* 건의글 헤더 */
+.suggestion-section-header {
+    margin-bottom: 18px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.suggestion-section-header h3 {
+    margin: 0;
+
+    color: #173f2a;
+
+    font-size: 20px;
+
+    letter-spacing: -0.03em;
+}
+
+
+/* 건의글 목록 */
+.suggestion-admin-list {
+    border-top: 1px solid #e2e9de;
+}
+
+
+/* 건의글 한 건 */
+.suggestion-admin-item {
+    padding: 17px 2px;
+
+    border-bottom: 1px solid #e8ede5;
+}
+
+.suggestion-admin-item:last-child {
+    border-bottom: none;
+}
+
+
+/* 상태 + 제목 */
+.suggestion-title-row {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    min-width: 0;
+}
+
+
+/* 확인 상태 배지 */
+.suggestion-badge {
+    min-width: 48px;
+
+    flex-shrink: 0;
+
+    padding: 5px 8px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+
+/* 미확인 */
+.suggestion-badge.unchecked {
+    border: 1px solid #efc6ba;
+
+    background: #fff2ee;
+
+    color: #b5523c;
+}
+
+
+/* 확인 */
+.suggestion-badge.checked {
+    border: 1px solid #cbdac5;
+
+    background: #f1f6ee;
+
+    color: #637c66;
+}
+
+
+/* 확인 처리 form */
+.suggestion-check-form {
+    flex: 1;
+    min-width: 0;
+
+    margin: 0;
+
+    display: flex;
+}
+
+
+/* 제목 버튼 */
+.suggestion-title-button {
+    width: 100%;
+    min-width: 0;
+
+    padding: 0;
+
+    overflow: hidden;
+
+    border: 0;
+
+    background: transparent;
+
+    color: #264332;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 800;
+
+    text-align: left;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    cursor: pointer;
+
+    transition: color 0.2s;
+}
+
+.suggestion-title-button:hover {
+    color: #4e894d;
+}
+
+
+/*
+   건의글 작성자 + 작성일
+
+   예)
+   a · 2026-08-27 17:04
+*/
+.suggestion-meta {
+    margin-top: 7px;
+    padding-left: 57px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    color: #98a39b;
+
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+
+/* 작성자 닉네임 */
+.suggestion-meta > span:first-child {
+    color: #66766b;
+
+    font-weight: 700;
+}
+
+
+/* 작성자 / 날짜 사이 점 */
+.suggestion-meta-divider {
+    color: #c1cac0;
+}
+
+
+/* =========================================================
+   DATA MANAGEMENT
+========================================================= */
+
 .data-management-header {
     margin-top: 0;
 }
+
 
 /* =========================================================
    NOTICE EDIT
@@ -1684,14 +1878,12 @@ select[name="locationType"]:focus {
             0 8px 24px rgba(35, 72, 44, 0.05);
 }
 
-
 .notice-edit-card-header {
     margin-bottom: 28px;
     padding-bottom: 22px;
 
     border-bottom: 1px solid #e2e9de;
 }
-
 
 .notice-edit-card-header h3 {
     margin: 14px 0 8px;
@@ -1704,7 +1896,6 @@ select[name="locationType"]:focus {
     letter-spacing: -0.03em;
 }
 
-
 .notice-edit-card-header p {
     margin: 0;
 
@@ -1713,18 +1904,15 @@ select[name="locationType"]:focus {
     font-size: 12px;
 }
 
-
 .notice-edit-form {
     display: grid;
 
     gap: 22px;
 }
 
-
 .notice-edit-form .notice-form-group textarea {
     min-height: 300px;
 }
-
 
 .notice-edit-actions {
     display: flex;
@@ -1736,15 +1924,16 @@ select[name="locationType"]:focus {
     margin-top: 4px;
 }
 
-
 .notice-edit-actions .cancel-button,
 .notice-edit-actions .save-button {
+    min-width: 90px;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    min-width: 90px;
 }
+
+
 /* =========================================================
    RESPONSIVE
 ========================================================= */
@@ -1754,18 +1943,29 @@ select[name="locationType"]:focus {
     .nav-center {
         display: none;
     }
+
     .admin-hero-inner {
         grid-template-columns: 1fr;
+
         gap: 30px;
     }
 
+    .admin-dashboard {
+        width: 100%;
+
+        justify-self: stretch;
+
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 
     .admin-card-grid {
         grid-template-columns: 1fr;
     }
+
     .notice-management-grid {
         grid-template-columns: 1fr;
     }
+
     .location-search-box form {
         flex-wrap: wrap;
     }
@@ -1793,7 +1993,6 @@ select[name="locationType"]:focus {
     .footer-container {
         grid-template-columns: 1fr 1fr;
     }
-
 }
 
 
@@ -1831,7 +2030,10 @@ select[name="locationType"]:focus {
     .footer-bottom {
         width: calc(100% - 28px);
     }
+
     .admin-dashboard {
+        width: 100%;
+
         grid-template-columns: 1fr;
     }
 
@@ -1840,9 +2042,10 @@ select[name="locationType"]:focus {
     }
 
     .dashboard-card {
-        min-height: 78px;
-    }
+        min-height: 70px;
 
+        padding: 14px 18px;
+    }
 
     .admin-list-header,
     .admin-section-header {
@@ -1864,6 +2067,32 @@ select[name="locationType"]:focus {
         flex: 1;
     }
 
+
+    /* 모바일에서는 textarea 최소 높이 */
+    .notice-content-group textarea {
+        min-height: 240px;
+    }
+
+
+    /* 건의글 모바일 */
+    .suggestion-title-row {
+        align-items: flex-start;
+    }
+
+    .suggestion-title-button {
+        white-space: normal;
+
+        line-height: 1.5;
+    }
+
+    .suggestion-meta {
+        padding-left: 57px;
+
+        flex-wrap: wrap;
+
+        font-size: 10px;
+    }
+
     .footer-container {
         grid-template-columns: 1fr;
     }
@@ -1873,5 +2102,4 @@ select[name="locationType"]:focus {
 
         gap: 6px;
     }
-
 }

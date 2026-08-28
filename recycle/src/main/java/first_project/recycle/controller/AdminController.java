@@ -79,4 +79,11 @@ public class AdminController {
         return "redirect:/admin";
     }
 
+
+    // 관리자 건의글 학인
+    @PostMapping("/suggestions/{boardId}/check")
+    public String checkSuggestion(@PathVariable Long boardId){
+        boardService.checkSuggestionByAdmin(boardId);
+        return "redirect:/boards/" + boardId;
+    }
 }
