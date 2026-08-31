@@ -194,10 +194,6 @@
                 </otherwise>
             </choose>
 
-        <if test="boardType != null">
-            AND b.board_type = #{boardType}
-        </if>
-
             <if test="memberId != null">
                 AND b.member_id = #{memberId}
             </if>
@@ -224,6 +220,7 @@
                     AND (
                         b.title LIKE CONCAT('%', #{keyword}, '%')
                         OR b.content LIKE CONCAT('%', #{keyword}, '%')
+                        OR m.nickname LIKE CONCAT('%', #{keyword}, '%')
                     )
                 </otherwise>
             </choose>
@@ -288,10 +285,6 @@
                 AND b.member_id = #{memberId}
             </if>
 
-            <if test="boardType != null">
-                AND b.board_type = #{boardType}
-            </if>
-
             <if test="keyword != null and keyword != ''">
                <choose>
 
@@ -311,6 +304,7 @@
                     AND (
                         b.title LIKE CONCAT('%', #{keyword}, '%')
                         OR b.content LIKE CONCAT('%', #{keyword}, '%')
+                        OR m.nickname LIKE CONCAT('%', #{keyword}, '%')
                     )
                 </otherwise>
                </choose>
