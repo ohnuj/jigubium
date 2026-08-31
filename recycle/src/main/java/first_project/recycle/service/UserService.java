@@ -76,4 +76,14 @@ public class UserService {
         // 4. 인증 성공 시 조회된 회원 정보 객체 반환
         return findUser;
     }
+
+    // 닉네임 중복 확인
+    public boolean isNicknameDuplicate(String nickname) {
+
+        // 회원가입 저장 시와 동일하게 닉네임 정규화
+        String normalizedNickname =
+                nickname.trim().replaceAll("\\s+", " ");
+
+        return userMapper.countByNickname(normalizedNickname) > 0;
+    }
 }

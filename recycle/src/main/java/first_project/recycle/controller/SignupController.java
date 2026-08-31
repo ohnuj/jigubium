@@ -34,6 +34,12 @@ public class SignupController {
                          Model model,
                          RedirectAttributes redirectAttributes) {
 
+        // 닉네임 중복 확인
+        if (userService.isNicknameDuplicate((user.getNickname()))){
+            model.addAttribute("error","이미 사용중인 닉네임입니다.");
+            return "signupForm";
+        }
+
         // 서비스 계층에 가입 로직 위임 (이메일 중복 체크 및 DB 저장)
         boolean isSuccess = userService.signup(user);
 
