@@ -13,9 +13,7 @@
         THEN 'food'
 
         <!-- 2. 소형가전 / 전자제품 -->
-        WHEN disposal_method LIKE '%소형전기전자제품%'
-        OR disposal_method LIKE '%소형전기전제품%'
-        OR disposal_method LIKE '%전기전자제품%'
+        WHEN disposal_method LIKE '%전기전%'
         THEN 'electronics'
 
         <!-- 3. 폐의약품 / 생활계유해 -->
@@ -29,8 +27,7 @@
         THEN 'battery'
 
         <!-- 5. 의류 -->
-        WHEN disposal_method LIKE '%의류 수거함%'
-        OR disposal_method LIKE '%의류수거함%'
+        WHEN disposal_method LIKE '%의류%'
         THEN 'clothes'
 
         <!-- 6. 비닐 -->
@@ -48,7 +45,6 @@
 
         <!-- 9. 종이 / 종이팩 -->
         WHEN disposal_method LIKE '%종이%'
-        OR disposal_method LIKE '%종이팩%'
         OR disposal_method LIKE '%골판지%'
         THEN 'paper'
 
