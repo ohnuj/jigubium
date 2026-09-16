@@ -130,8 +130,8 @@
 ## 🔐 Account & Security
 
 * 일반 회원가입 / 로그인 / 로그아웃
-* Kakao OAuth 로그인
-* LOCAL / KAKAO 회원 구분
+* SOCIAL OAuth 로그인
+* LOCAL / SOCIAL 회원 구분
 * BCrypt 비밀번호 암호화
 * 이메일 / 닉네임 중복 검사
 * 세션 기반 로그인 상태 관리
